@@ -4,23 +4,26 @@ namespace App\Services;
 
 use Exception;
 
-class ServiceTransfromer{
-
+class ServiceTransformer{
     # function name => Aspects required
     public $aspect_mapper = [
-        
+        'signUp' => [], 
+        'login' => [], 
+        'viewUserProfile' => [], 
+        'updateUserProfile' => [],
+        'logout' => [],
     ];
 
     private $service_mapper = [];
 
-    # protected $serviceobj;
+    protected $userService;
 
     public function __construct()
     {
-        # $this->serviceobj = new ServiceName();
+        $this->userService = new UserServices();
 
         $this->service_mapper = [
-            # "service_name" => "App\\Services\\ServiceName",
+            "User" => "App\\Services\\UserServices",
         ];
     }
 
