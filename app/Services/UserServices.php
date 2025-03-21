@@ -83,10 +83,10 @@ class UserServices
         $validator = Validator::make($data, [
             'id' => 'integer|required',
             'address' => 'string',
-            'phoneNumber' => 'string',
-            'profilePicturePath' => 'string',
-            'isAdmin' => 'boolean',
-            'isSuperAdmin' => 'boolean'
+            'phone_number' => 'string',
+            'profile_picture_path' => 'string',
+            'is_admin' => 'boolean',
+            'is_super_admin' => 'boolean'
         ]);
 
         if($validator->fails()){

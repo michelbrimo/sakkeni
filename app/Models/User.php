@@ -21,11 +21,11 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        "profilePicturePath",
+        "profile_picture_path",
         "address",
-        "phoneNumber",
-        "isAdmin",
-        "isSuperAdmin",
+        "phone_number",
+        "is_admin",
+        "is_super_admin",
     ];
 
     /**

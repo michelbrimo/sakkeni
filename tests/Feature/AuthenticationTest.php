@@ -113,7 +113,7 @@ class AuthenticationTest extends TestCase
         $token = $this->register_user();
         $updatedData = [
             'address' => 'New Address',
-            'phoneNumber' => '0999999999',
+            'phone_number' => '0999999999',
         ];
 
         $response = $this->withHeaders([
