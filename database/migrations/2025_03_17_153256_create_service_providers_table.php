@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('service_providers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('user_id')
+            ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("subscriptionPlan");
-            $table->date("validTill");
+            $table->string("subscription_plan");
+            $table->date("valid_till");
             $table->timestamps();
         });
     }

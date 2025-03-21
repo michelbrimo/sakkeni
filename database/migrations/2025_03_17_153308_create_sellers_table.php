@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('sellers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('user_id')
+            ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("accountType");
-            $table->integer("freeAdsLeft");
+            $table->string("account_type");
+            $table->integer("free_ads_left");
             $table->timestamps();
         });
     }

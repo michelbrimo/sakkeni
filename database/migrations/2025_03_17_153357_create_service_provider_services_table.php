@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('service_provider_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('serviceProviderId')
-            ->references('id')
-            ->on('service_providers') 
+            $table->foreignId('service_provider_id')
+            ->constrained('service_providers') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('serviceId')
-            ->references('id')
-            ->on('services') 
+            $table->foreignId('service_id')
+            ->constrained('services') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->timestamps();

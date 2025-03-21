@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('building_amenities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('amenityId')
-            ->references('id')
-            ->on('amenities') 
+            $table->foreignId('amenity_id')
+            ->constrained('amenities') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->timestamps();

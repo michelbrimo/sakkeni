@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('property_favorites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('user_id')->
+            constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->timestamps();

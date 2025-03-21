@@ -13,18 +13,16 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('countryId')
-            ->references('id')
-            ->on('countries') 
+            $table->foreignId('country_id')
+            ->constrained('countries')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();  
-            $table->foreignId('cityId')
-            ->references('id')
-            ->on('cities') 
+            $table->foreignId('city_id')
+            ->constrained('cities')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->string("altitude");
-            $table->string("longtitude");  
+            $table->string("longitude");  
             $table->string("additionalInfo");
             $table->timestamps();
         });

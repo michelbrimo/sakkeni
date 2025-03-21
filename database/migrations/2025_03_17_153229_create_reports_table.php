@@ -13,18 +13,16 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reporterId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('reporter_id')
+            ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('reportedOnId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('reported_on_id')
+            ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->string("report");
-            $table->string("reportStatus");
+            $table->string("report_status");
             $table->timestamps();
         });
     }

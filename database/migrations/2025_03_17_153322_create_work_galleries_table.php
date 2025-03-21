@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('work_galleries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('serviceProviderId')
-            ->references('id')
-            ->on('service_providers') 
+            $table->foreignId('service_provider_id')
+            ->constrained('service_providers') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("imagePath");
+            $table->string("image_path");
             $table->timestamps();
         });
     }
