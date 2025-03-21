@@ -125,7 +125,7 @@ class AuthenticationTest extends TestCase
 
         $this->assertNotNull($user);
         $this->assertEquals('New Address', $user->address);
-        $this->assertEquals('0999999999', $user->phoneNumber);
+        $this->assertEquals('0999999999', $user->phone_number);
     }
 
     public function test_logout_successfully()

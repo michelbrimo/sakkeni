@@ -7,10 +7,10 @@ use Exception;
 class ServiceTransformer{
     # function name => Aspects required
     public $aspect_mapper = [
-        'sign_up' => [], 
+        'signUp' => [], 
         'login' => [], 
-        'view_user_profile' => [], 
-        'update_user_profile' => [],
+        'viewUserProfile' => [], 
+        'updateUserProfile' => [],
         'logout' => [],
     ];
 
