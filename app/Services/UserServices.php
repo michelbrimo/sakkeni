@@ -84,7 +84,7 @@ class UserServices
             'id' => 'integer|required',
             'address' => 'string',
             'phoneNumber' => 'string',
-            'profilePicture' => 'string',
+            'profilePicturePath' => 'string',
             'isAdmin' => 'boolean',
             'isSuperAdmin' => 'boolean'
         ]);
