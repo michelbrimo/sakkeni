@@ -13,29 +13,27 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('locationId')
-            ->references('id')
-            ->on('locations') 
+            $table->foreignId('location_id')
+            ->constrained('locations') 
             ->cascadeOnDelete()
-            ->cascadeOnUpdate();  
-            $table->foreignId('ownerId')
-            ->references('id')
-            ->on('users') 
+            ->cascadeOnUpdate();   
+            $table->foreignId('owner_id')
+            ->constrained('users')
             ->cascadeOnDelete()
-            ->cascadeOnUpdate(); 
+            ->cascadeOnUpdate();
+            $table->foreignId('admin_id')
+            ->constrained('users')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->string('area');
             $table->json('exposure');
             $table->integer('bathrooms');
             $table->integer('balconies');
-            $table->string('ownershipType');
-            $table->string('propertyPhysicalStatus');
-            $table->string('availabilityStatus');
-            $table->boolean('isFurnished');
-            $table->foreignId('adminId')
-            ->references('id')
-            ->on('users') 
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate(); 
+            $table->string('ownership_type');
+            $table->string('property_physical_status');
+            $table->string('availability_status');
+            $table->boolean('is_furnished');
+             
             $table->timestamps();
         });
     }

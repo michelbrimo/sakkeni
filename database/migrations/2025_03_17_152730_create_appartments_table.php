@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('appartments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('residentialPropertyId')
-            ->references('id')
-            ->on('residential_properties') 
+            $table->foreignId('residential_property_id')
+            ->constrained('residential_properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->integer("floor");
-            $table->integer('buildingNumber');
-            $table->integer('appartmentNumber');
+            $table->integer('building_number');
+            $table->integer('appartment_number');
             $table->timestamps();
         });
     }

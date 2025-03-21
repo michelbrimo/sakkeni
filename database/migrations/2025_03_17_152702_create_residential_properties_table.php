@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('residential_properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->integer("bedrooms");
-            $table->string("propertyType");
+            $table->string("property_type");
             $table->timestamps();
         });
     }

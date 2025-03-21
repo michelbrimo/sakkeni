@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('ready_to_move_in_properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("sellType");
+            $table->string("sell_type");
             $table->timestamps();
         });
     }

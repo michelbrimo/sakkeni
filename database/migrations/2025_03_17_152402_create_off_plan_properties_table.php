@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('off_plan_properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties')
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
-            $table->date("deliveryDate");
-            $table->float("firstPay");
-            $table->json("payPlan");
-            $table->float("overallPayment");
+            $table->date("delivery_date");
+            $table->float("first_pay");
+            $table->json("pay_plan");
+            $table->float("overall_payment");
             $table->timestamps();
         });
     }

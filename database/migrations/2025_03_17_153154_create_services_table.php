@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('serviceCategoryId')
-            ->references('id')
-            ->on('service_categories') 
+            $table->foreignId('service_category_id')
+            ->constrained('service_categories') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->string("name");

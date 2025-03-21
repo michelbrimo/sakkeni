@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('commercial_properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('propertyId')
-            ->references('id')
-            ->on('properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->integer('floor');
-            $table->integer('buildingNumber');
-            $table->integer('appartmentNumber');
-            $table->string('propertyType');
+            $table->integer('building_number');
+            $table->integer('appartment_number');
+            $table->string('property_type');
             $table->timestamps();
         });
     }

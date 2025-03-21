@@ -13,18 +13,16 @@ return new class extends Migration
     {
         Schema::create('service_activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')
-            ->references('id')
-            ->on('users') 
+            $table->foreignId('user_id')
+            ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('serviceProviderId')
-            ->references('id')
-            ->on('service_providers') 
+            $table->foreignId('service_provider_id')
+            ->constrained('service_providers') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->date("startDate");
-            $table->date("endDate");
+            $table->date("start_date");
+            $table->date("end_eate");
             $table->timestamps();
         });
     }
