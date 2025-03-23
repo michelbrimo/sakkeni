@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
     
+ Route::middleware('superadmin')->group(function () {
+        Route::post('/register-admin', [AdminController::class, 'registerAdmin'])->name('Admin.registerAdmin');
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+    });
 });
