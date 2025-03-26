@@ -30,5 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/register-admin', [AdminController::class, 'registerAdmin'])->name('Admin.registerAdmin');
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
         Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
     });
 });

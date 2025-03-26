@@ -23,14 +23,25 @@ class AdminController extends Controller
 
     public function viewAdminProfile($admin_id){
         $additionalData = ['id' => $admin_id];
-        $response = $this->executeService($this->service_transformer, new Request(), $additionalData, "Admin's profile fetched successfully");
-
-        $responseData = $response->getData(true);
-
-        if (empty($responseData['data'])) {
-            return response()->json(['message' => 'Admin not found'], 404);
+        try{
+            return $this->executeService($this->service_transformer, new Request(), $additionalData, "Admin's profile fetched successfully");
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
         }
+    }
 
-        return $response;
+    public function removeAdmin($admin_id){
+        $additionalData = ['id' => $admin_id];
+        try {
+            return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Admin removed successfully');
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }
     }
 }

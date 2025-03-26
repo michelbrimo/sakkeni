@@ -14,7 +14,8 @@ class ServiceTransformer{
         'logout' => [],
         'registerAdmin' => [],
         'viewAdmins' =>[],
-        'viewAdminProfile'=>[]
+        'viewAdminProfile'=>[],
+        'removeAdmin'=> [],
     ];
 
     private $service_mapper = [];

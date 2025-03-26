@@ -13,6 +13,29 @@ class AdminRepository{
     }
 
     public function getAdminDetails_byId($id) {
-        return User::find($id);
+        $admin = User::where('id', $id)
+                ->where('is_admin', 1)
+                ->first();
+
+        if (!$admin) {
+            throw new \Exception('Admin not found', 404);
+        }
+
+        return $admin; 
+    }
+
+    public function removeAdmin_byId($id)
+    {
+        $admin = User::where('id', $id)
+                ->where('is_admin', 1)
+                ->first();
+
+        if (!$admin) {
+            throw new \Exception('Admin not found', 404);
+        }
+
+        $admin->delete();
+        
+        return $admin; 
     }
 }

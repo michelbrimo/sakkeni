@@ -42,8 +42,19 @@ class AdminServices{
     }
 
     public function viewAdminProfile($data){
-        return $this->admin_repository->getAdminDetails_byId($data['id']);
-        
+        $admin = $this->admin_repository->getAdminDetails_byId($data['id']); 
+        if(!$admin){
+            throw new Exception('Admin not found', 404);
+        }
+        return $admin;
     }
+
+    public function removeAdmin($data){
+        $admin = $this->admin_repository->removeAdmin_byId($data['id']);
+        if (!$admin) {
+            throw new Exception('Admin not found', 404);
+        }
+        return $admin;
+    } 
 
 }

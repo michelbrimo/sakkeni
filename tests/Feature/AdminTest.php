@@ -80,7 +80,7 @@ class AdminTest extends TestCase
 
         $response->assertJson([
             'status' => true,
-            'message' => 'Admin profile retrieved successfully',
+            'message' => "Admin's profile fetched successfully",
             'data' => [
                 'id' => $admin->id,
                 'username' => $admin->username,
@@ -119,5 +119,55 @@ class AdminTest extends TestCase
         $response->assertJson([
             'message' => 'Unauthenticated.',
         ]);
+    }
+
+
+    public function test_super_admin_can_delete_admin()
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+        
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($superAdmin, 'sanctum');
+
+        $response = $this->deleteJson("/api/remove-admin/{$admin->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'status' => true,
+                'message' => 'Admin removed successfully'
+            ]);
+
+        $this->assertNull(User::find($admin->id));
+    }
+
+    public function test_regular_admin_cannot_delete_admin()
+    {
+        $regularAdmin = User::factory()->admin()->create();
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($regularAdmin, 'sanctum');
+
+        $response = $this->deleteJson("/api/remove-admin/{$admin->id}");
+
+        $response->assertStatus(403)
+            ->assertJson([
+                'status' => false,
+                'message' => 'You do not have permission to perform this action.'
+            ]);
+    }
+
+    public function test_cannot_delete_nonexistent_admin()
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+        $this->actingAs($superAdmin, 'sanctum');
+
+        $response = $this->deleteJson("/api/remove-admin/999");
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'status' => false,
+                'message' => 'Admin not found'
+            ]);
     }
 }
