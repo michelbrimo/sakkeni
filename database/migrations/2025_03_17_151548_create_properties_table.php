@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('location_id')
-            ->constrained('locations') 
+            ->constrained('locations')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();   
             $table->foreignId('owner_id')
@@ -22,18 +22,16 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->foreignId('admin_id')
+            ->nullable()
             ->constrained('users')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string('area');
-            $table->json('exposure');
+            $table->float('area');
             $table->integer('bathrooms');
             $table->integer('balconies');
             $table->string('ownership_type');
             $table->string('property_physical_status');
-            $table->string('availability_status');
-            $table->boolean('is_furnished');
-             
+            $table->string('availability_status');             
             $table->timestamps();
         });
     }

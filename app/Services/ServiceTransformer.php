@@ -12,6 +12,8 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
+
+        'addProperty' => []
     ];
 
     private $service_mapper = [];
@@ -24,6 +26,7 @@ class ServiceTransformer{
 
         $this->service_mapper = [
             "User" => "App\\Services\\UserServices",
+            "Property" => "App\\Services\\PropertyServices",
         ];
     }
 

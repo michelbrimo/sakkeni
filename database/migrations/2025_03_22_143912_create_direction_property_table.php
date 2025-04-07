@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('building_amenities', function (Blueprint $table) {
+        Schema::create('direction_property', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('amenity_id')
-            ->constrained('amenities') 
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
             $table->foreignId('property_id')
             ->constrained('properties') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('direction_id')
+            ->constrained('directions') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->timestamps();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('building_amenities');
+        Schema::dropIfExists('direction_property');
     }
 };

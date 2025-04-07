@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ready_to_move_in_properties', function (Blueprint $table) {
+        Schema::create('directions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_id')
-            ->constrained('properties') 
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
-            $table->boolean('is_furnished');
-            $table->string('sell_type');
+            $table->string("name");
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ready_to_move_in_properties');
+        Schema::dropIfExists('directions');
     }
 };

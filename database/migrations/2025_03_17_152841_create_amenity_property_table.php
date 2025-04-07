@@ -11,19 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('locations', function (Blueprint $table) {
+        Schema::create('amenity_property', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('country_id')
-            ->constrained('countries')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();  
-            $table->foreignId('city_id')
-            ->constrained('cities')
+            $table->foreignId('amenity_id')
+            ->constrained('amenities') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("altitude")->nullable();
-            $table->string("longitude")->nullable();  
-            $table->string("additional_info")->nullable();
+            $table->foreignId('property_id')
+            ->constrained('properties') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('amenity_property');
     }
 };
