@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\ImageRepository;
 use App\Repositories\LocationRepository;
 use Exception;
 use App\Repositories\PropertyRepository;
@@ -10,11 +11,13 @@ use Illuminate\Support\Facades\Validator;
 class PropertyServices extends ImageServices
 {
     protected $property_repository; 
+    protected $image_repository; 
     protected $location_repository; 
 
     public function __construct() {
         $this->property_repository = new PropertyRepository();
         $this->location_repository = new LocationRepository();
+        $this->image_repository = new ImageRepository();
     }
 
     public function addProperty($data){
@@ -65,10 +68,16 @@ class PropertyServices extends ImageServices
             'property_physical_status' => $data['property_physical_status'],
         ]);
 
-        $this->_saveImages($data['images'], 'Property', $property->id);
+        $this->_saveImages($property->id, $data['images']);
+
         $property->directions()->attach($data['exposure']);
         $property->amenities()->attach($data['amenities']);
 
+    }
+
+    function _saveImages($propertyId, $images) {
+        $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
+        $this->image_repository->addImages($propertyId, $imagesPaths);
     }
 
     function _saveLocation($data) {
