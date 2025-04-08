@@ -12,7 +12,7 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
-        'addProperty' => []
+        'addProperty' => [],
         'registerAdmin' => [],
         'viewAdmins' =>[],
         'viewAdminProfile'=>[],

@@ -38,10 +38,18 @@ class PropertyServices extends ImageServices
             "balconies" => "integer",
             "ownership_type" => "string",
             "property_physical_status" => "string",
+
+            # Images
             "images" => "array",
 
             # Amenities
             "amenities" => "array",
+
+            # Off-Plan
+            "deliveryDate" => "date",
+            "firstPay" => "",
+            "payPlan" => "json",
+            "overallPayment" => ""
         ]);
         
         if($validator->fails()){
@@ -67,17 +75,30 @@ class PropertyServices extends ImageServices
             'ownership_type' => $data['ownership_type'],
             'property_physical_status' => $data['property_physical_status'],
         ]);
-
+ 
         $this->_saveImages($property->id, $data['images']);
-
         $property->directions()->attach($data['exposure']);
         $property->amenities()->attach($data['amenities']);
+
+        
+        $this->_saveOffPlan([
+            'property_id' => $property->id,
+            'delivery_date' => $data['deliveryDate'],
+            'first_pay' => $data['firstPay'],
+            'pay_plan' => $data['payPlan'],
+            'overall_payment' => $data['overallPayment'],
+        ]);
+    
 
     }
 
     function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
         $this->image_repository->addImages($propertyId, $imagesPaths);
+    }
+    
+    function _saveOffPlan($data) {
+        $this->property_repository->createOffPlanProperty($data);
     }
 
     function _saveLocation($data) {
