@@ -12,21 +12,27 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
-
         'addProperty' => []
+        'registerAdmin' => [],
+        'viewAdmins' =>[],
+        'viewAdminProfile'=>[],
+        'removeAdmin'=> [],
     ];
 
     private $service_mapper = [];
 
     protected $userService;
+    protected $adminService;
 
     public function __construct()
-    {
+    {   
         $this->userService = new UserServices();
+        $this->adminService = new AdminServices();
 
         $this->service_mapper = [
             "User" => "App\\Services\\UserServices",
             "Property" => "App\\Services\\PropertyServices",
+            "Admin" => "App\\Services\\AdminServices",
         ];
     }
 

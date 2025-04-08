@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PropertyController;
+
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,4 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
 
+ Route::middleware('superadmin')->group(function () {
+        Route::post('/register-admin', [AdminController::class, 'registerAdmin'])->name('Admin.registerAdmin');
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
+    });
 });
