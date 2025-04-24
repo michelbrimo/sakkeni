@@ -21,6 +21,7 @@ class PropertyServices extends ImageServices
     }
 
     public function addProperty($data){
+        # the empty rules are float
         $validator = Validator::make($data, [
             "owner_id" => "integer|required",
 
@@ -46,10 +47,39 @@ class PropertyServices extends ImageServices
             "amenities" => "array",
 
             # Off-Plan
-            "deliveryDate" => "date",
-            "firstPay" => "",
-            "payPlan" => "json",
-            "overallPayment" => ""
+            "delivery_date" => "date",
+            "first_pay" => "",
+            "pay_plan" => "json",
+            "overall_payment" => "",
+
+            # Ready To Move In Property
+            "is_furnished" => "boolean",
+            "sell_type" => "string",
+
+            # Rent
+            "price" => "",
+            "lease_period" => "string",
+            "payment_plan" => "string",
+
+            # Purchase
+            "price" => "",
+
+            # Commercial 
+            "property_type" => "string",
+            "appartment_number" => "integer",
+            "building_number" => "integer",
+
+            # Residential
+            "property_type" => "string",
+            "bedrooms" => "integer",
+            
+            # Villa
+            "floors" => "integer",
+            
+            # Appartment
+            "floor" => "integer",
+            "building_number" => "integer",
+            "appartment_number" => "integer",
         ]);
         
         if($validator->fails()){
@@ -80,16 +110,31 @@ class PropertyServices extends ImageServices
         $property->directions()->attach($data['exposure']);
         $property->amenities()->attach($data['amenities']);
 
-        
-        $this->_saveOffPlan([
-            'property_id' => $property->id,
-            'delivery_date' => $data['deliveryDate'],
-            'first_pay' => $data['firstPay'],
-            'pay_plan' => $data['payPlan'],
-            'overall_payment' => $data['overallPayment'],
-        ]);
-    
+        if($data['property_physical_status'] == 'Off Plan'){
+            $this->_saveOffPlanProperty([
+                'property_id' => $property->id,
+                'delivery_date' => $data['delivery_date'],
+                'first_pay' => $data['first_pay'],
+                'pay_plan' => $data['pay_plan'],
+                'overall_payment' => $data['overall_payment'],
+            ]);
+        }
+        elseif ($data['property_physical_status'] == 'Ready To Move In') {
+            $this->_saveReadyToMoveIn($data, $property);
+        }
 
+        if ($data['property'] == "Commercial"){
+            $this->_saveCommercialProperty([
+                "property_id" => $property->id,
+                "building_number" => $data["building_number"],
+                "appartment_number" => $data["appartment_number"],
+                "floor" => $data["floor"],
+                "property_type" => $data["property_type"],
+            ]);
+        }
+        elseif ($data['property'] == "Residential"){
+            $this->_saveResidentialProperty($data, $property) ;
+        }
     }
 
     function _saveImages($propertyId, $images) {
@@ -97,10 +142,60 @@ class PropertyServices extends ImageServices
         $this->image_repository->addImages($propertyId, $imagesPaths);
     }
     
-    function _saveOffPlan($data) {
+    function _saveOffPlanProperty($data) {
         $this->property_repository->createOffPlanProperty($data);
     }
 
+    function _saveReadyToMoveIn($data, $property) {
+        $readyToMoveInProperty = $this->property_repository->createReadyToMoveInProperty([
+            "property_id" => $property->id,
+            "is_furnished" => $data["is_furnished"],
+            "sell_type" => $data["sell_type"],
+        ]);
+
+        if($data['sell_type'] === 'Rent'){
+            $this->property_repository->createRent([
+                'ready_property_id' => $readyToMoveInProperty->id,
+                'price' => $data['price'],
+                'lease_period' => $data['lease_period'],
+                'payment_plan' => $data['payment_plan'],
+            ]);
+        }
+        elseif ($data['sell_type'] === 'Purchase') {
+            $this->property_repository->createPurchase([
+                'price' => $data['price'],
+                'ready_property_id' => $readyToMoveInProperty->id,
+            ]);
+        }
+    }
+
+    function _saveCommercialProperty($data) {
+        $this->property_repository->createCommercialProperty($data);
+    }
+    
+    function _saveResidentialProperty($data, $property) {
+        $residentialProperty = $this->property_repository->createResidentialProperty([
+            "property_id" => $property->id,
+            "bedrooms" => $data["bedrooms"],
+            "property_type" => $data["property_type"],
+        ]);
+
+        if($data['property_type'] == "Villa"){
+            $this->property_repository->createVilla([
+                "residential_property_id" => $residentialProperty->id,
+                "floors" => $data['floors']
+            ]);
+        }
+        elseif ($data['property_type'] == "Appartment") {
+            $this->property_repository->createAppartment([
+                "residential_property_id" => $residentialProperty->id,
+                "floor" => $data['floor'],
+                "building_number" => $data['building_number'],
+                "appartment_number" => $data['appartment_number'],
+            ]);
+        }
+    }
+    
     function _saveLocation($data) {
         $data['country_id'] = $this->location_repository->getCountry_byName($data['country_name'])->id;
         $data['city_id'] = $this->location_repository->getCity_byName($data['city_name'])->id;

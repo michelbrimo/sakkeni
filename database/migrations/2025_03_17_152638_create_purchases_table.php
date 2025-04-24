@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ready_roperty_id')
+            $table->foreignId('ready_property_id')
             ->constrained('ready_to_move_in_properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 

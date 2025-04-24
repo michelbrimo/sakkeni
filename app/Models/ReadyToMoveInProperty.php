@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReadyToMoveInProperty extends Model
 {
+    protected $fillable = [
+        "property_id",
+        "sell_type",
+        "is_furnished",
+    ];
     use HasFactory;
 }

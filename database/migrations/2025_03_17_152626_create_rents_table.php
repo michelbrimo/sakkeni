@@ -18,7 +18,7 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->float("price");
-            $table->float("lease_period");
+            $table->string("lease_period");
             $table->string("payment_plan");
             $table->timestamps();
         });
