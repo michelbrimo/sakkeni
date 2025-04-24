@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
     
-    Route::middleware('serviceProvider')->group(function () {
+    Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
 
         
