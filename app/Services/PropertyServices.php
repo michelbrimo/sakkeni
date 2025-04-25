@@ -20,74 +20,12 @@ class PropertyServices extends ImageServices
         $this->image_repository = new ImageRepository();
     }
 
+    public function viewProperties($data){
+        $properties = $this->property_repository->getProperties($data);
+        return $properties;
+    }
+
     public function addProperty($data){
-        # the empty rules are float
-        $validator = Validator::make($data, [
-            "owner_id" => "integer|required",
-
-            # Location
-            "country_name" => "string|required",
-            "city_name" => "string|required",
-            "altitude" => "",
-            "longitude" => "",
-            "additional_info" => "string",
-
-            # Property
-            "area" => "",
-            "exposure" => "array",
-            "bathrooms" => "integer",
-            "balconies" => "integer",
-            "ownership_type" => "string",
-            "property_physical_status" => "string",
-
-            # Images
-            "images" => "array",
-
-            # Amenities
-            "amenities" => "array",
-
-            # Off-Plan
-            "delivery_date" => "date",
-            "first_pay" => "",
-            "pay_plan" => "json",
-            "overall_payment" => "",
-
-            # Ready To Move In Property
-            "is_furnished" => "boolean",
-            "sell_type" => "string",
-
-            # Rent
-            "price" => "",
-            "lease_period" => "string",
-            "payment_plan" => "string",
-
-            # Purchase
-            "price" => "",
-
-            # Commercial 
-            "property_type" => "string",
-            "appartment_number" => "integer",
-            "building_number" => "integer",
-
-            # Residential
-            "property_type" => "string",
-            "bedrooms" => "integer",
-            
-            # Villa
-            "floors" => "integer",
-            
-            # Appartment
-            "floor" => "integer",
-            "building_number" => "integer",
-            "appartment_number" => "integer",
-        ]);
-        
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-
         $locationId = $this->_saveLocation([
             'country_name' => $data['country_name'],
             'city_name' => $data['city_name'],

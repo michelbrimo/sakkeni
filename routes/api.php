@@ -28,9 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
     
-    Route::middleware('seller')->group(function () {
-        Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
+    Route::post('/view-properties', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
 
+    
+    Route::middleware('seller')->group(function () {
+        
+        Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
         
     });
 
