@@ -44,4 +44,8 @@ class AdminController extends Controller
             ], $e->getCode());
         }
     }
+
+    public function searchAdmin(Request $request){
+        return $this->executeService($this->service_transformer, $request, [], "Admins fetched successfully");
+    }
 }

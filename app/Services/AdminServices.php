@@ -57,4 +57,19 @@ class AdminServices{
         return $admin;
     } 
 
+    public function searchAdmin($data){
+        $validator = Validator::make($data, [
+            'name' => 'string|required',
+        ]);
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+        
+        $result = $this->admin_repository->searchAdmin_byName($data);
+
+        return $result;
+    }
+
 }

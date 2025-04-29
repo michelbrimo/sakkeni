@@ -35,7 +35,12 @@ class AdminRepository{
         }
 
         $admin->delete();
-        
         return $admin; 
+    }
+
+    public function searchAdmin_byName($data){
+        return User::where('is_admin', 1)
+        ->where('username', 'LIKE', '%' . $data['name'] . '%')
+        ->get();
     }
 }

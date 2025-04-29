@@ -17,6 +17,7 @@ class ServiceTransformer{
         'viewAdmins' =>[],
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
+        'searchAdmin'=>[],
     ];
 
     private $service_mapper = [];
