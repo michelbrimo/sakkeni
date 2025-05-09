@@ -38,16 +38,20 @@ class PropertyServices extends ImageServices
             'bathrooms' => $data['bathrooms'],
             'balconies' => $data['balconies'],
             'ownership_type' => $data['ownership_type'],
-            'property_physical_status' => $data['property_physical_status'],
-            'property_type' => $data['property'],
+            'physical_status_type_id' => $data['physical_status_type_id'],
+            'property_type_id' => $data['property_type_id'],
         ]);
  
         $this->_saveImages($property->id, $data['images']);
         $property->directions()->attach($data['exposure']);
         $property->amenities()->attach($data['amenities']);
 
-        if($data['property_physical_status'] == 'Off Plan'){
-            $this->_saveOffPlanProperty([
+        
+        if ($data['physical_status_type_id'] == 1) {
+            $this->_saveReadyToMoveIn($data, $property);
+        }
+        else if($data['physical_status_type_id'] == 2){
+            $this->property_repository->createOffPlanProperty([
                 'property_id' => $property->id,
                 'delivery_date' => $data['delivery_date'],
                 'first_pay' => $data['first_pay'],
@@ -55,11 +59,11 @@ class PropertyServices extends ImageServices
                 'overall_payment' => $data['overall_payment'],
             ]);
         }
-        else if ($data['property_physical_status'] == 'Ready To Move In') {
-            $this->_saveReadyToMoveIn($data, $property);
-        }
 
-        if ($data['property'] == "Commercial"){
+        if ($data['property_type_id'] == 1){
+            $this->_saveResidentialProperty($data, $property) ;
+        }
+        else if ($data['property_type_id'] == 2){
             $this->_saveCommercialProperty([
                 "property_id" => $property->id,
                 "building_number" => $data["building_number"],
@@ -68,12 +72,7 @@ class PropertyServices extends ImageServices
                 "commercial_property_type_id" => $data["commercial_property_type_id"],
             ]);
         }
-        else if ($data['property'] == "Residential"){
-            $this->_saveResidentialProperty($data, $property) ;
-        }
     }
-
-
 
     public function viewProperties($data){
         if($data['_buy_type'] == 'purchase')
@@ -95,30 +94,26 @@ class PropertyServices extends ImageServices
         $this->image_repository->addImages($propertyId, $imagesPaths);
     }
     
-    protected function _saveOffPlanProperty($data) {
-        $this->property_repository->createOffPlanProperty($data);
-    }
 
     protected function _saveReadyToMoveIn($data, $property) {
         $readyToMoveInProperty = $this->property_repository->createReadyToMoveInProperty([
             "property_id" => $property->id,
             "is_furnished" => $data["is_furnished"],
-            "sell_type" => $data["sell_type"],
+            "sell_type_id" => $data["sell_type_id"],
         ]);
 
-        if($data['sell_type'] === 'Rent'){
+        if ($data['sell_type_id'] == 1) {
+            $this->property_repository->createPurchase([
+                'price' => $data['price'],
+                'ready_property_id' => $readyToMoveInProperty->id,
+            ]);
+        }
+        else if($data['sell_type_id'] == 2){
             $this->property_repository->createRent([
                 'ready_property_id' => $readyToMoveInProperty->id,
                 'price' => $data['price'],
                 'lease_period' => $data['lease_period'],
                 'payment_plan' => $data['payment_plan'],
-            ]);
-        }
-        
-        else if ($data['sell_type'] === 'Purchase') {
-            $this->property_repository->createPurchase([
-                'price' => $data['price'],
-                'ready_property_id' => $readyToMoveInProperty->id,
             ]);
         }
     }
@@ -131,21 +126,21 @@ class PropertyServices extends ImageServices
         $residentialProperty = $this->property_repository->createResidentialProperty([
             "property_id" => $property->id,
             "bedrooms" => $data["bedrooms"],
-            "property_type" => $data["property_type"],
+            "residential_property_type_id" => $data["residential_property_type_id"],
         ]);
 
-        if($data['property_type'] == "Villa"){
-            $this->property_repository->createVilla([
-                "residential_property_id" => $residentialProperty->id,
-                "floors" => $data['floors']
-            ]);
-        }
-        else if ($data['property_type'] == "Apartment") {
+        if ($data['residential_property_type_id'] == 1) {
             $this->property_repository->createApartment([
                 "residential_property_id" => $residentialProperty->id,
                 "floor" => $data['floor'],
                 "building_number" => $data['building_number'],
                 "apartment_number" => $data['apartment_number'],
+            ]);
+        }
+        else if($data['residential_property_type_id'] == 2){
+            $this->property_repository->createVilla([
+                "residential_property_id" => $residentialProperty->id,
+                "floors" => $data['floors']
             ]);
         }
     }

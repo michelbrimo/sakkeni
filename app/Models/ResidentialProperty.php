@@ -10,7 +10,7 @@ class ResidentialProperty extends Model
     protected $fillable = [
         "property_id",
         "bedrooms",
-        "property_type",
+        "residential_property_type_id",
     ];
     
     use HasFactory;

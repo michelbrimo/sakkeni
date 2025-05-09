@@ -19,8 +19,8 @@ class Property extends Model
         'bathrooms',
         'balconies',
         'ownership_type',
-        'property_physical_status',
-        'property_type',
+        'physical_status_type_id',
+        'property_type_id',
         'availability_status',
     ];
 

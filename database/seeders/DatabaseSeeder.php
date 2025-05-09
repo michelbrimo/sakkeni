@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
+use App\Models\PhysicalStatusType;
 use App\Models\PropertyType;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType;
@@ -31,7 +32,7 @@ class DatabaseSeeder extends Seeder
         Country::create(['name' => 'Syria']);
         City::create(['name' => 'Damascus', 'country_id' => 1]);
 
-        $propertyTypes = ['Commercial', 'Residential'];
+        $propertyTypes = ['Residential', 'Commercial'];
         foreach ($propertyTypes as $propertyType) {
             PropertyType::create(['name' => $propertyType]);
         }
@@ -53,7 +54,7 @@ class DatabaseSeeder extends Seeder
        
         $propertyPhysicalStatusTypes = ['Ready To Move In', 'Off Plan'];
         foreach ($propertyPhysicalStatusTypes as $propertyPhysicalStatusType) {
-            CommercialPropertyType::create(['name' => $propertyPhysicalStatusType]);
+            PhysicalStatusType::create(['name' => $propertyPhysicalStatusType]);
         }
 
         User::factory(10)->create();

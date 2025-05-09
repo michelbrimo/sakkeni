@@ -34,7 +34,7 @@ return new class extends Migration
             ->constrained('physical_status_types')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('propert_type_id')
+            $table->foreignId('property_type_id')
             ->constrained('property_types')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
