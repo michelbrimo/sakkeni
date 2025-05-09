@@ -19,7 +19,7 @@ return new class extends Migration
             ->cascadeOnUpdate(); 
             $table->integer('floor');
             $table->integer('building_number');
-            $table->integer('appartment_number');
+            $table->integer('apartment_number');
             $table->string('property_type');
             $table->timestamps();
         });

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appartments', function (Blueprint $table) {
+        Schema::create('apartments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('residential_property_id')
             ->constrained('residential_properties') 
@@ -19,7 +19,7 @@ return new class extends Migration
             ->cascadeOnUpdate();
             $table->integer("floor");
             $table->integer('building_number');
-            $table->integer('appartment_number');
+            $table->integer('apartment_number');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appartments');
+        Schema::dropIfExists('apartments');
     }
 };

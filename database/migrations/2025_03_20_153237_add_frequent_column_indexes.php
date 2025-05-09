@@ -22,9 +22,9 @@ return new class extends Migration
             $table->index('email'); // Usually added automatically for unique()
         });
 
-        // Apartments Table (corrected from appartments)
-        Schema::table('appartments', function (Blueprint $table) {
-            $table->index('appartment_number');
+        // Apartments Table (corrected from apartments)
+        Schema::table('apartments', function (Blueprint $table) {
+            $table->index('apartment_number');
         });
 
         // Cities Table

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('balconies');
             $table->string('ownership_type');
             $table->string('property_physical_status');
+            $table->string('property_type');
             $table->string('availability_status');             
             $table->timestamps();
         });

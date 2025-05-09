@@ -16,14 +16,25 @@ class FilterPropertiesRequest extends FormRequest
     public function rules()
     {
         return [
-            "country" => "string",
-            "city" => "string",
+            "country_id" => "integer",
+            "city_id" => "integer",
+            "min_area" => "numeric",
+            "max_area" => "numeric",
+            "bathrooms" => "integer",
+            "balconies" => "integer",
+            "amenity_ids" => "array",
+            "is_furnished" => "boolean",
+            "min_price" => "numeric",
+            "max_price" => "numeric",
+            "lease_period" => 'string',
+            "min_first_pay" => "numeric",
+            "max_first_pay" => "numeric",
+            "delivery_date" => "date",
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // Throw an HTTP response with status 422 and the validation errors
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
             'errors' => $validator->errors(),

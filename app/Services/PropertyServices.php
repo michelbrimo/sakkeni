@@ -6,7 +6,9 @@ use App\Repositories\ImageRepository;
 use App\Repositories\LocationRepository;
 use Exception;
 use App\Repositories\PropertyRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Event\Code\Test;
 
 class PropertyServices extends ImageServices
 {
@@ -18,11 +20,6 @@ class PropertyServices extends ImageServices
         $this->property_repository = new PropertyRepository();
         $this->location_repository = new LocationRepository();
         $this->image_repository = new ImageRepository();
-    }
-
-    public function viewProperties($data){
-        $properties = $this->property_repository->getProperties($data);
-        return $properties;
     }
 
     public function addProperty($data){
@@ -42,6 +39,7 @@ class PropertyServices extends ImageServices
             'balconies' => $data['balconies'],
             'ownership_type' => $data['ownership_type'],
             'property_physical_status' => $data['property_physical_status'],
+            'property_type' => $data['property'],
         ]);
  
         $this->_saveImages($property->id, $data['images']);
@@ -65,7 +63,7 @@ class PropertyServices extends ImageServices
             $this->_saveCommercialProperty([
                 "property_id" => $property->id,
                 "building_number" => $data["building_number"],
-                "appartment_number" => $data["appartment_number"],
+                "apartment_number" => $data["apartment_number"],
                 "floor" => $data["floor"],
                 "property_type" => $data["property_type"],
             ]);
@@ -75,16 +73,33 @@ class PropertyServices extends ImageServices
         }
     }
 
-    function _saveImages($propertyId, $images) {
+
+
+    public function viewProperties($data){
+        if($data['_buy_type'] == 'purchase')
+            return $this->property_repository->getPurchaseProperties($data);
+        else if($data['_buy_type'] == 'rent')
+            return $this->property_repository->getRentProperties($data);
+        else if($data['_buy_type'] == 'off-plan')
+            return $this->property_repository->getOffPlanProperties($data);
+    
+        throw new \Exception('Unkown Property Type', 422);
+    }
+
+
+
+    # -------------------------------------------------------------
+
+    protected function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
         $this->image_repository->addImages($propertyId, $imagesPaths);
     }
     
-    function _saveOffPlanProperty($data) {
+    protected function _saveOffPlanProperty($data) {
         $this->property_repository->createOffPlanProperty($data);
     }
 
-    function _saveReadyToMoveIn($data, $property) {
+    protected function _saveReadyToMoveIn($data, $property) {
         $readyToMoveInProperty = $this->property_repository->createReadyToMoveInProperty([
             "property_id" => $property->id,
             "is_furnished" => $data["is_furnished"],
@@ -99,7 +114,8 @@ class PropertyServices extends ImageServices
                 'payment_plan' => $data['payment_plan'],
             ]);
         }
-        elseif ($data['sell_type'] === 'Purchase') {
+        
+        else if ($data['sell_type'] === 'Purchase') {
             $this->property_repository->createPurchase([
                 'price' => $data['price'],
                 'ready_property_id' => $readyToMoveInProperty->id,
@@ -107,11 +123,11 @@ class PropertyServices extends ImageServices
         }
     }
 
-    function _saveCommercialProperty($data) {
+    protected function _saveCommercialProperty($data) {
         $this->property_repository->createCommercialProperty($data);
     }
     
-    function _saveResidentialProperty($data, $property) {
+    protected function _saveResidentialProperty($data, $property) {
         $residentialProperty = $this->property_repository->createResidentialProperty([
             "property_id" => $property->id,
             "bedrooms" => $data["bedrooms"],
@@ -124,17 +140,17 @@ class PropertyServices extends ImageServices
                 "floors" => $data['floors']
             ]);
         }
-        elseif ($data['property_type'] == "Appartment") {
-            $this->property_repository->createAppartment([
+        else if ($data['property_type'] == "Apartment") {
+            $this->property_repository->createApartment([
                 "residential_property_id" => $residentialProperty->id,
                 "floor" => $data['floor'],
                 "building_number" => $data['building_number'],
-                "appartment_number" => $data['appartment_number'],
+                "apartment_number" => $data['apartment_number'],
             ]);
         }
     }
     
-    function _saveLocation($data) {
+    protected function _saveLocation($data) {
         $data['country_id'] = $this->location_repository->getCountry_byName($data['country_name'])->id;
         $data['city_id'] = $this->location_repository->getCity_byName($data['city_name'])->id;
         
@@ -144,9 +160,13 @@ class PropertyServices extends ImageServices
         return $this->location_repository->create($data); 
     }
 
-    function _saveProperty($data) {
+    protected function _saveProperty($data) {
         $data['availability_status'] = 'Pending';
 
         return $this->property_repository->create($data); 
     }
 }
+
+
+
+

@@ -3,26 +3,20 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AddingPropertyDataRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
+    
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
-            "owner_id" => "integer|required",
             "country_name" => "string|required",
             "city_name" => "string|required",
             "altitude" => "numeric",
@@ -33,7 +27,8 @@ class AddingPropertyDataRequest extends FormRequest
             "bathrooms" => "integer",
             "balconies" => "integer",
             "ownership_type" => "string",
-            "property_physical_status" => "string",
+            "property_physical_status" => "string|required",
+            "property_type" => "string|required",
             "images" => "array",
             "amenities" => "array",
             "delivery_date" => "date",
@@ -45,15 +40,20 @@ class AddingPropertyDataRequest extends FormRequest
             "lease_period" => "string",
             "payment_plan" => "string",
             "price" => "numeric",
-            "property_type" => "string",
-            "appartment_number" => "integer",
-            "building_number" => "integer",
-            "property_type" => "string",
+            "property" => "string",
             "bedrooms" => "integer",
             "floors" => "integer",
             "floor" => "integer",
             "building_number" => "integer",
-            "appartment_number" => "integer",
+            "apartment_number" => "integer",
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
