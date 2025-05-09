@@ -18,7 +18,10 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->integer("bedrooms");
-            $table->string("property_type");
+            $table->foreignId('residential_property_type_id')
+            ->constrained('residential_property_types') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate(); 
             $table->timestamps();
         });
     }

@@ -20,7 +20,10 @@ return new class extends Migration
             $table->integer('floor');
             $table->integer('building_number');
             $table->integer('apartment_number');
-            $table->string('property_type');
+            $table->foreignId('commercial_property_type_id')
+            ->constrained('commercial_property_types') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate(); 
             $table->timestamps();
         });
     }

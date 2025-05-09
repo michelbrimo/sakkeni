@@ -55,7 +55,7 @@ class PropertyServices extends ImageServices
                 'overall_payment' => $data['overall_payment'],
             ]);
         }
-        elseif ($data['property_physical_status'] == 'Ready To Move In') {
+        else if ($data['property_physical_status'] == 'Ready To Move In') {
             $this->_saveReadyToMoveIn($data, $property);
         }
 
@@ -65,10 +65,10 @@ class PropertyServices extends ImageServices
                 "building_number" => $data["building_number"],
                 "apartment_number" => $data["apartment_number"],
                 "floor" => $data["floor"],
-                "property_type" => $data["property_type"],
+                "commercial_property_type_id" => $data["commercial_property_type_id"],
             ]);
         }
-        elseif ($data['property'] == "Residential"){
+        else if ($data['property'] == "Residential"){
             $this->_saveResidentialProperty($data, $property) ;
         }
     }
