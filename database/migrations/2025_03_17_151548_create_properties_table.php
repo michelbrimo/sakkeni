@@ -30,7 +30,14 @@ return new class extends Migration
             $table->integer('bathrooms');
             $table->integer('balconies');
             $table->string('ownership_type');
-            $table->string('property_physical_status');
+            $table->foreignId('physical_status_type_id')
+            ->constrained('physical_status_types')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->foreignId('property_type_id')
+            ->constrained('property_types')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->string('availability_status');             
             $table->timestamps();
         });

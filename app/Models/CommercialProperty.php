@@ -13,7 +13,7 @@ class CommercialProperty extends Model
         'property_id',
         'floor',
         'building_number',
-        'appartment_number',
-        'property_type'
+        'apartment_number',
+        'commercial_property_type_id'
     ];
 }

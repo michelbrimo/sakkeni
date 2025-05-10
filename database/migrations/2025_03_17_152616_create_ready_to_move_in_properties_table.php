@@ -18,7 +18,10 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->boolean('is_furnished');
-            $table->string('sell_type');
+            $table->foreignId('sell_type_id')
+            ->constrained('sell_types')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

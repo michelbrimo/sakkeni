@@ -19,8 +19,11 @@ return new class extends Migration
             ->cascadeOnUpdate(); 
             $table->integer('floor');
             $table->integer('building_number');
-            $table->integer('appartment_number');
-            $table->string('property_type');
+            $table->integer('apartment_number');
+            $table->foreignId('commercial_property_type_id')
+            ->constrained('commercial_property_types') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate(); 
             $table->timestamps();
         });
     }

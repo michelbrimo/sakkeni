@@ -6,8 +6,14 @@ namespace Database\Seeders;
 
 use App\Models\Amenity;
 use App\Models\City;
+use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
+use App\Models\PhysicalStatusType;
+use App\Models\PropertyType;
+use App\Models\ResidentialProperty;
+use App\Models\ResidentialPropertyType;
+use App\Models\SellType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -20,27 +26,37 @@ class DatabaseSeeder extends Seeder
     {
         $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
         foreach ($directions as $direction) {
-            Direction::create([
-                'name' => $direction
-            ]);
+            Direction::create(['name' => $direction]);
         }
 
-        Country::create([
-            'name' => 'Syria'
-        ]);
+        $propertyTypes = ['Residential', 'Commercial'];
+        foreach ($propertyTypes as $propertyType) {
+            PropertyType::create(['name' => $propertyType]);
+        }
+
+        $residentialPropertyTypes = ['apartment', 'villa'];
+        foreach ($residentialPropertyTypes as $residentialPropertyType) {
+            ResidentialPropertyType::create(['name' => $residentialPropertyType]);
+        }
+
+        $commercialPropertyTypes = ['office'];
+        foreach ($commercialPropertyTypes as $commercialPropertyType) {
+            CommercialPropertyType::create(['name' => $commercialPropertyType]);
+        }
         
-        City::create([
-            'name' => 'Damascus',
-            'country_id' => 1
-        ]);
-        
+        $sellTypes = ['purchase', 'rent'];
+        foreach ($sellTypes as $sellType) {
+            SellType::create(['name' => $sellType]);
+        }
+       
+        $propertyPhysicalStatusTypes = ['ready-to-move-in', 'off-plan'];
+        foreach ($propertyPhysicalStatusTypes as $propertyPhysicalStatusType) {
+            PhysicalStatusType::create(['name' => $propertyPhysicalStatusType]);
+        }
+
         User::factory(10)->create();
         Country::factory(10)->create();
         City::factory(10)->create();
         Amenity::factory(10)->create();
-        
-
-
-       
     }
 }

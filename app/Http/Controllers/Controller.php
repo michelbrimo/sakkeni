@@ -22,6 +22,7 @@ class Controller extends BaseController
             return null;
         }
     }
+    
     public function executeService($serviceTransformer, $request, $additionalData = [], $successMessage = '')
     {
         $currentRoute = Route::current();

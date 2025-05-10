@@ -21,8 +21,8 @@ return new class extends Migration
             ->constrained('cities')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("altitude")->nullable();
-            $table->string("longitude")->nullable();  
+            $table->float("latitude")->nullable();
+            $table->float("longitude")->nullable();  
             $table->string("additional_info")->nullable();
             $table->timestamps();
         });

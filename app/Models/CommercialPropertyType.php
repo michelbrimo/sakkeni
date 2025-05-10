@@ -5,12 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReadyToMoveInProperty extends Model
+class CommercialPropertyType extends Model
 {
-    protected $fillable = [
-        "property_id",
-        "sell_type_id",
-        "is_furnished",
-    ];
     use HasFactory;
 }
