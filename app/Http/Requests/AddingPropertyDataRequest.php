@@ -19,7 +19,7 @@ class AddingPropertyDataRequest extends FormRequest
         return [
             "country_name" => "string|required",
             "city_name" => "string|required",
-            "altitude" => "numeric",
+            "latitude" => "numeric",
             "longitude" => "numeric",
             "additional_info" => "string",
             "area" => "numeric",

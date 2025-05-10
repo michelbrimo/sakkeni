@@ -26,7 +26,7 @@ class PropertyServices extends ImageServices
         $locationId = $this->_saveLocation([
             'country_name' => $data['country_name'],
             'city_name' => $data['city_name'],
-            'altitude' => $data['altitude'] ?? null,
+            'latitude' => $data['latitude'] ?? null,
             'longitude' => $data['longitude'] ?? null,
             'additional_info' => $data['additional_info'] ?? null,
         ])->id;
