@@ -29,30 +29,27 @@ class DatabaseSeeder extends Seeder
             Direction::create(['name' => $direction]);
         }
 
-        Country::create(['name' => 'Syria']);
-        City::create(['name' => 'Damascus', 'country_id' => 1]);
-
         $propertyTypes = ['Residential', 'Commercial'];
         foreach ($propertyTypes as $propertyType) {
             PropertyType::create(['name' => $propertyType]);
         }
 
-        $residentialPropertyTypes = ['Appartment', 'Villa'];
+        $residentialPropertyTypes = ['apartment', 'villa'];
         foreach ($residentialPropertyTypes as $residentialPropertyType) {
             ResidentialPropertyType::create(['name' => $residentialPropertyType]);
         }
 
-        $commercialPropertyTypes = ['Office'];
+        $commercialPropertyTypes = ['office'];
         foreach ($commercialPropertyTypes as $commercialPropertyType) {
             CommercialPropertyType::create(['name' => $commercialPropertyType]);
         }
         
-        $sellTypes = ['Purchase', 'Rent'];
+        $sellTypes = ['purchase', 'rent'];
         foreach ($sellTypes as $sellType) {
             SellType::create(['name' => $sellType]);
         }
        
-        $propertyPhysicalStatusTypes = ['Ready To Move In', 'Off Plan'];
+        $propertyPhysicalStatusTypes = ['ready-to-move-in', 'off-plan'];
         foreach ($propertyPhysicalStatusTypes as $propertyPhysicalStatusType) {
             PhysicalStatusType::create(['name' => $propertyPhysicalStatusType]);
         }

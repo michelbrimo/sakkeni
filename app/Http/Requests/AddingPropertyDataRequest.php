@@ -17,8 +17,8 @@ class AddingPropertyDataRequest extends FormRequest
     public function rules()
     {
         return [
-            "country_name" => "string|required",
-            "city_name" => "string|required",
+            "country_id" => "integer|required",
+            "city_id" => "integer|required",
             "latitude" => "numeric",
             "longitude" => "numeric",
             "additional_info" => "string",
@@ -40,7 +40,6 @@ class AddingPropertyDataRequest extends FormRequest
             "lease_period" => "string",
             "payment_plan" => "string",
             "price" => "numeric",
-            "property" => "string",
             "bedrooms" => "integer",
             "floors" => "integer",
             "floor" => "integer",

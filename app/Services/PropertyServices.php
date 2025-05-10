@@ -24,8 +24,8 @@ class PropertyServices extends ImageServices
 
     public function addProperty($data){
         $locationId = $this->_saveLocation([
-            'country_name' => $data['country_name'],
-            'city_name' => $data['city_name'],
+            'country_id' => $data['country_id'],
+            'city_id' => $data['city_id'],
             'latitude' => $data['latitude'] ?? null,
             'longitude' => $data['longitude'] ?? null,
             'additional_info' => $data['additional_info'] ?? null,
@@ -75,11 +75,9 @@ class PropertyServices extends ImageServices
     }
 
     public function viewProperties($data){
-        if($data['_buy_type'] == 'purchase')
-            return $this->property_repository->getPurchaseProperties($data);
-        else if($data['_buy_type'] == 'rent')
-            return $this->property_repository->getRentProperties($data);
-        else if($data['_buy_type'] == 'off-plan')
+        if($data['_physical_status_type_id'] == 1)
+            return $this->property_repository->getReadyProperties($data);
+        else if($data['_physical_status_type_id'] == 2)
             return $this->property_repository->getOffPlanProperties($data);
     
         throw new \Exception('Unkown Property Type', 422);
@@ -146,12 +144,6 @@ class PropertyServices extends ImageServices
     }
     
     protected function _saveLocation($data) {
-        $data['country_id'] = $this->location_repository->getCountry_byName($data['country_name'])->id;
-        $data['city_id'] = $this->location_repository->getCity_byName($data['city_name'])->id;
-        
-        unset($data['country_name']);
-        unset($data['city_name']);
-
         return $this->location_repository->create($data); 
     }
 

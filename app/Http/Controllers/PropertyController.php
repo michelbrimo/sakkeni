@@ -23,12 +23,13 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property Added successfully');
     }
 
-    function viewProperties(FilterPropertiesRequest $request, $buy_type, $property_type)
+    function viewProperties(FilterPropertiesRequest $request, $physical_status_type, $property_type, $buy_type=1)
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_buy_type' => $buy_type,
-          '_property_type' => $property_type
+          '_physical_status_type_id' => $physical_status_type,
+          '_property_type_id' => $property_type,
+          '_sell_type_id' => $buy_type
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
