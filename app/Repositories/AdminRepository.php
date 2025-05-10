@@ -1,20 +1,21 @@
 <?php
 
 namespace App\Repositories;
+
+use App\Models\Admin;
 use App\Models\User;
 
 class AdminRepository{
     public function create($data) {
-        return User::create($data);
+        return Admin::create($data);
     }  
 
     public function viewAdmins(){
-        return User::where('is_admin', 1)->get();
+        return Admin::get(); 
     }
 
     public function getAdminDetails_byId($id) {
-        $admin = User::where('id', $id)
-                ->where('is_admin', 1)
+        $admin = Admin::where('id', $id)
                 ->first();
 
         if (!$admin) {
@@ -26,8 +27,7 @@ class AdminRepository{
 
     public function removeAdmin_byId($id)
     {
-        $admin = User::where('id', $id)
-                ->where('is_admin', 1)
+        $admin = Admin::where('id', $id)
                 ->first();
 
         if (!$admin) {
@@ -39,8 +39,12 @@ class AdminRepository{
     }
 
     public function searchAdmin_byName($data){
-        return User::where('is_admin', 1)
-        ->where('username', 'LIKE', '%' . $data['name'] . '%')
+        return Admin::where('username', 'LIKE', '%' . $data['name'] . '%')
         ->get();
+    }
+
+    public function getAdminDetails_byEmail($email) {
+        return Admin::where('email', '=', $email)
+                   ->first();
     }
 }

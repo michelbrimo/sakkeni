@@ -24,8 +24,6 @@ class User extends Authenticatable
         "profile_picture_path",
         "address",
         "phone_number",
-        "is_admin",
-        "is_super_admin",
     ];
 
     /**

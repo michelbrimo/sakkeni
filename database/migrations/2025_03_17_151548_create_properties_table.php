@@ -23,7 +23,7 @@ return new class extends Migration
             ->cascadeOnUpdate();
             $table->foreignId('admin_id')
             ->nullable()
-            ->constrained('users')
+            ->constrained('admins')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->float('area');

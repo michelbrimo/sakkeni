@@ -13,11 +13,21 @@ class AdminController extends Controller
         $this->service_transformer = new ServiceTransformer();
     }
 
-    function RegisterAdmin(Request $request) {
+    function adminRegister(Request $request) {
         return $this->executeService($this->service_transformer, $request, [], 'Admin registered successfully');
     }
 
+    function adminLogin(Request $request) {
+        return $this->executeService($this->service_transformer, $request, [], 'admin logged in successfully');
+    }
+
+    public function adminLogout(){
+        $additionalData = ['id' => auth()->guard('admin')->user()->id];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, "admin logged out successfully");
+    }
+
     function viewAdmins(Request $request) {
+        // $additionalData = ['page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, $request, [], 'The list of Admins');
     }
 

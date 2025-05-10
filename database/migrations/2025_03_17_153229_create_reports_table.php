@@ -18,7 +18,7 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->foreignId('reported_on_id')
-            ->constrained('users') 
+            ->constrained('admins') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->string("report");

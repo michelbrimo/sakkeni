@@ -116,6 +116,4 @@ class UserServices
             $token->delete();
           });
         }
-
-
 }
