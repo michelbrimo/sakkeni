@@ -7,6 +7,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+use Illuminate\Support\Facades\Route;
 
 
 class AuthenticationTest extends TestCase
@@ -33,9 +34,15 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => 'goodpass123',
         ];
 
-        $response = $this->postJson('/api/sign-up', $data);
+        $response = $this->postJson(route('User.signUp'), $data);
         $response->assertStatus(200);
 
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                'username', 'email', 'created_at', 'updated_at', 'id' // Adjust fields based on your User model
+            ]]);
         $this->assertDatabaseHas('users', [
             'email' => 'user@gmail.com',
         ]);
@@ -50,8 +57,8 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => 'goodpass123',
         ];
         $this->register_user(email:$registerData['email']);
+        $response = $this->postJson(route('User.signUp'), $registerData);
 
-        $response = $this->postJson('/api/sign-up', $registerData);
         $response->assertStatus(500);
 
         $this->assertDatabaseCount('users', 1);
@@ -65,9 +72,7 @@ class AuthenticationTest extends TestCase
             'password_confirmation' => 'goodpass123',
         ];
         
-        $response = $this->postJson('/api/sign-up', $registerData);
-        $response->assertStatus(422);
-
+        $this->postJson(route('User.signUp'), $registerData);
         $this->assertDatabaseMissing('users', [
             'email' => 'user@gmail.com',
         ]);

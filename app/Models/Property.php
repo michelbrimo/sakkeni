@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\PropertyType;
+use App\Enums\ResidentialPropertyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -141,7 +143,7 @@ class Property extends Model
 
     protected function scopeFilterPropertyType(Builder $query, $filters)
     {
-        if ($filters['_property_type_id'] == 1) {
+        if ($filters['_property_type_id'] == PropertyType::RESIDENTIAL) {
             $this->_applyResidentialFilter(
                 $query,
                 $filters['bedrooms'] ?? null,
@@ -150,7 +152,7 @@ class Property extends Model
                 $filters['residential_property_type_id'] ?? null
             );
         }
-        else if ($filters['_property_type_id'] == 2) {
+        else if ($filters['_property_type_id'] == PropertyType::COMMERCIAL) {
             $this->_applyCommercialFilter(
                 $query,
                 $filters['floor'] ?? null,
@@ -166,13 +168,13 @@ class Property extends Model
     {
         if ($bedrooms !== null) {$query->where("bedrooms", $bedrooms);}
         
-        if ($residentialPropertyTypeId == 1) {            
+        if ($residentialPropertyTypeId == ResidentialPropertyType::APARTMENT) {            
             if ($floor !== null) {
                 $query->where("floor", $floor);
             }
         }
         
-        else if ($residentialPropertyTypeId == 2) {            
+        else if ($residentialPropertyTypeId == ResidentialPropertyType::VILLA) {            
             if ($floors !== null) {
                 $query->where("floors", $floors);
             }

@@ -2,6 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Enums\PhysicalStatusType;
+use App\Enums\PropertyType;
+use App\Enums\ResidentialPropertyType;
+use App\Enums\SellType;
 use App\Models\Apartment;
 use App\Models\CommercialProperty;
 use App\Models\OffPlanProperty;
@@ -69,13 +73,14 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null
                 ])
     
-            ->paginate(10, [
+            ->simplePaginate(10, [
                 'properties.id',
                 'countries.name as country',
                 'cities.name as city',
                 'overall_payment',
                 'first_pay',
-                'locations.additional_info'
+                'locations.additional_info',
+                'image_path'
             ], 'page', $filters['page'] ?? 1);
     }
                 
@@ -89,10 +94,10 @@ class PropertyRepository{
         );
         $this->_basePropertyfiltering($query, $filters);
 
-        if($filters['_sell_type_id'] == 1){
+        if($filters['_sell_type_id'] == SellType::PURCHASE){
             return $this->_getPurchaseProperties($query, $filters);
         }
-        else if($filters['_sell_type_id'] == 2){
+        else if($filters['_sell_type_id'] == SellType::RENT){
             return $this->_getRentProperties($query, $filters);
         }
     }
@@ -105,12 +110,13 @@ class PropertyRepository{
                         'is_furnished' => $filters['is_furnished'] ?? null
                      ])
         
-                     ->paginate(10, [
+                     ->simplePaginate(10, [
                         'properties.id',
                         'price',
                         'countries.name as country',
                         'cities.name as city',
-                        'locations.additional_info'
+                        'locations.additional_info',
+                        'image_path'
                      ], 'page', $filters['page'] ?? 1);
     }
 
@@ -123,12 +129,13 @@ class PropertyRepository{
                         'lease_period' => $filters['lease_period'] ?? null
                      ])
         
-                     ->paginate(10, [
+                     ->simplePaginate(10, [
                         'properties.id',
                         'rents.price',
                         'countries.name as country',
                         'cities.name as city',
-                        'locations.additional_info'
+                        'locations.additional_info',
+                        'image_path'
                      ], 'page', $filters['page'] ?? 1);
     }
 
@@ -150,7 +157,8 @@ class PropertyRepository{
         $query = Property::query()
                 ->join('locations', 'properties.location_id', '=', 'locations.id')
                 ->join('countries', 'locations.country_id', '=', 'countries.id')
-                ->join('cities', 'locations.city_id', '=', 'cities.id');
+                ->join('cities', 'locations.city_id', '=', 'cities.id')
+                ->join('property_images', 'property_images.property_id', 'properties.id');
 
         $this->_joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId);
         $this->_joinPhysicalStatusTypeTables($query, $physicalStatusTypeId, $sellTypeId);
@@ -160,14 +168,14 @@ class PropertyRepository{
 
 
     protected function _joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId){
-        if($propertyTypeId == 1){
+        if($propertyTypeId == PropertyType::RESIDENTIAL){
             $query->where('properties.property_type_id', $propertyTypeId)
                   ->leftJoin('residential_properties', 'properties.id', 'residential_properties.property_id');
 
             $this->_joinResidentialPropertyTypeTables($query, $residentialPropertyTypeId);
         }
 
-        else if($propertyTypeId == 2){
+        else if($propertyTypeId == PropertyType::COMMERCIAL){
             $query->where('properties.property_type_id', $propertyTypeId)
                   ->leftJoin('commercial_properties', 'properties.id', 'commercial_properties.property_id');
         }
@@ -176,12 +184,12 @@ class PropertyRepository{
     }
 
     protected function _joinResidentialPropertyTypeTables($query, $residentialPropertyTypeId = null){
-        if ($residentialPropertyTypeId == 1) {
+        if ($residentialPropertyTypeId == ResidentialPropertyType::APARTMENT) {
             $query->where('residential_properties.residential_property_type_id', $residentialPropertyTypeId)
                   ->leftJoin('apartments', 'residential_properties.id', 'apartments.residential_property_id');
         }
         
-        else if ($residentialPropertyTypeId == 2) {
+        else if ($residentialPropertyTypeId == ResidentialPropertyType::VILLA) {
             $query->where('residential_properties.residential_property_type_id', $residentialPropertyTypeId)
                   ->leftJoin('villas', 'residential_properties.id', 'villas.residential_property_id');
         }
@@ -191,7 +199,7 @@ class PropertyRepository{
 
     
     protected function _joinPhysicalStatusTypeTables($query, $physicalStatusTypeId, $sellTypeId){
-        if ($physicalStatusTypeId == 1) {
+        if ($physicalStatusTypeId == PhysicalStatusType::READY_TO_MOVE_IN) {
             $query->where('properties.physical_status_type_id', $physicalStatusTypeId)
                   ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id');
             
@@ -199,7 +207,7 @@ class PropertyRepository{
             $this->_joinSellTypeTables($query, $sellTypeId);
         }
         
-        else if ($physicalStatusTypeId == 2) {
+        else if ($physicalStatusTypeId == PhysicalStatusType::READY_TO_MOVE_IN) {
             $query->where('properties.physical_status_type_id', $physicalStatusTypeId)
                   ->leftJoin('off_plan_properties', 'properties.id', 'off_plan_properties.property_id');       
         }
@@ -208,12 +216,12 @@ class PropertyRepository{
     }
 
     protected function _joinSellTypeTables($query, $sellTypeId){
-        if ($sellTypeId == 1) {
+        if ($sellTypeId == SellType::PURCHASE) {
             $query->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
                   ->leftJoin('purchases', 'ready_to_move_in_properties.id', 'purchases.ready_property_id');
         }
         
-        else if ($sellTypeId == 2) {
+        else if ($sellTypeId == SellType::RENT) {
             $query->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
                   ->leftJoin('rents', 'ready_to_move_in_properties.id', 'rents.ready_property_id');
         }

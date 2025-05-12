@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Enums\PhysicalStatusType;
+use App\Enums\PropertyType;
+use App\Enums\ResidentialPropertyType;
+use App\Enums\SellType;
 use App\Repositories\ImageRepository;
 use App\Repositories\LocationRepository;
 use Exception;
 use App\Repositories\PropertyRepository;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Validator;
-use PHPUnit\Event\Code\Test;
 
 class PropertyServices extends ImageServices
 {
@@ -47,10 +48,10 @@ class PropertyServices extends ImageServices
         $property->amenities()->attach($data['amenities']);
 
         
-        if ($data['physical_status_type_id'] == 1) {
+        if ($data['physical_status_type_id'] == PhysicalStatusType::READY_TO_MOVE_IN) {
             $this->_saveReadyToMoveIn($data, $property);
         }
-        else if($data['physical_status_type_id'] == 2){
+        else if($data['physical_status_type_id'] == PhysicalStatusType::OFF_PLAN){
             $this->property_repository->createOffPlanProperty([
                 'property_id' => $property->id,
                 'delivery_date' => $data['delivery_date'],
@@ -60,10 +61,10 @@ class PropertyServices extends ImageServices
             ]);
         }
 
-        if ($data['property_type_id'] == 1){
+        if ($data['property_type_id'] == PropertyType::RESIDENTIAL){
             $this->_saveResidentialProperty($data, $property) ;
         }
-        else if ($data['property_type_id'] == 2){
+        else if ($data['property_type_id'] == PropertyType::COMMERCIAL){
             $this->_saveCommercialProperty([
                 "property_id" => $property->id,
                 "building_number" => $data["building_number"],
@@ -75,9 +76,9 @@ class PropertyServices extends ImageServices
     }
 
     public function viewProperties($data){
-        if($data['_physical_status_type_id'] == 1)
+        if($data['_physical_status_type_id'] == PhysicalStatusType::READY_TO_MOVE_IN)
             return $this->property_repository->getReadyProperties($data);
-        else if($data['_physical_status_type_id'] == 2)
+        else if($data['_physical_status_type_id'] == PhysicalStatusType::OFF_PLAN)
             return $this->property_repository->getOffPlanProperties($data);
     
         throw new \Exception('Unkown Property Type', 422);
@@ -100,13 +101,13 @@ class PropertyServices extends ImageServices
             "sell_type_id" => $data["sell_type_id"],
         ]);
 
-        if ($data['sell_type_id'] == 1) {
+        if ($data['sell_type_id'] == SellType::PURCHASE) {
             $this->property_repository->createPurchase([
                 'price' => $data['price'],
                 'ready_property_id' => $readyToMoveInProperty->id,
             ]);
         }
-        else if($data['sell_type_id'] == 2){
+        else if($data['sell_type_id'] == SellType::RENT){
             $this->property_repository->createRent([
                 'ready_property_id' => $readyToMoveInProperty->id,
                 'price' => $data['price'],
@@ -127,7 +128,7 @@ class PropertyServices extends ImageServices
             "residential_property_type_id" => $data["residential_property_type_id"],
         ]);
 
-        if ($data['residential_property_type_id'] == 1) {
+        if ($data['residential_property_type_id'] == ResidentialPropertyType::APARTMENT) {
             $this->property_repository->createApartment([
                 "residential_property_id" => $residentialProperty->id,
                 "floor" => $data['floor'],
@@ -135,7 +136,7 @@ class PropertyServices extends ImageServices
                 "apartment_number" => $data['apartment_number'],
             ]);
         }
-        else if($data['residential_property_type_id'] == 2){
+        else if($data['residential_property_type_id'] == ResidentialPropertyType::VILLA){
             $this->property_repository->createVilla([
                 "residential_property_id" => $residentialProperty->id,
                 "floors" => $data['floors']
