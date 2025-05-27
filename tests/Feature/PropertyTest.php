@@ -42,7 +42,7 @@ class PropertyTest extends TestCase
         $this->amenity = Amenity::factory()->create();
     }
 
-    public function test_owner_can_add_ready_residential_property_for_purchase_successfully()
+    public function test_add_ready_residential_property_for_purchase_successfully()
     {
         $propertyData = [
             'country_id' => $this->country->id,
@@ -107,7 +107,7 @@ class PropertyTest extends TestCase
         ]);
     }
 
-    public function test_owner_can_add_ready_residential_property_for_rent_successfully()
+    public function test_add_ready_residential_property_for_rent_successfully()
     {
         $propertyData = [
             'country_id' => $this->country->id,
@@ -170,7 +170,7 @@ class PropertyTest extends TestCase
         ]);
     }
 
-    public function test_owner_can_add_offPlan_commercial_property_successfully()
+    public function test_add_offPlan_commercial_property_successfully()
     {
         $propertyData = [
             'country_id' => $this->country->id,
@@ -225,5 +225,52 @@ class PropertyTest extends TestCase
         $this->assertDatabaseHas('commercial_properties', [
             'floor' => $propertyData['floor'],
         ]);
+    }
+
+    public function test_missing_attributes_on_adding_properties()
+    {
+        $propertyData = [
+            'country_id' => $this->country->id,
+            'city_id' => $this->city->id,
+            'latitude' => 12,
+            'longitude' => 13,
+            'additional_info' => 'Additional information',
+
+            // 'area' => 75,
+            // 'bathrooms' => 1,
+            'balconies' => 1,
+            'ownership_type' => 'Freehold',
+
+            'images' => [
+                UploadedFile::fake()->image('property1.jpg'),
+                UploadedFile::fake()->image('property2.png'),
+            ],
+            'exposure' => [Exposure::NORTH],
+            'amenities' => [$this->amenity->id],
+            
+            'physical_status_type_id' => PhysicalStatusType::OFF_PLAN,
+            'delivery_date' => '2025-05-25',
+            'first_pay' => 100,
+            'pay_plan' => json_encode([
+                "month 1" => 500,
+                "month 2" => 300,
+                "month 3" => 100
+            ]),
+            'overall_payment' => 1000,
+            
+            'property_type_id' => PropertyType::COMMERCIAL,
+            'commercial_property_type_id' => CommercialPropertyType::OFFICE,
+            'building_number' => 25,
+            'apartment_number' => 3,
+            'floor' => 3,
+        ];
+
+        $response = $this->postJson(route('Property.addProperty'), $propertyData);
+
+        $response->assertStatus(422);
+
+        $this->assertDatabaseEmpty('properties');
+        $this->assertDatabaseEmpty('off_plan_properties');
+        $this->assertDatabaseEmpty('commercial_properties');
     }
 }

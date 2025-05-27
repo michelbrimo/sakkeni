@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
             CommercialPropertyType::create(['name' => $commercialPropertyType]);
         }
         
-        $sellTypes = ['purchase', 'rent'];
+        $sellTypes = ['purchase', 'rent', 'off-plan'];
         foreach ($sellTypes as $sellType) {
             SellType::create(['name' => $sellType]);
         }

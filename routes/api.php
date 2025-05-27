@@ -41,7 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');//done
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');//done
 
-    Route::post('/view-properties/{physical_status_type}/{property_type_id}/{sell_type_id?}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+    Route::get('/view-properties/{sell_type_id}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+    Route::post('/view-properties/{sell_type_id}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
 
     
     Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');

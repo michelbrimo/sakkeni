@@ -27,15 +27,15 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::bind('physical_status_type', function ($value) {
-            request()->route()->setParameter('physical_status_type', $value);
-            return PhysicalStatusType::where('name', $value)->firstOrFail()->id;
-        });
+        // Route::bind('physical_status_type', function ($value) {
+        //     request()->route()->setParameter('physical_status_type', $value);
+        //     return PhysicalStatusType::where('name', $value)->firstOrFail()->id;
+        // });
 
-        Route::bind('property_type_id', function ($value) {
-            request()->route()->setParameter('property_type_id', $value);
-            return PropertyType::where('name', $value)->firstOrFail()->id;
-        });
+        // Route::bind('property_type_id', function ($value) {
+        //     request()->route()->setParameter('property_type_id', $value);
+        //     return PropertyType::where('name', $value)->firstOrFail()->id;
+        // });
 
         Route::bind('sell_type_id', function ($value) {
             request()->route()->setParameter('sell_type_id', $value);

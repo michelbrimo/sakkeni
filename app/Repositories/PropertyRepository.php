@@ -15,7 +15,6 @@ use App\Models\ReadyToMoveInProperty;
 use App\Models\Rent;
 use App\Models\ResidentialProperty;
 use App\Models\Villa;
-use Illuminate\Support\Facades\DB;
 
 class PropertyRepository{
     public function create($data) {
@@ -54,70 +53,143 @@ class PropertyRepository{
         return Apartment::create($data);
     }
 
-    public function getOffPlanProperties($filters)
+    public function getBasePropertyDetails($propertyId){
+        return Property::where('id', $propertyId)->first();
+    }
+    
+    public function getPurchaseProperties($data)
+    {
+        $query = Property::query();
+
+        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
+              ->join('countries', 'locations.country_id', '=', 'countries.id')
+              ->join('cities', 'locations.city_id', '=', 'cities.id')
+              ->join('ready_to_move_in_properties', 'properties.id', '=', 'ready_to_move_in_properties.property_id')
+              ->join('purchases', 'ready_to_move_in_properties.id', '=', 'purchases.ready_property_id')
+
+              ->with('images')
+              ->simplePaginate(10, [
+                'properties.id',
+                'price',
+                'countries.name as country',
+                'cities.name as city',
+                'locations.additional_info',
+              ], 'page', $data['page'] ?? 1);
+    }
+
+    public function filterPurchaseProperties($filters)
     {
         $query = $this->_joinNeededTables(
-            $filters['_property_type_id'],
-            $filters['residential_property_type_id'] ?? null,
-            $filters['_sell_type_id'],
-            $filters['_physical_status_type_id'],
+            $filters,
+            SellType::PURCHASE,
         );
         $this->_basePropertyfiltering($query, $filters);
 
-        
+        return $query->purchaseFilters([
+            'min_price' => $filters['min_price'] ?? null,
+            'max_price' => $filters['max_price'] ?? null,
+            'is_furnished' => $filters['is_furnished'] ?? null
+            ])
+
+            ->simplePaginate(10, [
+            'properties.id',
+            'price',
+            'countries.name as country',
+            'cities.name as city',
+            'locations.additional_info',
+            ], 'page', $filters['page'] ?? 1);
+    }
+    
+
+    public function getRentProperties()
+    {
+        $query = Property::query();
+                
+        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
+              ->join('countries', 'locations.country_id', '=', 'countries.id')
+              ->join('cities', 'locations.city_id', '=', 'cities.id')
+              ->join('ready_to_move_in_properties', 'properties.id', '=', 'ready_to_move_in_properties.property_id')
+              ->join('rents', 'ready_to_move_in_properties.id', '=', 'rents.ready_property_id')
+
+              ->with('images')
+              ->simplePaginate(10, [
+                'properties.id',
+                'price',
+                'lease_period',
+                'countries.name as country',
+                'cities.name as city',
+                'locations.additional_info',
+              ], 'page', $filters['page'] ?? 1);
+    }
+
+    public function filterRentProperties($filters)
+    {
+        $query = $this->_joinNeededTables(
+            $filters,
+            SellType::RENT,
+        );
+        $this->_basePropertyfiltering($query, $filters);
+
+        return $query->rentFilters([
+            'min_price' => $filters['min_price'] ?? null,
+            'max_price' => $filters['max_price'] ?? null,
+            'is_furnished' => $filters['is_furnished'] ?? null,
+            'lease_period' => $filters['lease_period'] ?? null
+            ])
+
+            ->simplePaginate(10, [
+            'properties.id',
+            'price',
+            'lease_period',
+            'countries.name as country',
+            'cities.name as city',
+            'locations.additional_info',
+            ], 'page', $filters['page'] ?? 1);
+    }
+
+    public function getOffPlanProperties()
+    {
+        $query = Property::query();
+                
+        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
+              ->join('countries', 'locations.country_id', '=', 'countries.id')
+              ->join('cities', 'locations.city_id', '=', 'cities.id')
+              ->join('off_plan_properties', 'properties.id', '=', 'off_plan_properties.property_id')
+
+              ->with('images')
+              ->simplePaginate(10, [
+                'properties.id',
+                'overall_payment as price',
+                'countries.name as country',
+                'cities.name as city',
+                'locations.additional_info',
+              ], 'page', $data['page'] ?? 1);
+    }
+
+    public function filterOffPlanProperties($filters)
+    {
+        $query = $this->_joinNeededTables(
+            $filters,
+            SellType::OFF_PLAN,
+        );
+        $this->_basePropertyfiltering($query, $filters);
+
         return $query->offPlanFilters([
                 'min_price' => $filters['min_price'] ?? null,
                 'max_price' => $filters['max_price'] ?? null,
                 'min_first_pay' => $filters['min_first_pay'] ?? null,
                 'max_first_pay' => $filters['max_first_pay'] ?? null,
-                'delivery_date' => $filters['delivery_date'] ?? null
+                'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
     
             ->simplePaginate(10, [
                 'properties.id',
+                'overall_payment as price',
                 'countries.name as country',
                 'cities.name as city',
-                'overall_payment',
                 'first_pay',
                 'locations.additional_info',
-                'image_path'
             ], 'page', $filters['page'] ?? 1);
-    }
-                
-    public function getReadyProperties($filters)
-    {
-        $query = $this->_joinNeededTables(
-            $filters['_property_type_id'],
-            $filters['residential_property_type_id'] ?? null,
-            $filters['_sell_type_id'],
-            $filters['_physical_status_type_id'],
-        );
-        $this->_basePropertyfiltering($query, $filters);
-
-        if($filters['_sell_type_id'] == SellType::PURCHASE){
-            return $this->_getPurchaseProperties($query, $filters);
-        }
-        else if($filters['_sell_type_id'] == SellType::RENT){
-            return $this->_getRentProperties($query, $filters);
-        }
-    }
-    
-    protected function _getPurchaseProperties($query, $filters)
-    {
-        return $query->purchaseFilters([
-                        'min_price' => $filters['min_price'] ?? null,
-                        'max_price' => $filters['max_price'] ?? null,
-                        'is_furnished' => $filters['is_furnished'] ?? null
-                     ])
-        
-                     ->simplePaginate(10, [
-                        'properties.id',
-                        'price',
-                        'countries.name as country',
-                        'cities.name as city',
-                        'locations.additional_info',
-                        'image_path'
-                     ], 'page', $filters['page'] ?? 1);
     }
 
     protected function _getRentProperties($query, $filters)
@@ -148,26 +220,31 @@ class PropertyRepository{
                      ->filterPropertyType($filters);
     }
     
-    protected function _joinNeededTables(
-        $propertyTypeId,
-        $residentialPropertyTypeId,
-        $sellTypeId,
-        $physicalStatusTypeId
+    public function _joinNeededTables(
+        $data,
+        $sellTypeId,        
     ){
-        $query = Property::query()
-                ->join('locations', 'properties.location_id', '=', 'locations.id')
-                ->join('countries', 'locations.country_id', '=', 'countries.id')
-                ->join('cities', 'locations.city_id', '=', 'cities.id')
-                ->join('property_images', 'property_images.property_id', 'properties.id');
+        $query = Property::query();
+        
+        $query->join('locations', 'properties.location_id', '=', 'locations.id')
+              ->join('countries', 'locations.country_id', '=', 'countries.id')
+              ->join('cities', 'locations.city_id', '=', 'cities.id')
+              ->with('images');
 
-        $this->_joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId);
-        $this->_joinPhysicalStatusTypeTables($query, $physicalStatusTypeId, $sellTypeId);
-
+        
+        $this->_joinSellTypeTables($query, $sellTypeId);
+        $this->_joinPropertyTypeTables(
+            $query,
+            $data['property_type_id'] ?? null,
+            $data['residential_type_id'] ?? null,
+            $data["commercial_type_id"] ?? null
+        );
+        
         return $query;
     }
 
 
-    protected function _joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId){
+    protected function _joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId, $commercialPropertyTypeId){
         if($propertyTypeId == PropertyType::RESIDENTIAL){
             $query->where('properties.property_type_id', $propertyTypeId)
                   ->leftJoin('residential_properties', 'properties.id', 'residential_properties.property_id');
@@ -198,34 +275,26 @@ class PropertyRepository{
     }
 
     
-    protected function _joinPhysicalStatusTypeTables($query, $physicalStatusTypeId, $sellTypeId){
-        if ($physicalStatusTypeId == PhysicalStatusType::READY_TO_MOVE_IN) {
-            $query->where('properties.physical_status_type_id', $physicalStatusTypeId)
-                  ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id');
-            
-            
-            $this->_joinSellTypeTables($query, $sellTypeId);
+    protected function _joinSellTypeTables($query, $sellTypeId){
+        if ($sellTypeId == SellType::PURCHASE) {
+            $query->where('properties.physical_status_type_id', PhysicalStatusType::READY_TO_MOVE_IN)
+                  ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id')
+                  ->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
+                  ->leftJoin('purchases', 'ready_to_move_in_properties.id', 'purchases.ready_property_id');
+            }
+        
+        else if ($sellTypeId == SellType::RENT) {
+             $query->where('properties.physical_status_type_id', PhysicalStatusType::READY_TO_MOVE_IN)
+                  ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id')
+                  ->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
+                  ->leftJoin('rents', 'ready_to_move_in_properties.id', 'rents.ready_property_id');
         }
         
-        else if ($physicalStatusTypeId == PhysicalStatusType::READY_TO_MOVE_IN) {
-            $query->where('properties.physical_status_type_id', $physicalStatusTypeId)
+        else if ($sellTypeId == SellType::OFF_PLAN) {
+            $query->where('properties.physical_status_type_id', PhysicalStatusType::OFF_PLAN)
                   ->leftJoin('off_plan_properties', 'properties.id', 'off_plan_properties.property_id');       
         }
         
-        return $query;
-    }
-
-    protected function _joinSellTypeTables($query, $sellTypeId){
-        if ($sellTypeId == SellType::PURCHASE) {
-            $query->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
-                  ->leftJoin('purchases', 'ready_to_move_in_properties.id', 'purchases.ready_property_id');
-        }
-        
-        else if ($sellTypeId == SellType::RENT) {
-            $query->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
-                  ->leftJoin('rents', 'ready_to_move_in_properties.id', 'rents.ready_property_id');
-        }
-
         return $query;
     }
 }

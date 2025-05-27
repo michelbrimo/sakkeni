@@ -76,15 +76,43 @@ class PropertyServices extends ImageServices
     }
 
     public function viewProperties($data){
-        if($data['_physical_status_type_id'] == PhysicalStatusType::READY_TO_MOVE_IN)
-            return $this->property_repository->getReadyProperties($data);
-        else if($data['_physical_status_type_id'] == PhysicalStatusType::OFF_PLAN)
+        if($data['_sell_type_id'] == SellType::PURCHASE)
+            return $this->property_repository->getPurchaseProperties($data);
+        else if($data['_sell_type_id'] == SellType::RENT)
+            return $this->property_repository->getRentProperties($data);
+        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->getOffPlanProperties($data);
+
+
+        throw new \Exception('Unkown Property Type', 422);
+    }
+
+    public function filterProperties($data){
+        if($data['_sell_type_id'] == SellType::PURCHASE)
+            return $this->property_repository->filterPurchaseProperties($data);
+        else if($data['_sell_type_id'] == SellType::RENT)
+            return $this->property_repository->filterRentProperties($data);
+        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
+            return $this->property_repository->filterOffPlanProperties($data);
+
+
     
         throw new \Exception('Unkown Property Type', 422);
     }
 
 
+    function viewPropertyDetails($data) {
+        $baseProperty = $this->property_repository->getBasePropertyDetails($data['property_id']);
+
+        $property = $this->property_repository->_joinNeededTables(
+            $baseProperty['property_type_id'],
+            ResidentialPropertyType::APARTMENT,
+            SellType::PURCHASE,
+            $baseProperty['physical_status_type_id'],
+            $baseProperty['id']
+            );
+        return $property->first();
+    }
 
     # -------------------------------------------------------------
 

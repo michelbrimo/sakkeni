@@ -34,6 +34,16 @@ class Property extends Model
         return $this->belongsToMany(Amenity::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(PropertyImage::class);
+    }
+
+    public function coverImage()
+    {
+        return $this->hasOne(PropertyImage::class)->orderBy('id');
+    }
+
 
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)
     {
@@ -143,49 +153,36 @@ class Property extends Model
 
     protected function scopeFilterPropertyType(Builder $query, $filters)
     {
-        if ($filters['_property_type_id'] == PropertyType::RESIDENTIAL) {
-            $this->_applyResidentialFilter(
-                $query,
-                $filters['bedrooms'] ?? null,
-                $filters['floors'] ?? null,
-                $filters['floor'] ?? null,
-                $filters['residential_property_type_id'] ?? null
-            );
+        if (isset($filters['property_type_id'])) {
+            if ($filters['property_type_id'] == PropertyType::RESIDENTIAL) {
+                $this->_applyResidentialFilter(
+                    $query,
+                    $filters['bedrooms'] ?? null,
+                    $filters['residential_property_type_id'] ?? null
+                );
+            }
+            else if ($filters['property_type_id'] == PropertyType::COMMERCIAL) {
+                $this->_applyCommercialFilter(
+                    $query,
+                    $filters['commercial_property_type_id'] ?? null
+                );
+            }
         }
-        else if ($filters['_property_type_id'] == PropertyType::COMMERCIAL) {
-            $this->_applyCommercialFilter(
-                $query,
-                $filters['floor'] ?? null,
-                $filters['commercial_property_type_id'] ?? null
-            );
-        }
-
+        
         return $query;
     }
 
     
-    protected function _applyResidentialFilter(Builder $query, $bedrooms, $floors, $floor, $residentialPropertyTypeId)
+    protected function _applyResidentialFilter(Builder $query, $bedrooms, $residentialPropertyTypeId)
     {
         if ($bedrooms !== null) {$query->where("bedrooms", $bedrooms);}
-        
-        if ($residentialPropertyTypeId == ResidentialPropertyType::APARTMENT) {            
-            if ($floor !== null) {
-                $query->where("floor", $floor);
-            }
-        }
-        
-        else if ($residentialPropertyTypeId == ResidentialPropertyType::VILLA) {            
-            if ($floors !== null) {
-                $query->where("floors", $floors);
-            }
-        }
+        if ($residentialPropertyTypeId !== null) {$query->where("residential_property_type_id", $residentialPropertyTypeId);}
 
         return $query;
     }
     
-    protected function _applyCommercialFilter(Builder $query, $floor, $commercialPropertyTypeId)
+    protected function _applyCommercialFilter(Builder $query, $commercialPropertyTypeId)
     {
-        if ($floor !== null) {$query->where("commercial_properties.floor", $floor);}
         if ($commercialPropertyTypeId !== null) {$query->where("commercial_properties.commercial_property_type_id", $commercialPropertyTypeId);}
 
         return $query;
