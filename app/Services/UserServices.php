@@ -19,8 +19,10 @@ class UserServices
     public function signUp($data){
         $validator = Validator::make($data, [
             'username' => 'string|required',
-            'email' => 'email|required',
+            'email' => 'email|required|unique:users,email',
             'password' => 'string|min:8|confirmed|required',
+            'address' => 'string',
+            'phone_number' => 'string'
         ]);
 
         if($validator->fails()){
@@ -112,8 +114,10 @@ class UserServices
                 422);
         } 
 
-        Auth::user()->tokens->each(function($token, $key) {
-            $token->delete();
-          });
+        $user = Auth::user();
+        if ($user) {
+            $user->tokens->each(fn($token) => $token->delete());
+        }
+
         }
 }

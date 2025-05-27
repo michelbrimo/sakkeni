@@ -21,7 +21,7 @@ class AdminServices{
             'email' => 'email|required',
             'password' => 'string|min:8|confirmed|required',
             'phone_number' => 'string|min:10|required',
-            'address' => 'string',
+            'address' => 'string|required',
         ]);
 
         if($validator->fails()){
@@ -72,9 +72,10 @@ class AdminServices{
             );
         }
     
-        Auth::guard('admin')->user()->tokens->each(function($token, $key) {
-            $token->delete();
-        });
+        $admin = Auth::guard('admin')->user();
+        if ($admin) {
+            $admin->tokens->each(fn($token) => $token->delete());
+        }
     }
 
     public function viewAdmins(){

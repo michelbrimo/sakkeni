@@ -2,31 +2,33 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class AdminFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = Admin::class;
 
     protected static ?string $password;
 
 
     public function configure(): static
     {
-        return $this->afterMaking(function (User $user) {
+        return $this->afterMaking(function (Admin $admin) {
             static::$password ??= Hash::make('password');
         });
     }
 
-
+    /**
+     * Define the model's default state.
+     */
     public function definition(): array
     {
         return [
@@ -37,9 +39,26 @@ class UserFactory extends Factory
             'profile_picture_path' => null,
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->unique()->phoneNumber(),
+            'number_of_excepted_houses' => $this->faker->numberBetween(0, 100),
+            'is_super_admin' => false,
             'remember_token' => Str::random(10),
         ];
     }
+
+    public function superAdmin(): static
+    {
+        return $this->state([
+            'is_super_admin' => true,
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state([
+            'is_super_admin' => false,
+        ]);
+    }
+
 
     public function unverified(): static
     {
@@ -57,11 +76,5 @@ class UserFactory extends Factory
                 false
             ),
         ]);
-    }
-
-
-    public function withAttributes(array $attributes): static
-    {
-        return $this->state($attributes);
     }
 }
