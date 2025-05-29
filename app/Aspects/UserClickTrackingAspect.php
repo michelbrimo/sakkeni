@@ -5,7 +5,7 @@ use App\Models\UserClick;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class UserClickTracking
+class UserClickTrackingAspect
 {
     public function before($function_name)
     {

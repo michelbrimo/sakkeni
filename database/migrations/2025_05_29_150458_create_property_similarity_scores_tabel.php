@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +20,8 @@ return new class extends Migration
             $table->timestamp('last_calculated')->useCurrent();
 
             $table->primary(['property_id_1', 'property_id_2']);
-            $table->index(['property_id_1', 'similarity_score']);
-            $table->index(['property_id_2', 'similarity_score']);
+            $table->index(['property_id_1', 'overall_similarity'], 'psst_prop1_similarity_idx');
+            $table->index(['property_id_2', 'overall_similarity'], 'psst_prop2_similarity_idx');
         });
     }
 
