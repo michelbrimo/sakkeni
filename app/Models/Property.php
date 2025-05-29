@@ -190,7 +190,20 @@ class Property extends Model
     }
     
 
-    
+    public function similarityScores()
+    {
+        return $this->hasMany(PropertySimilarity::class, 'property_id_1');
+    }
+
+    public function popularityMetrics()
+    {
+        return $this->hasOne(PropertyPopularityMetric::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(PropertyFavorite::class);
+    }
 
 
 

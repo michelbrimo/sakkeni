@@ -21,6 +21,7 @@ class ServiceTransformer{
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
         'searchAdmin'=>[],
+        // 'viewProperty'=>['UserClickTrackingAspect'] // (we don't have this function yet)
     ];
 
     private $service_mapper = [];

@@ -45,4 +45,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(PropertyFavorite::class);
+    }
+
+    public function searches()
+    {
+        return $this->hasMany(UserSearch::class);
+    }
+
 }
