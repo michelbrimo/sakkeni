@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SellType;
 use App\Http\Requests\AddingPropertyDataRequest;
 use App\Http\Requests\FilterPropertiesRequest;
 use App\Services\ServiceTransformer;
-use Error;
-use Exception;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -23,15 +22,28 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property Added successfully');
     }
 
-    function viewProperties(FilterPropertiesRequest $request, $physical_status_type, $property_type, $buy_type=1)
+    function viewProperties(Request $request, $sell_type_id)
+    {
+        $additionalData = [
+          'page' => $request->query('page', 1),
+          '_sell_type_id' => $sell_type_id
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
+    }
+
+    function filterProperties(FilterPropertiesRequest $request, $sell_type_id)
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_physical_status_type_id' => $physical_status_type,
-          '_property_type_id' => $property_type,
-          '_sell_type_id' => $buy_type
+          '_sell_type_id' => $sell_type_id
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
+    }
+
+    function viewPropertyDetails($property_id)
+    {
+        $additionalData = ['property_id' => $property_id];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Details fetched successfully');
     }
 
 }
