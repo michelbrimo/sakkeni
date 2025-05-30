@@ -63,7 +63,6 @@ class PropertyTest extends TestCase
             'exposure' => [Exposure::SOUTH_WEST],
             'amenities' => [$this->amenity->id],
 
-            'physical_status_type_id' => PhysicalStatusType::READY_TO_MOVE_IN,
             'is_furnished' => 1,
 
             'property_type_id' => PropertyType::RESIDENTIAL,
@@ -88,10 +87,6 @@ class PropertyTest extends TestCase
         $this->assertDatabaseHas('properties', [
             'owner_id' => $this->user->id,
             'area' => $propertyData['area'],
-        ]);
-
-        $this->assertDatabaseHas('ready_to_move_in_properties', [
-            'sell_type_id' => $propertyData['sell_type_id'],
         ]);
 
         $this->assertDatabaseHas('purchases', [
@@ -128,7 +123,6 @@ class PropertyTest extends TestCase
             'exposure' => [Exposure::EAST, Exposure::SOUTH],
             'amenities' => [$this->amenity->id],
 
-            'physical_status_type_id' => PhysicalStatusType::READY_TO_MOVE_IN,
             'is_furnished' => 1,
 
             'property_type_id' => PropertyType::RESIDENTIAL,
@@ -151,10 +145,6 @@ class PropertyTest extends TestCase
         $this->assertDatabaseHas('properties', [
             'owner_id' => $this->user->id,
             'area' => $propertyData['area'],
-        ]);
-
-        $this->assertDatabaseHas('ready_to_move_in_properties', [
-            'sell_type_id' => $propertyData['sell_type_id'],
         ]);
 
         $this->assertDatabaseHas('rents', [
@@ -191,7 +181,7 @@ class PropertyTest extends TestCase
             'exposure' => [Exposure::NORTH],
             'amenities' => [$this->amenity->id],
             
-            'physical_status_type_id' => PhysicalStatusType::OFF_PLAN,
+            'sell_type_id' => SellType::OFF_PLAN,
             'delivery_date' => '2025-05-25',
             'first_pay' => 100,
             'pay_plan' => json_encode([
@@ -248,7 +238,7 @@ class PropertyTest extends TestCase
             'exposure' => [Exposure::NORTH],
             'amenities' => [$this->amenity->id],
             
-            'physical_status_type_id' => PhysicalStatusType::OFF_PLAN,
+            'sell_type_id' => SellType::OFF_PLAN,
             'delivery_date' => '2025-05-25',
             'first_pay' => 100,
             'pay_plan' => json_encode([

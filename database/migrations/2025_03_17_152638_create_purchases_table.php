@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ready_property_id')
-            ->constrained('ready_to_move_in_properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->float("price");
+            $table->boolean("is_furnished");
             $table->timestamps();
         });
     }

@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Purchase extends Model
 {
     protected $fillable = [
+        'property_id',
         'price',
-        'ready_property_id',
+        'is_furnished'
     ];
 
     use HasFactory;

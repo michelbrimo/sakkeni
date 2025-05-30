@@ -24,10 +24,6 @@ class PropertyRepository{
     public function createOffPlanProperty($data) {
         return OffPlanProperty::create($data);
     }
-
-    public function createReadyToMoveInProperty($data) {
-        return ReadyToMoveInProperty::create($data);
-    }
     
     public function createRent($data) {
         return Rent::create($data);
@@ -64,8 +60,7 @@ class PropertyRepository{
         return $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->join('ready_to_move_in_properties', 'properties.id', '=', 'ready_to_move_in_properties.property_id')
-              ->join('purchases', 'ready_to_move_in_properties.id', '=', 'purchases.ready_property_id')
+              ->join('purchases', 'properties.id', '=', 'purchases.property_id')
 
               ->with('images')
               ->simplePaginate(10, [
@@ -108,8 +103,7 @@ class PropertyRepository{
         return $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->join('ready_to_move_in_properties', 'properties.id', '=', 'ready_to_move_in_properties.property_id')
-              ->join('rents', 'ready_to_move_in_properties.id', '=', 'rents.ready_property_id')
+              ->join('rents', 'properties.id', '=', 'rents.property_id')
 
               ->with('images')
               ->simplePaginate(10, [
@@ -277,21 +271,17 @@ class PropertyRepository{
     
     protected function _joinSellTypeTables($query, $sellTypeId){
         if ($sellTypeId == SellType::PURCHASE) {
-            $query->where('properties.physical_status_type_id', PhysicalStatusType::READY_TO_MOVE_IN)
-                  ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id')
-                  ->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
-                  ->leftJoin('purchases', 'ready_to_move_in_properties.id', 'purchases.ready_property_id');
+            $query->where('properties.sell_type_id', SellType::PURCHASE)
+                  ->leftJoin('purchases', 'properties.id', 'purchases.property_id');
             }
         
         else if ($sellTypeId == SellType::RENT) {
-             $query->where('properties.physical_status_type_id', PhysicalStatusType::READY_TO_MOVE_IN)
-                  ->leftJoin('ready_to_move_in_properties', 'properties.id', 'ready_to_move_in_properties.property_id')
-                  ->where('ready_to_move_in_properties.sell_type_id', $sellTypeId)
-                  ->leftJoin('rents', 'ready_to_move_in_properties.id', 'rents.ready_property_id');
+            $query->where('properties.sell_type_id', SellType::RENT)
+                  ->leftJoin('rents', 'properties.id', 'rents.property_id');
         }
         
         else if ($sellTypeId == SellType::OFF_PLAN) {
-            $query->where('properties.physical_status_type_id', PhysicalStatusType::OFF_PLAN)
+            $query->where('properties.sell_type_id', SellType::OFF_PLAN)
                   ->leftJoin('off_plan_properties', 'properties.id', 'off_plan_properties.property_id');       
         }
         

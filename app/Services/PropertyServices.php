@@ -39,8 +39,8 @@ class PropertyServices extends ImageServices
             'bathrooms' => $data['bathrooms'],
             'balconies' => $data['balconies'],
             'ownership_type' => $data['ownership_type'],
-            'physical_status_type_id' => $data['physical_status_type_id'],
             'property_type_id' => $data['property_type_id'],
+            'sell_type_id' => $data['sell_type_id'],
         ]);
  
         $this->_saveImages($property->id, $data['images']);
@@ -48,10 +48,23 @@ class PropertyServices extends ImageServices
         $property->amenities()->attach($data['amenities']);
 
         
-        if ($data['physical_status_type_id'] == PhysicalStatusType::READY_TO_MOVE_IN) {
-            $this->_saveReadyToMoveIn($data, $property);
+        if ($data['sell_type_id'] == SellType::PURCHASE) {
+            $this->property_repository->createPurchase([
+                'property_id' => $property->id,
+                'price' => $data['price'],
+                'is_furnished' => $data['is_furnished'],
+            ]);        
         }
-        else if($data['physical_status_type_id'] == PhysicalStatusType::OFF_PLAN){
+        else if($data['sell_type_id'] == SellType::RENT){
+            $this->property_repository->createRent([
+                'property_id' => $property->id,
+                'price' => $data['price'],
+                'lease_period' => $data['lease_period'],
+                'payment_plan' => $data['payment_plan'],
+                'is_furnished' => $data['is_furnished'],
+            ]);
+        }
+        else if($data['sell_type_id'] == SellType::OFF_PLAN){
             $this->property_repository->createOffPlanProperty([
                 'property_id' => $property->id,
                 'delivery_date' => $data['delivery_date'],
@@ -95,8 +108,6 @@ class PropertyServices extends ImageServices
         else if($data['_sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->filterOffPlanProperties($data);
 
-
-    
         throw new \Exception('Unkown Property Type', 422);
     }
 
@@ -121,30 +132,6 @@ class PropertyServices extends ImageServices
         $this->image_repository->addImages($propertyId, $imagesPaths);
     }
     
-
-    protected function _saveReadyToMoveIn($data, $property) {
-        $readyToMoveInProperty = $this->property_repository->createReadyToMoveInProperty([
-            "property_id" => $property->id,
-            "is_furnished" => $data["is_furnished"],
-            "sell_type_id" => $data["sell_type_id"],
-        ]);
-
-        if ($data['sell_type_id'] == SellType::PURCHASE) {
-            $this->property_repository->createPurchase([
-                'price' => $data['price'],
-                'ready_property_id' => $readyToMoveInProperty->id,
-            ]);
-        }
-        else if($data['sell_type_id'] == SellType::RENT){
-            $this->property_repository->createRent([
-                'ready_property_id' => $readyToMoveInProperty->id,
-                'price' => $data['price'],
-                'lease_period' => $data['lease_period'],
-                'payment_plan' => $data['payment_plan'],
-            ]);
-        }
-    }
-
     protected function _saveCommercialProperty($data) {
         $this->property_repository->createCommercialProperty($data);
     }
