@@ -74,7 +74,10 @@ class PropertyRepository{
 
     public function filterPurchaseProperties($filters)
     {
+        $query = Property::query(); 
+        
         $query = $this->_joinNeededTables(
+            $query,
             $filters,
             SellType::PURCHASE,
         );
@@ -118,7 +121,10 @@ class PropertyRepository{
 
     public function filterRentProperties($filters)
     {
+        $query = Property::query(); 
+
         $query = $this->_joinNeededTables(
+            $query,
             $filters,
             SellType::RENT,
         );
@@ -162,7 +168,10 @@ class PropertyRepository{
 
     public function filterOffPlanProperties($filters)
     {
+        $query = Property::query(); 
+
         $query = $this->_joinNeededTables(
+            $query,
             $filters,
             SellType::OFF_PLAN,
         );
@@ -184,6 +193,19 @@ class PropertyRepository{
                 'first_pay',
                 'locations.additional_info',
             ], 'page', $filters['page'] ?? 1);
+    }
+
+    function viewPropertyDetails($data) {
+        $query = Property::query()->where('properties.id', $data['id']);
+
+        $property = $this->_joinNeededTables(
+            $query,
+            $data,
+            $data['sell_type_id'],
+            $data['id']
+        )->first();
+        
+        return $property;
     }
 
     protected function _getRentProperties($query, $filters)
@@ -215,33 +237,38 @@ class PropertyRepository{
     }
     
     public function _joinNeededTables(
+        $query,
         $data,
-        $sellTypeId,        
-    ){
-        $query = Property::query();
+        $sellTypeId,       
+        $id=null 
         
+    ){
         $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->with('images');
 
-        
         $this->_joinSellTypeTables($query, $sellTypeId);
         $this->_joinPropertyTypeTables(
             $query,
             $data['property_type_id'] ?? null,
             $data['residential_type_id'] ?? null,
-            $data["commercial_type_id"] ?? null
+            $id ?? null,
         );
         
         return $query;
     }
 
 
-    protected function _joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId, $commercialPropertyTypeId){
+    protected function _joinPropertyTypeTables($query, $propertyTypeId, $residentialPropertyTypeId, $id){
         if($propertyTypeId == PropertyType::RESIDENTIAL){
             $query->where('properties.property_type_id', $propertyTypeId)
                   ->leftJoin('residential_properties', 'properties.id', 'residential_properties.property_id');
+            
+            if($id != null){
+                $residentialPropertyTypeId = ResidentialProperty::where('property_id', $id)
+                                                       ->first()->residential_property_type_id;
+            }
 
             $this->_joinResidentialPropertyTypeTables($query, $residentialPropertyTypeId);
         }

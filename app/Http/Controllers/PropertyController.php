@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\SellType;
 use App\Http\Requests\AddingPropertyDataRequest;
 use App\Http\Requests\FilterPropertiesRequest;
+use App\Models\Property;
 use App\Services\ServiceTransformer;
 use Illuminate\Http\Request;
 
@@ -31,18 +32,18 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 
-    function filterProperties(FilterPropertiesRequest $request, $sell_type_id)
+    function filterProperties(FilterPropertiesRequest $request, $sell_type)
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_sell_type_id' => $sell_type_id
+          '_sell_type_id' => $sell_type
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 
-    function viewPropertyDetails($property_id)
+    function viewPropertyDetails($property)
     {
-        $additionalData = ['property_id' => $property_id];
+        $additionalData = $property->toArray();
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Details fetched successfully');
     }
 

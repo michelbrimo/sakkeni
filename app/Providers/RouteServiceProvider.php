@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\PhysicalStatusType;
+use App\Models\Property;
 use App\Models\PropertyType;
 use App\Models\SellType;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -27,19 +28,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Route::bind('physical_status_type', function ($value) {
-        //     request()->route()->setParameter('physical_status_type', $value);
-        //     return PhysicalStatusType::where('name', $value)->firstOrFail()->id;
-        // });
-
-        // Route::bind('property_type_id', function ($value) {
-        //     request()->route()->setParameter('property_type_id', $value);
-        //     return PropertyType::where('name', $value)->firstOrFail()->id;
-        // });
-
         Route::bind('sell_type_id', function ($value) {
             request()->route()->setParameter('sell_type_id', $value);
             return SellType::where('name', $value)->firstOrFail()->id;
+        });
+
+        Route::bind('property_id', function ($value) {
+            request()->route()->setParameter('property_id', $value);
+            return Property::where('id', $value)->firstOrFail();
         });
 
         RateLimiter::for('api', function (Request $request) {

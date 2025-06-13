@@ -111,21 +111,10 @@ class PropertyServices extends ImageServices
         throw new \Exception('Unkown Property Type', 422);
     }
 
-
     function viewPropertyDetails($data) {
-        $baseProperty = $this->property_repository->getBasePropertyDetails($data['property_id']);
-
-        $property = $this->property_repository->_joinNeededTables(
-            $baseProperty['property_type_id'],
-            ResidentialPropertyType::APARTMENT,
-            SellType::PURCHASE,
-            $baseProperty['physical_status_type_id'],
-            $baseProperty['id']
-            );
-        return $property->first();
+        return $this->property_repository->viewPropertyDetails($data);
     }
 
-    # -------------------------------------------------------------
 
     protected function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
