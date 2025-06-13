@@ -49,10 +49,6 @@ class DatabaseSeeder extends Seeder
             SellType::create(['name' => $sellType]);
         }
        
-        $propertyPhysicalStatusTypes = ['ready-to-move-in', 'off-plan'];
-        foreach ($propertyPhysicalStatusTypes as $propertyPhysicalStatusType) {
-            PhysicalStatusType::create(['name' => $propertyPhysicalStatusType]);
-        }
 
         User::factory(10)->create();
         Country::factory(10)->create();

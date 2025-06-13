@@ -23,6 +23,7 @@ class Property extends Model
         'ownership_type',
         'physical_status_type_id',
         'property_type_id',
+        'sell_type_id',
         'availability_status',
     ];
 
@@ -89,7 +90,7 @@ class Property extends Model
         );
 
         if ($filters['is_furnished'] !== null) {
-            $query->where("ready_to_move_in_properties.is_furnished", '=', $filters['is_furnished']);
+            $query->where("purchases.is_furnished", '=', $filters['is_furnished']);
         }
 
         return $query;
@@ -106,7 +107,7 @@ class Property extends Model
         );
 
         if ($filters['is_furnished'] !== null) {
-            $query->where("ready_to_move_in_properties.is_furnished", '=', $filters['is_furnished']);
+            $query->where("rents.is_furnished", '=', $filters['is_furnished']);
         }
         
         if ($filters['lease_period'] !== null) {

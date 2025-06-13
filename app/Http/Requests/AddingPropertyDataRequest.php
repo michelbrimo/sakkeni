@@ -27,7 +27,6 @@ class AddingPropertyDataRequest extends FormRequest
             "bathrooms" => "integer|required",
             "balconies" => "integer|required",
             "ownership_type" => "string|required",
-            "physical_status_type_id" => "integer|required",
             "property_type_id" => "integer|required",
             "images" => "array|required",
             

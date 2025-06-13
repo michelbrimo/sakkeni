@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('rents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ready_property_id')
-            ->constrained('ready_to_move_in_properties') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->float("price");
             $table->string("lease_period");
             $table->string("payment_plan");
+            $table->boolean("is_furnished");
             $table->timestamps();
         });
     }

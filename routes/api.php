@@ -41,11 +41,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');//done
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');//done
 
+    Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
+
     Route::get('/view-properties/{sell_type_id}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
     Route::post('/view-properties/{sell_type_id}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
 
-    
-    Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
+    Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
+
     Route::middleware('seller')->group(function () {
     });
 });
