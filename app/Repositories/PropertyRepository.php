@@ -208,6 +208,11 @@ class PropertyRepository{
         return $property;
     }
 
+    function deleteProperty($data) {
+        Property::where('id', $data['id'])->delete();
+        return;
+    }
+
     protected function _getRentProperties($query, $filters)
     {
         return $query->rentFilters([

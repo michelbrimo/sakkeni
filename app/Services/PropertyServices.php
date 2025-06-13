@@ -115,6 +115,10 @@ class PropertyServices extends ImageServices
         return $this->property_repository->viewPropertyDetails($data);
     }
 
+    function deleteProperty($data) {
+        return $this->property_repository->deleteProperty($data);
+    }
+
 
     protected function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);

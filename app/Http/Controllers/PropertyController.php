@@ -47,4 +47,10 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Details fetched successfully');
     }
 
+    function deleteProperty($property)
+    {
+        $additionalData = $property->toArray();
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Deleted successfully');
+    }
+
 }
