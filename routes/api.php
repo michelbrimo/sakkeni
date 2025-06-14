@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
 
+    Route::post('/view-my-properties/{sell_type_id}', [PropertyController::class, 'viewMyProperties'])->name('Property.filterProperties');
+
     Route::middleware('seller')->group(function () {
     });
 });

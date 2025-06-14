@@ -62,7 +62,7 @@ class PropertyRepository{
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('purchases', 'properties.id', '=', 'purchases.property_id')
 
-              ->with('images')
+              ->with('coverImage')
               ->simplePaginate(10, [
                 'properties.id',
                 'price',
@@ -80,6 +80,7 @@ class PropertyRepository{
             $query,
             $filters,
             SellType::PURCHASE,
+            
         );
         $this->_basePropertyfiltering($query, $filters);
 
@@ -108,7 +109,7 @@ class PropertyRepository{
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('rents', 'properties.id', '=', 'rents.property_id')
 
-              ->with('images')
+              ->with('coverImage')
               ->simplePaginate(10, [
                 'properties.id',
                 'price',
@@ -156,7 +157,7 @@ class PropertyRepository{
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('off_plan_properties', 'properties.id', '=', 'off_plan_properties.property_id')
 
-              ->with('images')
+              ->with('coverImage')
               ->simplePaginate(10, [
                 'properties.id',
                 'overall_payment as price',
@@ -244,14 +245,22 @@ class PropertyRepository{
     public function _joinNeededTables(
         $query,
         $data,
-        $sellTypeId,       
-        $id=null 
-        
+        $sellTypeId,
+        $id=null,
     ){
         $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
-              ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->with('images');
+              ->join('cities', 'locations.city_id', '=', 'cities.id');
+
+        if($id) 
+            $query->coverImage();
+        else
+            $query->with('images');
+        
+
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
 
         $this->_joinSellTypeTables($query, $sellTypeId);
         $this->_joinPropertyTypeTables(

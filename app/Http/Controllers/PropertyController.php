@@ -41,6 +41,16 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 
+    function viewMyProperties(FilterPropertiesRequest $request, $sell_type)
+    {
+        $additionalData = [
+          'page' => $request->input('page', 1),
+          '_sell_type_id' => $sell_type,
+          'owner_id' => auth()->user()->id
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
+    }
+
     function viewPropertyDetails($property)
     {
         $additionalData = $property->toArray();
