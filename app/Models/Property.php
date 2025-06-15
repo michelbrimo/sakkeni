@@ -44,8 +44,12 @@ class Property extends Model
     {
         return $this->hasOne(PropertyImage::class)->orderBy('id');
     }
-
-
+    
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)
     {
         if ($countryId !== null) {$query->where('locations.country_id', $countryId);}

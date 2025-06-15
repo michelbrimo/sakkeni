@@ -62,5 +62,13 @@ class PropertyController extends Controller
         $additionalData = $property->toArray();
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Deleted successfully');
     }
+    
+    function viewPendingProperties(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'View Pending Properties successfully');
+    }
+
 
 }

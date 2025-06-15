@@ -42,15 +42,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');//done
 
     Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
-
     Route::get('/view-properties/{sell_type_id}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
     Route::post('/view-properties/{sell_type_id}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
-
     Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
-
+    Route::post('/view-my-properties/{sell_type_id}', [PropertyController::class, 'viewMyProperties'])->name('Property.filterProperties');
     Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
 
-    Route::post('/view-my-properties/{sell_type_id}', [PropertyController::class, 'viewMyProperties'])->name('Property.filterProperties');
+    Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
 
     Route::middleware('seller')->group(function () {
     });

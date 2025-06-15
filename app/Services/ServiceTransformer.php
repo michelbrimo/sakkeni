@@ -17,6 +17,7 @@ class ServiceTransformer{
         'filterProperties' => [],//['UserSearchTrackingAspect']
         'viewPropertyDetails' => [],
         'deleteProperty' => [],
+        'viewPendingProperties' => [],
         'adminLogin' => [],
         'adminLogout' => [],
         'adminRegister' => [],

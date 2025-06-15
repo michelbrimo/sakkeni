@@ -214,6 +214,16 @@ class PropertyRepository{
         return;
     }
 
+    function viewPendingProperties($data) {
+        return Property::where('availability_status', 'Pending')
+                        ->with('owner')
+                        ->simplePaginate(10, [
+                                'properties.id',
+                                'properties.owner_id'
+                            ], 'page', $data['page'] ?? 1);
+    }
+
+
     protected function _getRentProperties($query, $filters)
     {
         return $query->rentFilters([
