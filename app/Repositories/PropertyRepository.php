@@ -204,7 +204,7 @@ class PropertyRepository{
             $data,
             $data['sell_type_id'],
             $data['id']
-        )->first();
+        )->select('*', 'properties.id as id')->first();
         
         return $property;
     }
@@ -253,9 +253,10 @@ class PropertyRepository{
               ->join('cities', 'locations.city_id', '=', 'cities.id');
 
         if($id) 
-            $query->coverImage();
-        else
             $query->with('images');
+
+        else
+            $query->with('coverImage');
         
 
         if(isset($data['owner_id'])){
