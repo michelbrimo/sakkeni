@@ -78,8 +78,8 @@ class AdminServices{
         }
     }
 
-    public function viewAdmins(){
-        return  $this->admin_repository->viewAdmins();
+    public function viewAdmins($data){
+        return  $this->admin_repository->viewAdmins($data);
     }
 
     public function viewAdminProfile($data){

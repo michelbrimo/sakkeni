@@ -20,18 +20,18 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); //done  
-Route::post('/login', [UserController::class, 'login'])->name('User.login'); //done
+Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
+Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
 
-Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin'); //done
+Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
 Route::middleware('auth:admin')->group(function () {
-    Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); //done
+    Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
     Route::middleware('superadmin')->group(function () {
-        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); //done
-        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');//done without pagination 
-        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');//done
-        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');//done
+        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
         Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
     });
 });

@@ -10,8 +10,9 @@ class AdminRepository{
         return Admin::create($data);
     }  
 
-    public function viewAdmins(){
-        return Admin::get(); 
+    public function viewAdmins($data){
+        // return Admin::get();
+        return Admin::simplePaginate(10, '*','page', $data['page'] ?? 1);
     }
 
     public function getAdminDetails_byId($id) {

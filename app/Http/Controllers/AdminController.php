@@ -27,8 +27,8 @@ class AdminController extends Controller
     }
 
     function viewAdmins(Request $request) {
-        // $additionalData = ['page' => $request->input('page', 1)];
-        return $this->executeService($this->service_transformer, $request, [], 'The list of Admins');
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'The list of Admins');
     }
 
     public function viewAdminProfile($admin_id){
