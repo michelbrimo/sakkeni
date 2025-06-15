@@ -56,32 +56,41 @@ class PropertyRepository{
     public function getPurchaseProperties($data)
     {
         $query = Property::query();
+        
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
 
         return $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('purchases', 'properties.id', '=', 'purchases.property_id')
-
               ->with('coverImage')
+
+              
               ->simplePaginate(10, [
-                'properties.id',
-                'price',
-                'countries.name as country',
-                'cities.name as city',
-                'locations.additional_info',
-              ], 'page', $data['page'] ?? 1);
+                    'properties.id',
+                    'price',
+                    'countries.name as country',
+                    'cities.name as city',
+                    'locations.additional_info',
+                ], 'page', $data['page'] ?? 1);
     }
 
     public function filterPurchaseProperties($filters)
     {
         $query = Property::query(); 
         
-        $query = $this->_joinNeededTables(
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
+
+        $this->_joinNeededTables(
             $query,
             $filters,
             SellType::PURCHASE,
-            
         );
+
         $this->_basePropertyfiltering($query, $filters);
 
         return $query->purchaseFilters([
@@ -100,31 +109,40 @@ class PropertyRepository{
     }
     
 
-    public function getRentProperties()
+    public function getRentProperties($data)
     {
         $query = Property::query();
                 
-        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
-              ->join('countries', 'locations.country_id', '=', 'countries.id')
-              ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->join('rents', 'properties.id', '=', 'rents.property_id')
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
 
-              ->with('coverImage')
-              ->simplePaginate(10, [
-                'properties.id',
-                'price',
-                'lease_period',
-                'countries.name as country',
-                'cities.name as city',
-                'locations.additional_info',
-              ], 'page', $filters['page'] ?? 1);
+        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
+                     ->join('countries', 'locations.country_id', '=', 'countries.id')
+                     ->join('cities', 'locations.city_id', '=', 'cities.id')
+                     ->join('rents', 'properties.id', '=', 'rents.property_id')
+                     ->with('coverImage')
+ 
+                     ->simplePaginate(10, [
+                        'properties.id',
+                        'price',
+                        'lease_period',
+                        'countries.name as country',
+                        'cities.name as city',
+                        'locations.additional_info',
+                     ], 'page', $data['page'] ?? 1);
+        
     }
 
     public function filterRentProperties($filters)
     {
         $query = Property::query(); 
 
-        $query = $this->_joinNeededTables(
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
+
+        $this->_joinNeededTables(
             $query,
             $filters,
             SellType::RENT,
@@ -148,30 +166,39 @@ class PropertyRepository{
             ], 'page', $filters['page'] ?? 1);
     }
 
-    public function getOffPlanProperties()
+    public function getOffPlanProperties($data)
     {
         $query = Property::query();
-                
+
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
+
         return $query->join('locations', 'properties.location_id', '=', 'locations.id')
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('off_plan_properties', 'properties.id', '=', 'off_plan_properties.property_id')
 
               ->with('coverImage')
+
               ->simplePaginate(10, [
                 'properties.id',
                 'overall_payment as price',
                 'countries.name as country',
                 'cities.name as city',
                 'locations.additional_info',
-              ], 'page', $data['page'] ?? 1);
+            ], 'page', $data['page'] ?? 1);
     }
 
     public function filterOffPlanProperties($filters)
     {
         $query = Property::query(); 
+        
+        if(isset($data['owner_id'])){
+            $query->where('owner_id', $data['owner_id']);
+        }
 
-        $query = $this->_joinNeededTables(
+        $this->_joinNeededTables(
             $query,
             $filters,
             SellType::OFF_PLAN,
@@ -186,14 +213,14 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
     
-            ->simplePaginate(10, [
-                'properties.id',
-                'overall_payment as price',
-                'countries.name as country',
-                'cities.name as city',
-                'first_pay',
-                'locations.additional_info',
-            ], 'page', $filters['page'] ?? 1);
+                ->simplePaginate(10, [
+                    'properties.id',
+                    'overall_payment as price',
+                    'countries.name as country',
+                    'cities.name as city',
+                    'first_pay',
+                    'locations.additional_info',
+                ], 'page', $filters['page'] ?? 1);
     }
 
     function viewPropertyDetails($data) {
@@ -267,11 +294,6 @@ class PropertyRepository{
 
         else
             $query->with('coverImage');
-        
-
-        if(isset($data['owner_id'])){
-            $query->where('owner_id', $data['owner_id']);
-        }
 
         $this->_joinSellTypeTables($query, $sellTypeId);
         $this->_joinPropertyTypeTables(

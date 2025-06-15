@@ -96,7 +96,6 @@ class PropertyServices extends ImageServices
         else if($data['_sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->getOffPlanProperties($data);
 
-
         throw new \Exception('Unkown Property Type', 422);
     }
 

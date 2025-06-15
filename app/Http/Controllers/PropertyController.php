@@ -32,23 +32,35 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 
-    function filterProperties(FilterPropertiesRequest $request, $sell_type)
+    function filterProperties(FilterPropertiesRequest $request, $sell_type_id)
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_sell_type_id' => $sell_type
+          '_sell_type_id' => $sell_type_id
         ];
-        return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties filtered successfully');
     }
 
-    function viewMyProperties(FilterPropertiesRequest $request, $sell_type)
+    
+    function viewMyProperties(FilterPropertiesRequest $request, $sell_type_id)
+    {
+        $additionalData = [
+          'page' => $request->query('page', 1),
+          '_sell_type_id' => $sell_type_id,
+          'owner_id' => auth()->user()->id
+        ];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');
+    }
+    
+    function filterMyProperties(FilterPropertiesRequest $request, $sell_type)
     {
         $additionalData = [
           'page' => $request->input('page', 1),
           '_sell_type_id' => $sell_type,
           'owner_id' => auth()->user()->id
         ];
-        return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');
     }
 
     function viewPropertyDetails($property)
