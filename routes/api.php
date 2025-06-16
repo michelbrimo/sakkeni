@@ -51,6 +51,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
 
+
+
+    // View Default Data
+    Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
+    Route::get('/view-directions', [PropertyController::class, 'viewDirections'])->name('Property.viewDirections');
+    Route::get('/view-property-types', [PropertyController::class, 'viewPropertyTypes'])->name('Property.viewPropertyTypes');
+    Route::get('/view-commercial-property-types', [PropertyController::class, 'viewCommercialPropertyTypes'])->name('Property.viewCommercialPropertyTypes');
+    Route::get('/view-residential-property-types', [PropertyController::class, 'viewResidentialPropertyTypes'])->name('Property.viewResidentialPropertyTypes');
+    Route::get('/view-countries', [PropertyController::class, 'viewCountries'])->name('Property.viewCountries');
+
+
     Route::middleware('seller')->group(function () {
     });
 });

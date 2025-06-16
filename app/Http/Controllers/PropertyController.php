@@ -79,8 +79,39 @@ class PropertyController extends Controller
     {
         $additionalData = ['page' => $request->input('page', 1)];
 
-        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'View Pending Properties successfully');
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
+    
+    function viewAmenities()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Amenities fetched successfully');
+    }
+
+    function viewDirections()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Directions fetched successfully');
+    }
+
+    function viewPropertyTypes()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Property Types fetched successfully');
+    }
+
+    function viewCommercialPropertyTypes()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Commercial Property Types fetched successfully');
+    }
+
+    function viewResidentialPropertyTypes()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Residential Property Types fetched successfully');
+    }
+
+    function viewCountries()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Countries fetched successfully');
+    }
+
 
 
 }

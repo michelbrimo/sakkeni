@@ -6,14 +6,20 @@ use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
+use App\Models\Amenity;
 use App\Models\Apartment;
 use App\Models\CommercialProperty;
+use App\Models\CommercialPropertyType;
+use App\Models\Country;
+use App\Models\Direction;
 use App\Models\OffPlanProperty;
 use App\Models\Property;
+use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
 use App\Models\ReadyToMoveInProperty;
 use App\Models\Rent;
 use App\Models\ResidentialProperty;
+use App\Models\ResidentialPropertyType as ModelsResidentialPropertyType;
 use App\Models\Villa;
 
 class PropertyRepository{
@@ -231,7 +237,8 @@ class PropertyRepository{
             $data,
             $data['sell_type_id'],
             $data['id']
-        )->select('*', 'properties.id as id')->first();
+        )->with('amenities', 'directions')
+         ->select('*', 'properties.id as id')->first();
         
         return $property;
     }
@@ -360,5 +367,37 @@ class PropertyRepository{
         }
         
         return $query;
+    }
+
+
+
+    function viewAmenities()
+    {
+        return Amenity::get();
+    }
+
+    function viewDirections()
+    {
+        return Direction::get();
+    }
+
+    function viewPropertyTypes()
+    {
+        return ModelsPropertyType::get();
+    }
+
+    function viewCommercialPropertyTypes()
+    {
+        return CommercialPropertyType::get();
+    }
+
+    function viewResidentialPropertyTypes()
+    {
+        return ModelsResidentialPropertyType::get();
+    }
+
+    function viewCountries()
+    {
+        return Country::with('cities')->get();
     }
 }

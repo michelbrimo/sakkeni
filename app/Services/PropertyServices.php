@@ -123,6 +123,42 @@ class PropertyServices extends ImageServices
     }
 
 
+    function viewAmenities()
+    {
+        return $this->property_repository->viewAmenities();
+    }
+
+    function viewDirections()
+    {
+        return $this->property_repository->viewDirections();
+
+    }
+
+    function viewPropertyTypes()
+    {
+        return $this->property_repository->viewPropertyTypes();
+
+    }
+
+    function viewCommercialPropertyTypes()
+    {
+        return $this->property_repository->viewCommercialPropertyTypes();
+
+    }
+
+    function viewResidentialPropertyTypes()
+    {
+        return $this->property_repository->viewResidentialPropertyTypes();
+
+    }
+
+    function viewCountries()
+    {
+        return $this->property_repository->viewCountries();
+
+    }
+
+
 
 
 
