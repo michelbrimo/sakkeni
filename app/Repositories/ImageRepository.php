@@ -14,4 +14,14 @@ class ImageRepository{
         }
     }
 
+    public function getImagesByPropertyId($properyId) {
+        return PropertyImage::where('property_id', $properyId)->get();
+    }
+    
+    public function deleteImage($imageId) {
+        return PropertyImage::where('id', $imageId)->delete();
+    }
+
+    
+    
 }

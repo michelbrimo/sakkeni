@@ -12,7 +12,9 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
+
         'addProperty' => ['TransactionAspect'],
+        'updateProperty' => ['TransactionAspect'],
         'viewProperties' => [],
         'filterProperties' => [],//['UserSearchTrackingAspect']
         'viewPropertyDetails' => [],

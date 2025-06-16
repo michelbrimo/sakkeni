@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\SellType;
 use App\Http\Requests\AddingPropertyDataRequest;
 use App\Http\Requests\FilterPropertiesRequest;
+use App\Http\Requests\UpdatingPropertyDataRequest;
 use App\Models\Property;
 use App\Services\ServiceTransformer;
 use Illuminate\Http\Request;
@@ -19,8 +20,14 @@ class PropertyController extends Controller
 
     function addProperty(AddingPropertyDataRequest $request)
     {
-        $additionalData = ['owner_id' => auth()->user()->id];
+        $additionalData = ['owner_id' => auth()->user()->id];   
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property Added successfully');
+    }
+
+    function updateProperty(UpdatingPropertyDataRequest $request, $property)
+    {
+        $additionalData = ['property' => $property];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Property Updated successfully');
     }
 
     function viewProperties(Request $request, $sell_type_id)

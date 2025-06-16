@@ -14,6 +14,7 @@ use App\Models\CommercialProperty;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
+use App\Models\Location;
 use App\Models\OffPlanProperty;
 use App\Models\OwnershipType;
 use App\Models\Property;
@@ -58,12 +59,50 @@ class PropertyRepository{
         return Apartment::create($data);
     }
 
-    public function updateProperty($id){
+    public function updateProperty($id, $data){
         Property::where('id', $id)
-                ->update(['availability_status_id' => AvailabilityStatus::Avtive]);
+                ->update($data);
     }
 
+    public function updatePropertyLocation($id, $data){
+        Location::where('id', $id)
+                ->update($data);
+    }
+    
+    public function updatePurchase($id, $data){
+        Purchase::where('property_id', $id)
+                ->update($data);
+    }
+    
+    public function updateRent($id, $data){
+        Rent::where('property_id', $id)
+                ->update($data);
+    }
+    
+    public function updateOffPlan($id, $data){
+        OffPlanProperty::where('property_id', $id)
+                ->update($data);
+    }
+    
+    public function updateCommercialProperty($id, $data){
+        CommercialProperty::where('property_id', $id)
+                ->update($data);
+    }
 
+    public function updateResidentialProperty($id, $data){
+        ResidentialProperty::where('property_id', $id)
+                ->update($data);
+    }
+
+    public function updateVilla($id, $data){
+        Villa::where('residential_property_id', $id)
+                ->update($data);
+    }
+
+    public function updateApartment($id, $data){
+        Apartment::where('residential_property_id', $id)
+                ->update($data);
+    }
 
     public function getBasePropertyDetails($propertyId){
         return Property::where('id', $propertyId)->first();
@@ -268,7 +307,7 @@ class PropertyRepository{
     }
 
     function acceptProperty($data){ 
-        $this->updateProperty($data['property_id']);
+        $this->updateProperty($data['property_id'], ['availability_status_id' => AvailabilityStatus::Avtive]);
         return;
     }
 
