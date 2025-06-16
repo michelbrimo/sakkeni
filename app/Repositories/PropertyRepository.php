@@ -2,17 +2,20 @@
 
 namespace App\Repositories;
 
+use App\Enums\AvailabilityStatus;
 use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
 use App\Models\Amenity;
 use App\Models\Apartment;
+use App\Models\AvailabilityStatus as ModelsAvailabilityStatus;
 use App\Models\CommercialProperty;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
 use App\Models\OffPlanProperty;
+use App\Models\OwnershipType;
 use App\Models\Property;
 use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
@@ -54,6 +57,13 @@ class PropertyRepository{
     public function createApartment($data) {
         return Apartment::create($data);
     }
+
+    public function updateProperty($id){
+        Property::where('id', $id)
+                ->update(['availability_status_id' => AvailabilityStatus::Avtive]);
+    }
+
+
 
     public function getBasePropertyDetails($propertyId){
         return Property::where('id', $propertyId)->first();
@@ -249,13 +259,20 @@ class PropertyRepository{
     }
 
     function viewPendingProperties($data) {
-        return Property::where('availability_status', 'Pending')
+        return Property::where('availability_status_id', AvailabilityStatus::Pending)
                         ->with('owner')
                         ->simplePaginate(10, [
                                 'properties.id',
                                 'properties.owner_id'
                             ], 'page', $data['page'] ?? 1);
     }
+
+    function acceptProperty($data){ 
+        $this->updateProperty($data['property_id']);
+        return;
+    }
+
+
 
 
     protected function _getRentProperties($query, $filters)
@@ -394,6 +411,16 @@ class PropertyRepository{
     function viewResidentialPropertyTypes()
     {
         return ModelsResidentialPropertyType::get();
+    }
+
+    function viewAvailabilityStatus()
+    {
+        return ModelsAvailabilityStatus::get();
+    }
+
+    function viewOwnershipTypes()
+    {
+        return OwnershipType::get();
     }
 
     function viewCountries()

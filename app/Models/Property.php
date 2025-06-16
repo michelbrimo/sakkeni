@@ -20,11 +20,11 @@ class Property extends Model
         'area',
         'bathrooms',
         'balconies',
-        'ownership_type',
+        'ownership_type_id',
         'physical_status_type_id',
         'property_type_id',
         'sell_type_id',
-        'availability_status',
+        'availability_status_id',
     ];
 
     public function directions() {

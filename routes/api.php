@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
 
     Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
+    Route::get('/accept-property/{property_id}', [PropertyController::class, 'acceptProperty'])->name('Property.acceptProperty');
+
 
 
 
@@ -60,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-commercial-property-types', [PropertyController::class, 'viewCommercialPropertyTypes'])->name('Property.viewCommercialPropertyTypes');
     Route::get('/view-residential-property-types', [PropertyController::class, 'viewResidentialPropertyTypes'])->name('Property.viewResidentialPropertyTypes');
     Route::get('/view-countries', [PropertyController::class, 'viewCountries'])->name('Property.viewCountries');
+    Route::get('/view-availability-status', [PropertyController::class, 'viewAvailabilityStatus'])->name('Property.viewAvailabilityStatus');
+    Route::get('/view-ownership-types', [PropertyController::class, 'viewOwnershipTypes'])->name('Property.viewOwnershipTypes');
 
 
     Route::middleware('seller')->group(function () {

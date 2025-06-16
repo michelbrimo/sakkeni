@@ -18,6 +18,10 @@ class ServiceTransformer{
         'viewPropertyDetails' => [],
         'deleteProperty' => [],
         'viewPendingProperties' => [],
+        'acceptProperty' => [],
+
+
+
         'adminLogin' => [],
         'adminLogout' => [],
         'adminRegister' => [],
@@ -33,6 +37,8 @@ class ServiceTransformer{
         'viewCommercialPropertyTypes' => [],
         'viewResidentialPropertyTypes' => [],
         'viewCountries' => [],
+        'viewOwnershipTypes' => [],
+        'viewAvailabilityStatus' => [],
     ];
 
     private $service_mapper = [];

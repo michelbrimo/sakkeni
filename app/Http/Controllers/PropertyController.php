@@ -81,6 +81,16 @@ class PropertyController extends Controller
 
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
+
+    function acceptProperty($property)
+    {
+        $additionalData = ['property_id' =>$property->id];
+
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Accepted Successfully');
+    }
+
+
+
     
     function viewAmenities()
     {
@@ -111,6 +121,18 @@ class PropertyController extends Controller
     {
         return $this->executeService($this->service_transformer, new Request(), [], 'Countries fetched successfully');
     }
+
+    function viewOwnershipTypes()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Ownership Types fetched successfully');
+    }
+
+    function viewAvailabilityStatus()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Availability Status fetched successfully');
+    }
+
+   
 
 
 

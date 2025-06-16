@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Properties Table
         Schema::table('properties', function (Blueprint $table) {
-            $table->index('ownership_type'); 
+            $table->index('ownership_type_id'); 
             $table->index('created_at'); 
         });
 
@@ -39,7 +39,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->dropIndex(['ownership_type']);
+            $table->dropIndex(['ownership_type_id']);
             $table->dropIndex(['created_at']);
         });
     

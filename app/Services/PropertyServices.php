@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AvailabilityStatus;
 use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
@@ -38,7 +39,7 @@ class PropertyServices extends ImageServices
             'area' => $data['area'],
             'bathrooms' => $data['bathrooms'],
             'balconies' => $data['balconies'],
-            'ownership_type' => $data['ownership_type'],
+            'ownership_type_id' => $data['ownership_type_id'],
             'property_type_id' => $data['property_type_id'],
             'sell_type_id' => $data['sell_type_id'],
         ]);
@@ -121,6 +122,14 @@ class PropertyServices extends ImageServices
     function viewPendingProperties($data) {
         return $this->property_repository->viewPendingProperties($data);
     }
+    
+    function acceptProperty($data) {
+        return $this->property_repository->acceptProperty($data);
+    }
+    
+
+
+
 
 
     function viewAmenities()
@@ -131,31 +140,36 @@ class PropertyServices extends ImageServices
     function viewDirections()
     {
         return $this->property_repository->viewDirections();
-
     }
 
     function viewPropertyTypes()
     {
         return $this->property_repository->viewPropertyTypes();
-
     }
 
     function viewCommercialPropertyTypes()
     {
         return $this->property_repository->viewCommercialPropertyTypes();
-
     }
 
     function viewResidentialPropertyTypes()
     {
         return $this->property_repository->viewResidentialPropertyTypes();
-
     }
 
     function viewCountries()
     {
         return $this->property_repository->viewCountries();
+    }
 
+    function viewAvailabilityStatus()
+    {
+        return $this->property_repository->viewAvailabilityStatus();
+    }
+
+    function viewOwnershipTypes()
+    {
+        return $this->property_repository->viewOwnershipTypes();
     }
 
 
@@ -203,7 +217,7 @@ class PropertyServices extends ImageServices
     }
 
     protected function _saveProperty($data) {
-        $data['availability_status'] = 'Pending';
+        $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
     }
