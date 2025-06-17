@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
 
     Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
-    Route::get('/accept-property/{property_id}', [PropertyController::class, 'acceptProperty'])->name('Property.acceptProperty');
+    Route::post('/property-adjudication', [PropertyController::class, 'propertyAdjudication'])->name('Property.propertyAdjudication');
 
 
 

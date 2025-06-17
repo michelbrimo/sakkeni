@@ -20,7 +20,7 @@ class ServiceTransformer{
         'viewPropertyDetails' => [],
         'deleteProperty' => [],
         'viewPendingProperties' => [],
-        'acceptProperty' => [],
+        'propertyAdjudication' => [],
 
 
 

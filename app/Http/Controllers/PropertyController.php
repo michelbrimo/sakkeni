@@ -89,11 +89,11 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
 
-    function acceptProperty($property)
+    function propertyAdjudication(Request $request)
     {
-        $additionalData = ['property_id' =>$property->id];
+        $additionalData = ['admin_id' => auth('admin')->user()->id];
 
-        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Accepted Successfully');
+        return $this->executeService($this->service_transformer,  $request, $additionalData, 'Property adjudicated Successfully');
     }
 
 

@@ -18,6 +18,7 @@ use App\Models\Location;
 use App\Models\OffPlanProperty;
 use App\Models\OwnershipType;
 use App\Models\Property;
+use App\Models\PropertyAdmin;
 use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
 use App\Models\ReadyToMoveInProperty;
@@ -53,6 +54,10 @@ class PropertyRepository{
 
     public function createVilla($data) {
         return Villa::create($data);
+    }
+
+    public function createPropertyAdmin($data) {
+        return PropertyAdmin::create($data);
     }
 
     public function createApartment($data) {
@@ -306,8 +311,23 @@ class PropertyRepository{
                             ], 'page', $data['page'] ?? 1);
     }
 
-    function acceptProperty($data){ 
-        $this->updateProperty($data['property_id'], ['availability_status_id' => AvailabilityStatus::Avtive]);
+    function propertyAdjudication($data){ 
+        if($data['approve'] == 1)
+            $this->updateProperty($data['property_id'], [
+                'availability_status_id' => AvailabilityStatus::Avtive,
+            ]);
+        else if($data['approve'] == 0)
+            $this->updateProperty($data['property_id'], [
+                'availability_status_id' => AvailabilityStatus::Rejected,
+            ]);
+
+        $this->createPropertyAdmin([
+            'property_id' => $data['property_id'],
+            'admin_id' => $data['admin_id'],
+            'approve' => $data['approve'],
+            'reason' => $data['reason'] ?? null
+         ]);
+
         return;
     }
 

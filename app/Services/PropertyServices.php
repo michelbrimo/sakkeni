@@ -188,8 +188,8 @@ class PropertyServices extends ImageServices
         return $this->property_repository->viewPendingProperties($data);
     }
     
-    function acceptProperty($data) {
-        return $this->property_repository->acceptProperty($data);
+    function propertyAdjudication($data) {
+        return $this->property_repository->propertyAdjudication($data);
     }
     
 
