@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('profile_picture_path')->nullable();
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
-            $table->integer('number_of_excepted_houses')->default(0);
+            $table->integer('number_of_accepted_houses')->default(0);
             $table->boolean('is_super_admin')->default(0);
             $table->rememberToken();
             $table->timestamps();

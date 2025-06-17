@@ -24,7 +24,7 @@ class Admin extends Authenticatable
         'address',
         'phone_number',
         'is_super_admin',
-        'number_of_excepted_houses'
+        'number_of_accepted_houses'
     ];
 
     /**

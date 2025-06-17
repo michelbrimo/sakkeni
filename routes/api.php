@@ -25,14 +25,20 @@ Route::post('/login', [UserController::class, 'login'])->name('User.login');
 
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
+Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+
 Route::middleware('auth:admin')->group(function () {
     Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
     Route::middleware('superadmin')->group(function () {
-        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
         Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
         Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
         Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
+    });
+
+    Route::middleware('admin')->group(function () {
+        // Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
+        // Route::post('/property-adjudication', [PropertyController::class, 'propertyAdjudication'])->name('Property.propertyAdjudication');
     });
 });
 
@@ -41,20 +47,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');//done
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');//done
 
+    Route::middleware('seller')->group(function () {
+        // Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
+        // Route::patch('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
+        // Route::get('/view-my-properties/{sell_type}', [PropertyController::class, 'viewMyProperties'])->name('Property.viewProperties');
+        // Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
+
+    });
+
     Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
     Route::patch('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
-    Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
-    Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
-    Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
     Route::get('/view-my-properties/{sell_type}', [PropertyController::class, 'viewMyProperties'])->name('Property.viewProperties');
-    Route::post('/view-my-properties/{sell_type}', [PropertyController::class, 'filterMyProperties'])->name('Property.filterProperties');
     Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
-
+    
+    
+    
+    // up in the admin middleware
     Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
     Route::post('/property-adjudication', [PropertyController::class, 'propertyAdjudication'])->name('Property.propertyAdjudication');
 
 
-
+    Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+    Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
+    Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
+    
 
     // View Default Data
     Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
@@ -67,6 +83,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-ownership-types', [PropertyController::class, 'viewOwnershipTypes'])->name('Property.viewOwnershipTypes');
 
 
-    Route::middleware('seller')->group(function () {
-    });
+   
 });
