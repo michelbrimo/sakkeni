@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
+use App\Models\PropertyType as ModelsPropertyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,6 +49,36 @@ class Property extends Model
     public function owner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function propertyType()
+    {
+        return $this->belongsTo(ModelsPropertyType::class);
+    }
+    
+    public function availabilityStatus()
+    {
+        return $this->belongsTo(AvailabilityStatus::class);
+    }
+    
+    public function ownershipType()
+    {
+        return $this->belongsTo(OwnershipType::class);
+    }
+    
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    public function residential()
+    {
+        return $this->hasOne(ResidentialProperty::class);
+    }
+
+    public function commercial()
+    {
+        return $this->hasOne(CommercialProperty::class);
     }
     
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)

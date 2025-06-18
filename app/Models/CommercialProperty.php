@@ -16,4 +16,9 @@ class CommercialProperty extends Model
         'apartment_number',
         'commercial_property_type_id'
     ];
+
+    public function commercialPropertyType()
+    {
+        return $this->belongsTo(CommercialPropertyType::class);
+    }
 }

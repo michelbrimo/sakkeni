@@ -125,15 +125,17 @@ class PropertyRepository{
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('purchases', 'properties.id', '=', 'purchases.property_id')
-              ->with('coverImage')
 
-              
+              ->with('coverImage', 'availabilityStatus', 'propertyType')
+
               ->simplePaginate(10, [
                     'properties.id',
                     'price',
                     'countries.name as country',
                     'cities.name as city',
                     'locations.additional_info',
+                    'property_type_id',
+                    'availability_status_id'
                 ], 'page', $data['page'] ?? 1);
     }
 
@@ -159,12 +161,16 @@ class PropertyRepository{
             'is_furnished' => $filters['is_furnished'] ?? null
             ])
 
+            ->with('coverImage', 'availabilityStatus', 'propertyType')
+
             ->simplePaginate(10, [
             'properties.id',
             'price',
             'countries.name as country',
             'cities.name as city',
             'locations.additional_info',
+            'property_type_id',
+            'availability_status_id'
             ], 'page', $filters['page'] ?? 1);
     }
     
@@ -181,8 +187,9 @@ class PropertyRepository{
                      ->join('countries', 'locations.country_id', '=', 'countries.id')
                      ->join('cities', 'locations.city_id', '=', 'cities.id')
                      ->join('rents', 'properties.id', '=', 'rents.property_id')
-                     ->with('coverImage')
- 
+                     
+                     ->with('coverImage', 'availabilityStatus', 'propertyType')
+
                      ->simplePaginate(10, [
                         'properties.id',
                         'price',
@@ -190,6 +197,8 @@ class PropertyRepository{
                         'countries.name as country',
                         'cities.name as city',
                         'locations.additional_info',
+                        'property_type_id',
+                        'properties.availability_status_id'
                      ], 'page', $data['page'] ?? 1);
         
     }
@@ -215,6 +224,8 @@ class PropertyRepository{
             'is_furnished' => $filters['is_furnished'] ?? null,
             'lease_period' => $filters['lease_period'] ?? null
             ])
+            
+            ->with('coverImage', 'availabilityStatus', 'propertyType')
 
             ->simplePaginate(10, [
             'properties.id',
@@ -223,6 +234,9 @@ class PropertyRepository{
             'countries.name as country',
             'cities.name as city',
             'locations.additional_info',
+            'property_type_id',
+            'availability_status_id'
+
             ], 'page', $filters['page'] ?? 1);
     }
 
@@ -239,7 +253,7 @@ class PropertyRepository{
               ->join('cities', 'locations.city_id', '=', 'cities.id')
               ->join('off_plan_properties', 'properties.id', '=', 'off_plan_properties.property_id')
 
-              ->with('coverImage')
+              ->with('coverImage', 'availabilityStatus', 'propertyType')
 
               ->simplePaginate(10, [
                 'properties.id',
@@ -247,6 +261,8 @@ class PropertyRepository{
                 'countries.name as country',
                 'cities.name as city',
                 'locations.additional_info',
+                'property_type_id',
+                'availability_status_id'
             ], 'page', $data['page'] ?? 1);
     }
 
@@ -272,6 +288,8 @@ class PropertyRepository{
                 'max_first_pay' => $filters['max_first_pay'] ?? null,
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
+
+                ->with('coverImage', 'availabilityStatus', 'propertyType')
     
                 ->simplePaginate(10, [
                     'properties.id',
@@ -280,21 +298,41 @@ class PropertyRepository{
                     'cities.name as city',
                     'first_pay',
                     'locations.additional_info',
+                    'property_type_id',
+                    'availability_status_id'
                 ], 'page', $filters['page'] ?? 1);
     }
 
     function viewPropertyDetails($data) {
         $query = Property::query()->where('properties.id', $data['id']);
 
-        $property = $this->_joinNeededTables(
+        $propertyTypeId = Property::where('id', $data['id'])->first()->property_type_id;
+
+        $query = $this->_joinNeededTables(
             $query,
             $data,
             $data['sell_type_id'],
             $data['id']
-        )->with('amenities', 'directions')
-         ->select('*', 'properties.id as id')->first();
+        )->with(
+            'amenities',
+            'directions',
+            'images',
+            'propertyType',
+            'availabilityStatus',
+            'ownershipType',
+            'owner',
+            'location.country',
+            'location.city'
+        );
+
+        if($propertyTypeId == PropertyType::RESIDENTIAL)
+            $query = $query->with('residential.residentialPropertyType');
+        else if ($propertyTypeId == PropertyType::COMMERCIAL)
+            $query = $query->with('commercial.commercialPropertyType');
+
+        $query = $query->select('*', 'properties.id as id')->first();
         
-        return $property;
+        return $query;
     }
 
     function deleteProperty($data) {
@@ -372,11 +410,6 @@ class PropertyRepository{
               ->join('countries', 'locations.country_id', '=', 'countries.id')
               ->join('cities', 'locations.city_id', '=', 'cities.id');
 
-        if($id) 
-            $query->with('images');
-
-        else
-            $query->with('coverImage');
 
         $this->_joinSellTypeTables($query, $sellTypeId);
         $this->_joinPropertyTypeTables(
