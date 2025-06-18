@@ -155,22 +155,22 @@ class PropertyServices extends ImageServices
     }
                 
     public function viewProperties($data){
-        if($data['_sell_type_id'] == SellType::PURCHASE)
+        if($data['sell_type_id'] == SellType::PURCHASE)
             return $this->property_repository->getPurchaseProperties($data);
-        else if($data['_sell_type_id'] == SellType::RENT)
+        else if($data['sell_type_id'] == SellType::RENT)
             return $this->property_repository->getRentProperties($data);
-        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
+        else if($data['sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->getOffPlanProperties($data);
 
         throw new \Exception('Unkown Property Type', 422);
     }
 
     public function filterProperties($data){
-        if($data['_sell_type_id'] == SellType::PURCHASE)
+        if($data['sell_type_id'] == SellType::PURCHASE)
             return $this->property_repository->filterPurchaseProperties($data);
-        else if($data['_sell_type_id'] == SellType::RENT)
+        else if($data['sell_type_id'] == SellType::RENT)
             return $this->property_repository->filterRentProperties($data);
-        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
+        else if($data['sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->filterOffPlanProperties($data);
 
         throw new \Exception('Unkown Property Type', 422);

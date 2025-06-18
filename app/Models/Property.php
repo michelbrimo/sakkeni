@@ -81,6 +81,22 @@ class Property extends Model
         return $this->hasOne(CommercialProperty::class);
     }
     
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
+
+    public function rent()
+    {
+        return $this->hasOne(Rent::class);
+    }
+
+    public function offPlan()
+    {
+        return $this->hasOne(OffPlanProperty::class);
+    }
+
+    
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)
     {
         if ($countryId !== null) {$query->where('locations.country_id', $countryId);}

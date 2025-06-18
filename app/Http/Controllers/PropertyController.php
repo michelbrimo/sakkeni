@@ -34,7 +34,7 @@ class PropertyController extends Controller
     {
         $additionalData = [
           'page' => $request->query('page', 1),
-          '_sell_type_id' => $sell_type_id
+          'sell_type_id' => $sell_type_id
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
@@ -43,7 +43,7 @@ class PropertyController extends Controller
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_sell_type_id' => $sell_type_id
+          'sell_type_id' => $sell_type_id
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties filtered successfully');
     }
@@ -53,7 +53,7 @@ class PropertyController extends Controller
     {
         $additionalData = [
           'page' => $request->query('page', 1),
-          '_sell_type_id' => $sell_type_id,
+          'sell_type_id' => $sell_type_id,
           'owner_id' => auth()->user()->id
         ];
 
@@ -64,7 +64,7 @@ class PropertyController extends Controller
     {
         $additionalData = [
           'page' => $request->input('page', 1),
-          '_sell_type_id' => $sell_type,
+          'sell_type_id' => $sell_type,
           'owner_id' => auth()->user()->id
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');

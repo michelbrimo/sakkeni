@@ -121,22 +121,24 @@ class PropertyRepository{
             $query->where('owner_id', $data['owner_id']);
         }
 
-        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
-              ->join('countries', 'locations.country_id', '=', 'countries.id')
-              ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->join('purchases', 'properties.id', '=', 'purchases.property_id')
+        return $query->where('sell_type_id', $data['sell_type_id'])
+                     ->with(
+                         'coverImage',
+                         'availabilityStatus',
+                         'owner',
+                         'propertyType',
+                         'location.country',
+                         'location.city',
+                         'purchase'
+                         )
+                     ->simplePaginate(10, [
+                             'id',
+                             'location_id',
+                             'property_type_id',
+                             'owner_id',
+                             'availability_status_id',
+                     ], 'page', $data['page'] ?? 1);
 
-              ->with('coverImage', 'availabilityStatus', 'propertyType')
-
-              ->simplePaginate(10, [
-                    'properties.id',
-                    'price',
-                    'countries.name as country',
-                    'cities.name as city',
-                    'locations.additional_info',
-                    'property_type_id',
-                    'availability_status_id'
-                ], 'page', $data['page'] ?? 1);
     }
 
     public function filterPurchaseProperties($filters)
@@ -146,7 +148,7 @@ class PropertyRepository{
         if(isset($data['owner_id'])){
             $query->where('owner_id', $data['owner_id']);
         }
-
+                    
         $this->_joinNeededTables(
             $query,
             $filters,
@@ -155,23 +157,29 @@ class PropertyRepository{
 
         $this->_basePropertyfiltering($query, $filters);
 
+
         return $query->purchaseFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
             ])
 
-            ->with('coverImage', 'availabilityStatus', 'propertyType')
-
+            ->with(
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'purchase'
+            )
             ->simplePaginate(10, [
-            'properties.id',
-            'price',
-            'countries.name as country',
-            'cities.name as city',
-            'locations.additional_info',
-            'property_type_id',
-            'availability_status_id'
-            ], 'page', $filters['page'] ?? 1);
+                'properties.id',
+                'properties.location_id',
+                'properties.property_type_id',
+                'properties.owner_id',
+                'properties.availability_status_id',
+            ], 'page', $data['page'] ?? 1);
     }
     
 
@@ -182,25 +190,24 @@ class PropertyRepository{
         if(isset($data['owner_id'])){
             $query->where('owner_id', $data['owner_id']);
         }
-
-        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
-                     ->join('countries', 'locations.country_id', '=', 'countries.id')
-                     ->join('cities', 'locations.city_id', '=', 'cities.id')
-                     ->join('rents', 'properties.id', '=', 'rents.property_id')
-                     
-                     ->with('coverImage', 'availabilityStatus', 'propertyType')
-
+    
+        return $query->where('sell_type_id', $data['sell_type_id'])
+                     ->with(
+                         'coverImage',
+                         'availabilityStatus',
+                         'owner',
+                         'propertyType',
+                         'location.country',
+                         'location.city',
+                         'rent'
+                         )
                      ->simplePaginate(10, [
-                        'properties.id',
-                        'price',
-                        'lease_period',
-                        'countries.name as country',
-                        'cities.name as city',
-                        'locations.additional_info',
-                        'property_type_id',
-                        'properties.availability_status_id'
+                             'id',
+                             'location_id',
+                             'property_type_id',
+                             'owner_id',
+                             'availability_status_id'
                      ], 'page', $data['page'] ?? 1);
-        
     }
 
     public function filterRentProperties($filters)
@@ -225,19 +232,22 @@ class PropertyRepository{
             'lease_period' => $filters['lease_period'] ?? null
             ])
             
-            ->with('coverImage', 'availabilityStatus', 'propertyType')
-
+            ->with(
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'rent'
+            )
             ->simplePaginate(10, [
-            'properties.id',
-            'price',
-            'lease_period',
-            'countries.name as country',
-            'cities.name as city',
-            'locations.additional_info',
-            'property_type_id',
-            'availability_status_id'
-
-            ], 'page', $filters['page'] ?? 1);
+                'properties.id',
+                'properties.location_id',
+                'properties.property_type_id',
+                'properties.owner_id',
+                'properties.availability_status_id',
+            ], 'page', $data['page'] ?? 1);
     }
 
     public function getOffPlanProperties($data)
@@ -248,22 +258,23 @@ class PropertyRepository{
             $query->where('owner_id', $data['owner_id']);
         }
 
-        return $query->join('locations', 'properties.location_id', '=', 'locations.id')
-              ->join('countries', 'locations.country_id', '=', 'countries.id')
-              ->join('cities', 'locations.city_id', '=', 'cities.id')
-              ->join('off_plan_properties', 'properties.id', '=', 'off_plan_properties.property_id')
-
-              ->with('coverImage', 'availabilityStatus', 'propertyType')
-
-              ->simplePaginate(10, [
-                'properties.id',
-                'overall_payment as price',
-                'countries.name as country',
-                'cities.name as city',
-                'locations.additional_info',
-                'property_type_id',
-                'availability_status_id'
-            ], 'page', $data['page'] ?? 1);
+        return $query->where('sell_type_id', $data['sell_type_id'])
+                     ->with(
+                         'coverImage',
+                         'availabilityStatus',
+                         'owner',
+                         'propertyType',
+                         'location.country',
+                         'location.city',
+                         'offPlan'
+                         )
+                     ->simplePaginate(10, [
+                             'id',
+                             'location_id',
+                             'property_type_id',
+                             'owner_id',
+                             'availability_status_id'
+                     ], 'page', $data['page'] ?? 1);
     }
 
     public function filterOffPlanProperties($filters)
@@ -289,31 +300,28 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
 
-                ->with('coverImage', 'availabilityStatus', 'propertyType')
-    
-                ->simplePaginate(10, [
-                    'properties.id',
-                    'overall_payment as price',
-                    'countries.name as country',
-                    'cities.name as city',
-                    'first_pay',
-                    'locations.additional_info',
-                    'property_type_id',
-                    'availability_status_id'
-                ], 'page', $filters['page'] ?? 1);
+            ->with(
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'offPlan'
+            )
+            ->simplePaginate(10, [
+                'properties.id',
+                'properties.location_id',
+                'properties.property_type_id',
+                'properties.owner_id',
+                'properties.availability_status_id',
+            ], 'page', $data['page'] ?? 1);
     }
 
     function viewPropertyDetails($data) {
         $query = Property::query()->where('properties.id', $data['id']);
 
-        $propertyTypeId = Property::where('id', $data['id'])->first()->property_type_id;
-
-        $query = $this->_joinNeededTables(
-            $query,
-            $data,
-            $data['sell_type_id'],
-            $data['id']
-        )->with(
+        $query = $query->with(
             'amenities',
             'directions',
             'images',
@@ -325,12 +333,20 @@ class PropertyRepository{
             'location.city'
         );
 
-        if($propertyTypeId == PropertyType::RESIDENTIAL)
+        if($data['property_type_id'] == PropertyType::RESIDENTIAL)
             $query = $query->with('residential.residentialPropertyType');
-        else if ($propertyTypeId == PropertyType::COMMERCIAL)
+        else if ($data['property_type_id'] == PropertyType::COMMERCIAL)
             $query = $query->with('commercial.commercialPropertyType');
 
-        $query = $query->select('*', 'properties.id as id')->first();
+        if($data['sell_type_id'] == SellType::PURCHASE)
+            $query = $query->with('purchase');
+        else if ($data['sell_type_id'] == SellType::RENT)
+            $query = $query->with('rent');
+        else if ($data['sell_type_id'] == SellType::OFF_PLAN)
+            $query = $query->with('offPlan');
+
+
+        $query = $query->first();
         
         return $query;
     }
@@ -369,27 +385,6 @@ class PropertyRepository{
         return;
     }
 
-
-
-
-    protected function _getRentProperties($query, $filters)
-    {
-        return $query->rentFilters([
-                        'min_price' => $filters['min_price'] ?? null,
-                        'max_price' => $filters['max_price'] ?? null,
-                        'is_furnished' => $filters['is_furnished'] ?? null,
-                        'lease_period' => $filters['lease_period'] ?? null
-                     ])
-        
-                     ->simplePaginate(10, [
-                        'properties.id',
-                        'rents.price',
-                        'countries.name as country',
-                        'cities.name as city',
-                        'locations.additional_info',
-                        'image_path'
-                     ], 'page', $filters['page'] ?? 1);
-    }
 
     protected function _basePropertyfiltering($query, $filters)
     {
@@ -477,6 +472,7 @@ class PropertyRepository{
         
         return $query;
     }
+
 
 
 
