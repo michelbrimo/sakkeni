@@ -240,7 +240,7 @@ class PropertyServices extends ImageServices
 
     protected function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
-        $this->image_repository->addImages($propertyId, $imagesPaths);
+        $this->image_repository->addPropertyImages($propertyId, $imagesPaths);
     }
 
   public function updateImages($propertyId, array $newImages)

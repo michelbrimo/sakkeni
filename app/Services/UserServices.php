@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UserServices
+class UserServices extends ImageServices
 {
     protected $user_repository;
 
@@ -84,11 +84,10 @@ class UserServices
     public function updateUserProfile($data) {
         $validator = Validator::make($data, [
             'id' => 'integer|required',
+            'first_name' => 'string',
+            'last_name' => 'string',
             'address' => 'string',
             'phone_number' => 'string',
-            'profile_picture_path' => 'string',
-            'is_admin' => 'boolean',
-            'is_super_admin' => 'boolean'
         ]);
 
         if($validator->fails()){
@@ -100,7 +99,13 @@ class UserServices
         $userId = $data['id'];
         unset($data['id']);
 
-        $this->user_repository->updateUserProfile($userId, $data);        
+
+        if(isset($data['profile_picture'])){
+            $data['profile_picture_path'] = $this->_storeImage($data['profile_picture'], 'profile', auth()->user()->id);
+            unset($data['profile_picture']);
+        }
+
+        $this->user_repository->updateUser($userId, $data);        
     }
 
     function logout($data){
@@ -118,6 +123,6 @@ class UserServices
         if ($user) {
             $user->tokens->each(fn($token) => $token->delete());
         }
+    }    
 
-        }
 }

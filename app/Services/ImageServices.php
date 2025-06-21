@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageServices
 {
-    function _storeImages(array $images, $category, $id) {
+    function _storeImages($images, $category, $id) {
         $i = 0;
         $imagesPaths = [];
 
@@ -17,4 +17,9 @@ class ImageServices
 
         return $imagesPaths;
     }
+
+        function _storeImage($image, $category, $id) {
+            return 'storage/' . Storage::disk('public')->put("$category/$id", $image);
+    }
+
 }

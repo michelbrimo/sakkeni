@@ -18,7 +18,7 @@ class UserRepository{
         return User::find($id);
     }
 
-    public function updateUserProfile($userId, $data) {
+    public function updateUser($userId, $data) {
         return User::where('id', '=', $userId)
                    ->update($data);
     }

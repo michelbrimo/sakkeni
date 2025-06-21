@@ -43,9 +43,9 @@ Route::middleware('auth:admin')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile'); //done
-    Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');//done
-    Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');//done
+    Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
+    Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
+    Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
 
     Route::middleware('seller')->group(function () {
         // Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
