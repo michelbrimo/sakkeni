@@ -44,7 +44,7 @@ Route::middleware('auth:admin')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
-    Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
+    Route::patch('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
 
     Route::middleware('seller')->group(function () {
