@@ -40,7 +40,7 @@ class AdminRepository{
     }
 
     public function searchAdmin_byName($data){
-        return Admin::where('username', 'LIKE', '%' . $data['name'] . '%')
+        return Admin::where('first_name', 'LIKE', '%' . $data['name'] . '%')
         ->get();
     }
 

@@ -30,7 +30,8 @@ class AdminAuthenticationTest extends TestCase
         $token = $this->createSuperAdminAndGetToken();
 
         $response = $this->withToken($token)->postJson('/api/register-admin', [
-            'username' => 'newadmin',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'admin@example.com',
             'password' => 'SecurePass123!',
             'password_confirmation' => 'SecurePass123!',
@@ -42,7 +43,8 @@ class AdminAuthenticationTest extends TestCase
 
         $this->assertDatabaseHas('admins', [
             'email' => 'admin@example.com',
-            'username' => 'newadmin'
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
         ]);
     }
 
@@ -52,7 +54,8 @@ class AdminAuthenticationTest extends TestCase
         $token = $this->createAdminAndGetToken();
 
         $response = $this->withToken($token)->postJson('/api/register-admin', [
-            'username' => 'fakeadmin',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'fake@admin.com',
             'password' => 'FakePass123!',
             'password_confirmation' => 'FakePass123!',
@@ -67,7 +70,8 @@ class AdminAuthenticationTest extends TestCase
     public function unauthenticated_user_cannot_register_admin()
     {
         $response = $this->postJson('/api/register-admin', [
-            'username' => 'unauth',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'unauth@admin.com',
             'password' => 'UnauthPass123!',
             'password_confirmation' => 'UnauthPass123!',

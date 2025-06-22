@@ -18,7 +18,8 @@ class UserServices extends ImageServices
 
     public function signUp($data){
         $validator = Validator::make($data, [
-            'username' => 'string|required',
+            'first_name' => 'string|required',
+            'last_name' => 'string|required',
             'email' => 'email|required|unique:users,email',
             'password' => 'string|min:8|confirmed|required',
             'address' => 'string',

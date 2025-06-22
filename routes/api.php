@@ -3,6 +3,7 @@
 use App\Http\Controllers\PropertyController;
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,8 +45,13 @@ Route::middleware('auth:admin')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
-    Route::patch('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
+    Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
+
+    Route::post('forgot-password', [PasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+
+
 
     Route::middleware('seller')->group(function () {
         // Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');

@@ -14,9 +14,10 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    function register_user($username="username", $email="user@gmail.com", $password="goodpass@123"){
+    function register_user($first_name="first", $last_name="last",  $email="user@gmail.com", $password="goodpass@123"){
         $registerData = [
-            'username' => $username,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'email' => $email,
             'password' => $password,
         ];
@@ -28,7 +29,8 @@ class AuthenticationTest extends TestCase
     public function test_register_a_new_user_successfully()
     {
         $data = [
-            'username' => 'username',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'user@gmail.com',
             'password' => 'goodpass123',
             'password_confirmation' => 'goodpass123',
@@ -41,7 +43,7 @@ class AuthenticationTest extends TestCase
             'status',
             'message',
             'data' => [
-                'username', 'email', 'created_at', 'updated_at', 'id' // Adjust fields based on your User model
+                'first_name', 'last_name', 'email', 'created_at', 'updated_at', 'id'
             ]]);
         $this->assertDatabaseHas('users', [
             'email' => 'user@gmail.com',
@@ -51,7 +53,8 @@ class AuthenticationTest extends TestCase
     public function test_register_duplicated_user()
     {
         $registerData = [
-            'username' => 'username',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'user@gmail.com',
             'password' => 'goodpass123',
             'password_confirmation' => 'goodpass123',

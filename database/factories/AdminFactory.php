@@ -32,7 +32,8 @@ class AdminFactory extends Factory
     public function definition(): array
     {
         return [
-            'username' => $this->faker->unique()->userName(),
+            'first_name' => $this->faker->unique()->firstName(),
+            'last_name' => $this->faker->unique()->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

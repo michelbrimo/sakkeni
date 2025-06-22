@@ -17,7 +17,8 @@ class AdminServices{
 
     public function adminRegister($data){
         $validator = Validator::make($data, [
-            'username' => 'string|required',
+            'first_name' => 'string|required',
+            'last_name' => 'string|required',
             'email' => 'email|required',
             'password' => 'string|min:8|confirmed|required',
             'phone_number' => 'string|min:10|required',

@@ -54,7 +54,8 @@ class AdminTest extends TestCase
             'data' => [
                 '*' => [
                     'id',
-                    'username',
+                    'first_name',
+                    'last_name',
                     'email',
                 ],
             ],
@@ -80,7 +81,8 @@ class AdminTest extends TestCase
     //         'message' => "Admin's profile fetched successfully",
     //         'data' => [
     //             'id' => $admin['user']->id,
-    //             'username' => $admin['user']->username,
+    //             'first_name' => $admin['user']->first_name,
+    //             'last_name' => $admin['user']->last_name,
     //             'email' => $admin['user']->email,
     //         ],
     //     ]);
@@ -192,9 +194,9 @@ class AdminTest extends TestCase
     //     $superAdmin = Admin::factory()->superAdmin()->create();
     //     $token = $superAdmin->createToken('admin-token')->plainTextToken;
 
-    //     Admin::factory()->create(['username' => 'john_doe']);
-    //     Admin::factory()->create(['username' => 'jane_doe']);
-    //     Admin::factory()->create(['username' => 'bob_smith']);
+    //     Admin::factory()->create(['first_name' => 'john_doe', 'last_name' => 'lastName']);
+    //     Admin::factory()->create(['first_name' => 'jane_doe', 'last_name' => 'lastName']);
+    //     Admin::factory()->create(['first_name' => 'bob_smith', 'last_name' => 'lastName']);
 
     //     $response = $this->withHeaders([
     //         'Authorization' => 'Bearer ' . $token
