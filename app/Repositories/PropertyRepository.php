@@ -121,23 +121,26 @@ class PropertyRepository{
             $query->where('owner_id', $data['owner_id']);
         }
 
+
         return $query->where('sell_type_id', $data['sell_type_id'])
-                     ->with(
-                         'coverImage',
-                         'availabilityStatus',
-                         'owner',
-                         'propertyType',
-                         'location.country',
-                         'location.city',
-                         'purchase'
-                         )
-                     ->simplePaginate(10, [
-                             'id',
-                             'location_id',
-                             'property_type_id',
-                             'owner_id',
-                             'availability_status_id',
-                     ], 'page', $data['page'] ?? 1);
+            ->with([
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'location.country',
+                'location.city',
+                'purchase',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
+            ])
+
+            ->simplePaginate(10, [
+                    'id',
+                    'location_id',
+                    'property_type_id',
+                    'owner_id',
+                    'availability_status_id',
+            ], 'page', $data['page'] ?? 1);
 
     }
 
@@ -157,22 +160,25 @@ class PropertyRepository{
 
         $this->_basePropertyfiltering($query, $filters);
 
-
         return $query->purchaseFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
             ])
 
-            ->with(
+            ->with([
                 'coverImage',
                 'availabilityStatus',
                 'owner',
                 'propertyType',
                 'location.country',
                 'location.city',
-                'purchase'
-            )
+                'purchase',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
+            ])
+
+
             ->simplePaginate(10, [
                 'properties.id',
                 'properties.location_id',
@@ -192,22 +198,25 @@ class PropertyRepository{
         }
     
         return $query->where('sell_type_id', $data['sell_type_id'])
-                     ->with(
-                         'coverImage',
-                         'availabilityStatus',
-                         'owner',
-                         'propertyType',
-                         'location.country',
-                         'location.city',
-                         'rent'
-                         )
-                     ->simplePaginate(10, [
-                             'id',
-                             'location_id',
-                             'property_type_id',
-                             'owner_id',
-                             'availability_status_id'
-                     ], 'page', $data['page'] ?? 1);
+            ->with([
+            'coverImage',
+            'availabilityStatus',
+            'owner',
+            'propertyType',
+            'location.country',
+            'location.city',
+            'rent',
+            'residential.residentialPropertyType',
+            'commercial.commercialPropertyType'
+            ])
+
+            ->simplePaginate(10, [
+                    'id',
+                    'location_id',
+                    'property_type_id',
+                    'owner_id',
+                    'availability_status_id'
+            ], 'page', $data['page'] ?? 1);
     }
 
     public function filterRentProperties($filters)
@@ -225,22 +234,25 @@ class PropertyRepository{
         );
         $this->_basePropertyfiltering($query, $filters);
 
-        return $query->rentFilters([
+        $query->rentFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null,
             'lease_period' => $filters['lease_period'] ?? null
             ])
             
-            ->with(
+            ->with([
                 'coverImage',
                 'availabilityStatus',
                 'owner',
                 'propertyType',
                 'location.country',
                 'location.city',
-                'rent'
-            )
+                'rent',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
+            ])
+
             ->simplePaginate(10, [
                 'properties.id',
                 'properties.location_id',
@@ -258,23 +270,25 @@ class PropertyRepository{
             $query->where('owner_id', $data['owner_id']);
         }
 
-        return $query->where('sell_type_id', $data['sell_type_id'])
-                     ->with(
-                         'coverImage',
-                         'availabilityStatus',
-                         'owner',
-                         'propertyType',
-                         'location.country',
-                         'location.city',
-                         'offPlan'
-                         )
-                     ->simplePaginate(10, [
-                             'id',
-                             'location_id',
-                             'property_type_id',
-                             'owner_id',
-                             'availability_status_id'
-                     ], 'page', $data['page'] ?? 1);
+        $query->where('sell_type_id', $data['sell_type_id'])
+            ->with([
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'offPlan',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
+            ])
+            ->simplePaginate(10, [
+                    'id',
+                    'location_id',
+                    'property_type_id',
+                    'owner_id',
+                    'availability_status_id'
+            ], 'page', $data['page'] ?? 1);
     }
 
     public function filterOffPlanProperties($filters)
@@ -300,15 +314,18 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
 
-            ->with(
+            ->with([
                 'coverImage',
                 'availabilityStatus',
                 'owner',
                 'propertyType',
                 'location.country',
                 'location.city',
-                'offPlan'
-            )
+                'offPlan',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
+            ])
+
             ->simplePaginate(10, [
                 'properties.id',
                 'properties.location_id',
