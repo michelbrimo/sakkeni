@@ -18,8 +18,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/', function () {
+    return view('welcome');
+});
 
+Route::post('forgot-password', [PasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
 
+Route::post('reset-password', [PasswordController::class, 'resetPassword'])
+    ->middleware('guest')
+    ->name('password.reset');
 
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
@@ -48,8 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
 
-    Route::post('forgot-password', [PasswordController::class, 'sendResetLinkEmail'])
-    ->name('password.email');
+
+
 
 
 
