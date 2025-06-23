@@ -61,10 +61,18 @@ class DatabaseSeeder extends Seeder
             OwnershipType::create(['name' => $type]);
         }
 
+        $countries = ['Syria'];
+        foreach ($countries as $country) {
+            Country::create(['name' => $type]);
+        }
+
+        $cities = ['Damascus', 'Aleppo', 'Homs', 'Latakia', 'Hama', 'Daraa', 'Deir ez-Zor', 'Raqqa', 'Tartus', 'Idlib', 'Qamishli', 'Al-Hasakah', 'Palmyra', 'Apamea'];
+        foreach ($cities as $city) {
+            City::create(['name' => $type, 'country_id' => 1]);
+        }
+
 
         User::factory(10)->create();
-        Country::factory(10)->create();
-        City::factory(10)->create();
         Amenity::factory(10)->create();
     }
 }
