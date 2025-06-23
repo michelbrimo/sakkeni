@@ -63,12 +63,12 @@ class DatabaseSeeder extends Seeder
 
         $countries = ['Syria'];
         foreach ($countries as $country) {
-            Country::create(['name' => $type]);
+            Country::create(['name' => $country]);
         }
 
         $cities = ['Damascus', 'Aleppo', 'Homs', 'Latakia', 'Hama', 'Daraa', 'Deir ez-Zor', 'Raqqa', 'Tartus', 'Idlib', 'Qamishli', 'Al-Hasakah', 'Palmyra', 'Apamea'];
         foreach ($cities as $city) {
-            City::create(['name' => $type, 'country_id' => 1]);
+            City::create(['name' => $city, 'country_id' => 1]);
         }
 
 
