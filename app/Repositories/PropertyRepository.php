@@ -234,7 +234,7 @@ class PropertyRepository{
         );
         $this->_basePropertyfiltering($query, $filters);
 
-        $query->rentFilters([
+        return $query->rentFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null,
@@ -270,7 +270,7 @@ class PropertyRepository{
             $query->where('owner_id', $data['owner_id']);
         }
 
-        $query->where('sell_type_id', $data['sell_type_id'])
+        return $query->where('sell_type_id', $data['sell_type_id'])
             ->with([
                 'coverImage',
                 'availabilityStatus',
