@@ -5,8 +5,14 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,13 +28,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::post('forgot-password', [PasswordController::class, 'sendResetLinkEmail'])
     ->middleware('guest')
     ->name('password.email');
 
+Route::get('/reset-password/{token}', function (string $token) {
+        return view('auth.reset-password', ['token' => $token]);
+    })->middleware('guest')->name('password.reset');
+
 Route::post('reset-password', [PasswordController::class, 'resetPassword'])
     ->middleware('guest')
-    ->name('password.reset');
+    ->name('password.update');
+
+
+
 
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
