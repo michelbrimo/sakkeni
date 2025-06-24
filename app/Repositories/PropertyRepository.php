@@ -127,6 +127,7 @@ class PropertyRepository{
                 'coverImage',
                 'availabilityStatus',
                 'owner',
+                'propertyType',
                 'location.country',
                 'location.city',
                 'purchase',
@@ -199,15 +200,15 @@ class PropertyRepository{
     
         return $query->where('sell_type_id', $data['sell_type_id'])
             ->with([
-            'coverImage',
-            'availabilityStatus',
-            'owner',
-            'propertyType',
-            'location.country',
-            'location.city',
-            'rent',
-            'residential.residentialPropertyType',
-            'commercial.commercialPropertyType'
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'rent',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType'
             ])
 
             ->simplePaginate(10, [
