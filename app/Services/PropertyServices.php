@@ -155,12 +155,7 @@ class PropertyServices extends ImageServices
     }
                 
     public function viewProperties($data){
-        if($data['sell_type_id'] == SellType::PURCHASE)
-            return $this->property_repository->getPurchaseProperties($data);
-        else if($data['sell_type_id'] == SellType::RENT)
-            return $this->property_repository->getRentProperties($data);
-        else if($data['sell_type_id'] == SellType::OFF_PLAN)
-            return $this->property_repository->getOffPlanProperties($data);
+        return $this->property_repository->getProperties($data);
 
         throw new \Exception('Unkown Property Type', 422);
     }
@@ -192,8 +187,17 @@ class PropertyServices extends ImageServices
         return $this->property_repository->propertyAdjudication($data);
     }
     
-
-
+    function addPropertyToFavorite($data) {
+        return $this->property_repository->createPropertyFavorite($data);
+    }
+    
+    function removePropertyFromFavorite($data) {
+        return $this->property_repository->deletePropertyFavorite($data);
+    }
+    
+    function viewFavoriteProperties($data) {
+        return $this->property_repository->getFavoriteProperties($data);
+    }
 
 
 

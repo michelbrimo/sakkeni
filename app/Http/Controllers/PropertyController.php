@@ -95,6 +95,32 @@ class PropertyController extends Controller
 
         return $this->executeService($this->service_transformer,  $request, $additionalData, 'Property adjudicated Successfully');
     }
+    
+    function addPropertyToFavorite($property)
+    {
+        $additionalData = ['user_id' => auth()->user()->id, 'property_id' => $property->id];
+
+        return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Property added to favorite Successfully');
+    }
+    
+    function removePropertyFromFavorite($property)
+    {
+        $additionalData = ['user_id' => auth()->user()->id, 'property_id' => $property->id];
+
+        return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Property removed from favorite Successfully');
+    }
+    
+    function viewFavoriteProperties(Request $request, $sell_type_id)
+    {
+        $additionalData = [
+            'user_id' => auth()->user()->id,
+            'page' => $request->query('page', 1),
+            'sell_type_id' => $sell_type_id,
+        ];
+
+        return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Favorite Properties fetched Successfully');
+    }
+
 
 
 

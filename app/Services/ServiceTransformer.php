@@ -21,8 +21,11 @@ class ServiceTransformer{
         'deleteProperty' => [],
         'viewPendingProperties' => [],
         'propertyAdjudication' => [],
-
-
+        'addPropertyToFavorite' => [],
+        'removePropertyFromFavorite' => [],
+        'viewFavoriteProperties' => [],
+        
+        
 
         'adminLogin' => [],
         'adminLogout' => [],
