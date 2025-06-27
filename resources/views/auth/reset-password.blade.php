@@ -3,10 +3,10 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center" style="margin:1rem; width: 95%;">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card" style="border: none;" >
                     <div class="card-header" style="background:#FCFDFD; margin-left: 1rem; border-bottom:none; font-family: Poppins, sans-serif; font-weight:600;">{{ __('Reset Password') }}</div>
-                    <div style="background-color: #101818; height: 1px; width: 80%; margin-left:2rem"></div>
+                    <div style="background-color: #101818; height: 1px; width: 90%; margin-left:2rem"></div>
 
                     <div style="padding:1rem;">
                        <form method="POST" action="{{ route('password.update')}}">
