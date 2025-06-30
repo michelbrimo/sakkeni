@@ -62,4 +62,10 @@ class User extends Authenticatable
         return $this->hasMany(UserSearch::class);
     }
 
+    public function seller()
+    {
+        return $this->hasOne(Seller::class);
+    }
+
+
 }

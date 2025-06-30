@@ -15,4 +15,9 @@ class Seller extends Model
     ];
     
     use HasFactory;
+
+    public function accountType()
+    {
+        return $this->belongsTo(AccountType::class);
+    }
 }
