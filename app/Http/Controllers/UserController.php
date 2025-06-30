@@ -35,5 +35,11 @@ class UserController extends Controller
         $additionalData = ['id' => auth()->user()->id];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, "User logged out successfully");
     }
+    
+    public function resetPassword(Request $request){
+        $additionalData = ['user' => auth()->user()];
+        return $this->executeService($this->service_transformer, $request, $additionalData, "password reseted successfully");
+    }
+
 
 }

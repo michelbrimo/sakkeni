@@ -89,6 +89,7 @@ class UserServices extends ImageServices
             'last_name' => 'string',
             'address' => 'string',
             'phone_number' => 'string',
+            'profile_image' => 'file'
         ]);
 
         if($validator->fails()){
@@ -124,6 +125,30 @@ class UserServices extends ImageServices
         if ($user) {
             $user->tokens->each(fn($token) => $token->delete());
         }
+    }
+
+    function resetPassword($data){
+        $validator = Validator::make($data, [
+            'user' => 'required',
+            'currentPassword' => 'required',
+            'newPassword' => 'required|min:8|confirmed',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+        
+        if(!Hash::check($data['currentPassword'], $data['user']->password)) {
+            throw new Exception(
+                'Current password is incorrect',
+                422
+            );
+        }
+
+        $this->user_repository->updateUser($data['user']->id, ['password' => Hash::make($data['newPassword'])]);
+        return;
     }    
 
 }

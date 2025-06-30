@@ -12,6 +12,7 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
+        'resetPassword' => [],
 
         'addProperty' => ['TransactionAspect'],
         'updateProperty' => ['TransactionAspect'],
