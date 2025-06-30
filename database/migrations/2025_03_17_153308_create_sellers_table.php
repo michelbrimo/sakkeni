@@ -17,8 +17,11 @@ return new class extends Migration
             ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("account_type");
-            $table->integer("free_ads_left");
+            $table->foreignId('account_type_id')
+            ->constrained('account_types') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->integer("free_ads_left")->default(3);
             $table->timestamps();
         });
     }

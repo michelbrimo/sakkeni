@@ -13,6 +13,7 @@ class ServiceTransformer{
         'updateUserProfile' => [],
         'logout' => [],
         'resetPassword' => [],
+        'upgradeToSeller' => [],
 
         'addProperty' => ['TransactionAspect'],
         'updateProperty' => ['TransactionAspect'],

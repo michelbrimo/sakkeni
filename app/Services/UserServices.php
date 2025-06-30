@@ -151,4 +151,32 @@ class UserServices extends ImageServices
         return;
     }    
 
+    function upgradeToSeller($data) {
+        $validator = Validator::make($data, [
+            'user' => 'required',
+            'account_type_id' => 'integer|required',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
+        if(!$data['user']->address  || !$data['user']->phone_number){
+            throw new Exception(
+                'Please fill the address and phone number fields in your profile first',
+                422
+            );
+        }
+
+        $this->user_repository->createSeller([
+            'user_id' => $data['user']->id, 'account_type_id'=>$data['account_type_id']
+        ]);
+
+
+
+
+    }
+
 }

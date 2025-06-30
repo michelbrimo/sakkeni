@@ -16,9 +16,9 @@ class EnsureUserIsSeller
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = User::join('sellers', 'sellers.user_id', '=', 'users.id')->get();
+        $user = User::join('sellers', 'sellers.user_id', '=', 'users.id')->where('users.id', auth()->user()->id)->first();
         
-        if(count($user) > 0){
+        if($user){
             return $next($request);
         }
 

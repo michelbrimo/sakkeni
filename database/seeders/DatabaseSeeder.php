@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\AccountType;
 use App\Models\Amenity;
 use App\Models\AvailabilityStatus;
 use App\Models\City;
@@ -70,7 +71,11 @@ class DatabaseSeeder extends Seeder
         foreach ($cities as $city) {
             City::create(['name' => $city, 'country_id' => 1]);
         }
-
+        
+        $accountTypes = ['Personal', 'Company'];
+        foreach ($accountTypes as $accountType) {
+            AccountType::create(['name' => $accountType]);
+        }
 
         User::factory(10)->create();
         Amenity::factory(10)->create();

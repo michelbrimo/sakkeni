@@ -40,6 +40,14 @@ class UserController extends Controller
         $additionalData = ['user' => auth()->user()];
         return $this->executeService($this->service_transformer, $request, $additionalData, "password reseted successfully");
     }
-
-
+    
+    public function upgradeToSeller(Request $request){
+        $additionalData = ['user' => auth()->user()];
+        return $this->executeService($this->service_transformer, $request, $additionalData, "upgraded to seller successfully");
+    }
+    
+    public function upgradeToServiceProvider(Request $request){
+        $additionalData = ['id' => auth()->user()->id];
+        return $this->executeService($this->service_transformer, $request, $additionalData, "password reseted successfully");
+    }
 }

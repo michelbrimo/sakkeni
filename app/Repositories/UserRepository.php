@@ -2,13 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Models\Seller;
 use App\Models\User;
 
 class UserRepository{
     public function create($data) {
         return User::create($data);
     }
-
+    
+    public function createSeller($data) {
+        return Seller::create($data);
+    }
+    
     public function getUserDetails_byEmail($email) {
         return User::where('email', '=', $email)
                    ->first();
@@ -22,4 +27,5 @@ class UserRepository{
         return User::where('id', '=', $userId)
                    ->update($data);
     }
+
 }
