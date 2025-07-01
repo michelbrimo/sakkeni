@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
+use App\Models\LeasePeriodUnits;
 use App\Models\OwnershipType;
 use App\Models\PhysicalStatusType;
 use App\Models\PropertyType;
@@ -77,7 +78,6 @@ class DatabaseSeeder extends Seeder
             AccountType::create(['name' => $accountType]);
         }
 
-        User::factory(10)->create();
         Amenity::factory(10)->create();
     }
 }

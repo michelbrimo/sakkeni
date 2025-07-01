@@ -10,8 +10,8 @@ class Rent extends Model
     protected $fillable = [
         'property_id',
         'price',
-        'lease_period',
-        'payment_plan',
+        'lease_period_unit',
+        'lease_period_value',
         'is_furnished'
     ];
 

@@ -18,8 +18,8 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->float("price");
-            $table->string("lease_period");
-            $table->string("payment_plan");
+            $table->integer("lease_period_value");
+            $table->string('lease_period_unit');
             $table->boolean("is_furnished");
             $table->timestamps();
         });

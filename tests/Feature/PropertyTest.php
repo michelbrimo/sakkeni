@@ -130,8 +130,8 @@ class PropertyTest extends TestCase
 
             'sell_type_id' => SellType::RENT,
             'price' => 10000,
-            'lease_period' => 'Annual',
-            'payment_plan' => 'full pay at once',
+            'lease_period_unit' => 'Month',
+            'lease_period_value' => 1,
 
             'residential_property_type_id' => ResidentialPropertyType::VILLA,
             'floors' => 2,
