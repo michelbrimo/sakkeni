@@ -13,12 +13,17 @@ class UserSearchTrackingAspect
         $user_id =  auth()->user()->id;
         if (!$user_id) return;
 
-        // $filters = request()->all(); //ma fhmt kif al filter 3m ymshi 
+        $filters = request()->all(); //ma fhmt kif al filter 3m ymshi 
 
+        $sell_type_id = request()->route('sell_type_id');
+
+        
         if (!empty($filters)) {
             UserSearch::create([
                 'user_id' => $user_id,
-                'filters' => $filters
+                'sell_type_id' => $sell_type_id,
+                'filters' => $filters,
+                'created_at' => now() 
             ]);
         }
     }

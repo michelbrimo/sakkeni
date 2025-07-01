@@ -38,6 +38,7 @@ class PropertyController extends Controller
           'page' => $request->input('page', 1),
           '_sell_type_id' => $sell_type
         ];
+        
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 

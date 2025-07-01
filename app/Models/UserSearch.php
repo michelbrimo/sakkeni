@@ -12,8 +12,10 @@ class UserSearch extends Model
     protected $table = 'user_search_tabel';
     protected $fillable = [
         'user_id',
-        'filters'
+        'sell_type_id',
+        'filters',
     ];
+    // public $timestamps = false;
 
     protected $casts = [
         'filters' => 'array'

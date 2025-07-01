@@ -14,8 +14,8 @@ class ServiceTransformer{
         'logout' => [],
         'addProperty' => ['TransactionAspect'],
         'viewProperties' => [],
-        'filterProperties' => [],//['UserSearchTrackingAspect']
-        'viewPropertyDetails' => [],
+        'filterProperties' => ['UserSearchTrackingAspect'],
+        'viewPropertyDetails' => ['UserClickTrackingAspect'],
         'adminLogin' => [],
         'adminLogout' => [],
         'adminRegister' => [],

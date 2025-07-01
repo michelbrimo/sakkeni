@@ -3,48 +3,67 @@ namespace App\Aspects;
 
 use App\Models\UserClick;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 use Carbon\Carbon;
 
 class UserClickTrackingAspect
 {
     public function before($function_name)
     {
-        if ($function_name !== 'viewProperty') return;
+        if ($function_name !== 'viewPropertyDetails') {
+            return false;
+        }
 
-        $user_id =  auth()->user()->id;
-        $property_id = request()->route('id'); //it will need editing if we used another params in our  route 
+        $user_id = auth()->user()->id;
+        if (!$user_id) {
+            return false;
+        }
 
-        if (!$user_id || !$property_id) return;
+        $property_id = request()->route('property_id');
+        
+        if (is_object($property_id) || is_array($property_id)) {
+            $property_id = $property_id['id'] ?? $property_id->id ?? null;
+        }
 
-        $click = UserClick::where('user_id', $user_id)
-            ->where('property_id', $property_id)
-            ->first();
+        if (!$property_id) {
+            return false;
+        }
 
-        if (!$click) {
-            UserClick::create([
-                'user_id' => $user_id->id,
-                'property_id' => $property_id,
+        $click = UserClick::firstOrNew([
+            'user_id' => $user_id,
+            'property_id' => $property_id // Now this will be just the ID
+        ]);
+        // If this is a new record
+        if (!$click->exists) {
+            $click->fill([
                 'click_count' => 1,
                 'session_start' => now(),
                 'session_duration' => 0
-            ]);
-            return;
+            ])->save();
+            return true;
         }
 
+        // Update existing record
         $click->click_count += 1;
 
-        $duration = now()->diffInSeconds(Carbon::parse($click->session_start));
+        $duration = now()->diffInSeconds($click->session_start);
+        $sessionTimeout = 1800; // 30 minutes in seconds
 
-        if ($duration < 1800) {
+        if ($duration < $sessionTimeout) {
             $click->session_duration += $duration;
         } else {
             $click->session_start = now();
         }
 
         $click->save();
+        return true;
     }
 
     public function after($function_name) { }
 
-    public function exception($function_name) { }
+   public function exception($function_name, \Throwable $exception = null)
+    {
+        
+    }
 }

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('user_search_tabel', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('search_query')->nullable();
+            $table->foreignId('sell_type_id')->constrained('sell_types')->cascadeOnDelete();
+            // $table->string('search_query')->nullable();
             $table->json('filters')->nullable(); // Stores all search filters as JSON
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps(); // Adds both created_at and updated_at
         });
     }
 

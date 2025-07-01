@@ -13,6 +13,7 @@ class UserPreference extends Model
     protected $fillable = [
         'user_id',
         'property_type_id',
+        'sell_type_id',
         'min_bedrooms',
         'max_bedrooms',
         'min_bathrooms',
@@ -24,8 +25,15 @@ class UserPreference extends Model
         'min_price',
         'max_price',
         'preferred_locations',
-        'must_have_features'
+        'must_amenity',
+        'is_furnished',
+        'min_first_pay',
+        'max_first_pay',
+        'delivery_date',
+        'lease_period'
+
     ];
+
 
     protected $casts = [
         'preferred_locations' => 'array',
