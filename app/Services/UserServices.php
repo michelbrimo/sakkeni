@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UserServices
+class UserServices extends ImageServices
 {
     protected $user_repository;
 
@@ -18,7 +18,8 @@ class UserServices
 
     public function signUp($data){
         $validator = Validator::make($data, [
-            'username' => 'string|required',
+            'first_name' => 'string|required',
+            'last_name' => 'string|required',
             'email' => 'email|required|unique:users,email',
             'password' => 'string|min:8|confirmed|required',
             'address' => 'string',
@@ -84,11 +85,11 @@ class UserServices
     public function updateUserProfile($data) {
         $validator = Validator::make($data, [
             'id' => 'integer|required',
+            'first_name' => 'string',
+            'last_name' => 'string',
             'address' => 'string',
             'phone_number' => 'string',
-            'profile_picture_path' => 'string',
-            'is_admin' => 'boolean',
-            'is_super_admin' => 'boolean'
+            'profile_image' => 'file'
         ]);
 
         if($validator->fails()){
@@ -100,7 +101,13 @@ class UserServices
         $userId = $data['id'];
         unset($data['id']);
 
-        $this->user_repository->updateUserProfile($userId, $data);        
+
+        if(isset($data['profile_picture'])){
+            $data['profile_picture_path'] = $this->_storeImage($data['profile_picture'], 'profile', auth()->user()->id);
+            unset($data['profile_picture']);
+        }
+
+        $this->user_repository->updateUser($userId, $data);        
     }
 
     function logout($data){
@@ -118,6 +125,58 @@ class UserServices
         if ($user) {
             $user->tokens->each(fn($token) => $token->delete());
         }
+    }
 
+    function resetPassword($data){
+        $validator = Validator::make($data, [
+            'user' => 'required',
+            'currentPassword' => 'required',
+            'newPassword' => 'required|min:8|confirmed',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+        
+        if(!Hash::check($data['currentPassword'], $data['user']->password)) {
+            throw new Exception(
+                'Current password is incorrect',
+                422
+            );
         }
+
+        $this->user_repository->updateUser($data['user']->id, ['password' => Hash::make($data['newPassword'])]);
+        return;
+    }    
+
+    function upgradeToSeller($data) {
+        $validator = Validator::make($data, [
+            'user' => 'required',
+            'account_type_id' => 'integer|required',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
+        if(!$data['user']->address  || !$data['user']->phone_number){
+            throw new Exception(
+                'Please fill the address and phone number fields in your profile first',
+                422
+            );
+        }
+
+        $this->user_repository->createSeller([
+            'user_id' => $data['user']->id, 'account_type_id'=>$data['account_type_id']
+        ]);
+
+
+
+
+    }
+
 }

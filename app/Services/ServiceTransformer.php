@@ -12,10 +12,20 @@ class ServiceTransformer{
         'viewUserProfile' => [], 
         'updateUserProfile' => [],
         'logout' => [],
+        'resetPassword' => [],
+        'upgradeToSeller' => [],
+
         'addProperty' => ['TransactionAspect'],
+        'updateProperty' => ['TransactionAspect'],
         'viewProperties' => [],
         'filterProperties' => ['UserSearchTrackingAspect'],
         'viewPropertyDetails' => ['UserClickTrackingAspect'],
+        'deleteProperty' => [],
+        'viewPendingProperties' => [],
+        'propertyAdjudication' => [],
+        'addPropertyToFavorite' => [],
+        'removePropertyFromFavorite' => [],
+        'viewFavoriteProperties' => [],
         'adminLogin' => [],
         'adminLogout' => [],
         'adminRegister' => [],
@@ -24,6 +34,15 @@ class ServiceTransformer{
         'removeAdmin'=> [],
         'searchAdmin'=>[],
         // 'viewProperty'=>['UserClickTrackingAspect'] // (we don't have this function yet)
+
+        'viewAmenities' => [],
+        'viewDirections' => [],
+        'viewPropertyTypes' => [],
+        'viewCommercialPropertyTypes' => [],
+        'viewResidentialPropertyTypes' => [],
+        'viewCountries' => [],
+        'viewOwnershipTypes' => [],
+        'viewAvailabilityStatus' => [],
     ];
 
     private $service_mapper = [];

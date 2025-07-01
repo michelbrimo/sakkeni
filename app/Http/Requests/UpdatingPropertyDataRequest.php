@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddingPropertyDataRequest extends FormRequest
+class UpdatingPropertyDataRequest extends FormRequest
 {
     public function authorize()
     {
@@ -17,18 +17,18 @@ class AddingPropertyDataRequest extends FormRequest
     public function rules()
     {
         return [
-            "country_id" => "integer|required",
-            "city_id" => "integer|required",
+            "country_id" => "integer",
+            "city_id" => "integer",
             "latitude" => "numeric",
             "longitude" => "numeric",
-            "additional_info" => "string|required",
-            "area" => "numeric|required",
-            "exposure" => "array|required",
-            "bathrooms" => "integer|required",
-            "balconies" => "integer|required",
-            "ownership_type_id" => "string|required",
-            "property_type_id" => "integer|required",
-            "images" => "array|required",
+            "additional_info" => "string",
+            "area" => "numeric",
+            "exposure" => "array",
+            "bathrooms" => "integer",
+            "balconies" => "integer",
+            "ownership_type_id" => "string",
+            "property_type_id" => "integer",
+            "images" => "array",
             
             "amenities" => "array",
             "delivery_date" => "date",

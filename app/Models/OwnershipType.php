@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\PropertyType as EnumsPropertyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PropertyType extends Model
+class OwnershipType extends Model
 {
     use HasFactory;
 }

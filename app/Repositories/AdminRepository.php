@@ -10,8 +10,9 @@ class AdminRepository{
         return Admin::create($data);
     }  
 
-    public function viewAdmins(){
-        return Admin::get(); 
+    public function viewAdmins($data){
+        // return Admin::get();
+        return Admin::simplePaginate(10, '*','page', $data['page'] ?? 1);
     }
 
     public function getAdminDetails_byId($id) {
@@ -39,7 +40,7 @@ class AdminRepository{
     }
 
     public function searchAdmin_byName($data){
-        return Admin::where('username', 'LIKE', '%' . $data['name'] . '%')
+        return Admin::where('first_name', 'LIKE', '%' . $data['name'] . '%')
         ->get();
     }
 

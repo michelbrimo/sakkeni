@@ -20,7 +20,8 @@ class AuthenticationTest extends TestCase
     public function user_can_register_with_valid_credentials()
     {
         $response = $this->postJson('/api/sign-up', [
-            'username' => 'testuser',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'test@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!'
@@ -30,7 +31,8 @@ class AuthenticationTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
-            'username' => 'testuser'
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
         ]);
     }
 
@@ -40,7 +42,8 @@ class AuthenticationTest extends TestCase
         User::factory()->create(['email' => 'existing@example.com']);
 
         $response = $this->postJson('/api/sign-up', [
-            'username' => 'newuser',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
             'email' => 'existing@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!'

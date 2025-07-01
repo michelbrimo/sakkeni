@@ -32,14 +32,15 @@ class AdminFactory extends Factory
     public function definition(): array
     {
         return [
-            'username' => $this->faker->unique()->userName(),
+            'first_name' => $this->faker->unique()->firstName(),
+            'last_name' => $this->faker->unique()->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'profile_picture_path' => null,
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->unique()->phoneNumber(),
-            'number_of_excepted_houses' => $this->faker->numberBetween(0, 100),
+            'number_of_accepted_houses' => $this->faker->numberBetween(0, 100),
             'is_super_admin' => false,
             'remember_token' => Str::random(10),
         ];

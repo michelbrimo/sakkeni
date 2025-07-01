@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
+use App\Enums\AvailabilityStatus;
 use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
+use App\Models\ResidentialProperty;
 use App\Repositories\ImageRepository;
 use App\Repositories\LocationRepository;
 use Exception;
 use App\Repositories\PropertyRepository;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyServices extends ImageServices
 {
@@ -38,7 +41,7 @@ class PropertyServices extends ImageServices
             'area' => $data['area'],
             'bathrooms' => $data['bathrooms'],
             'balconies' => $data['balconies'],
-            'ownership_type' => $data['ownership_type'],
+            'ownership_type_id' => $data['ownership_type_id'],
             'property_type_id' => $data['property_type_id'],
             'sell_type_id' => $data['sell_type_id'],
         ]);
@@ -88,24 +91,81 @@ class PropertyServices extends ImageServices
         }
     }
 
-    public function viewProperties($data){
-        if($data['_sell_type_id'] == SellType::PURCHASE)
-            return $this->property_repository->getPurchaseProperties($data);
-        else if($data['_sell_type_id'] == SellType::RENT)
-            return $this->property_repository->getRentProperties($data);
-        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
-            return $this->property_repository->getOffPlanProperties($data);
+    public function updateProperty($data){
+        $propertyId = $data['property']->id;
 
+        $updateLocationData = collect($data)
+                    ->only(['country_id', 'city_id', 'latitude', 'longitude', 'additional_info'])
+                    ->filter(fn($value) => !is_null($value))
+                    ->toArray();
+
+        $this->property_repository->updatePropertyLocation($data['property']->location_id, $updateLocationData);
+
+
+        $updatePropertyData = collect($data)
+                    ->only(['area', 'bathrooms', 'balconies', 'ownership_type_id'])
+                    ->filter(fn($value) => !is_null($value))
+                    ->toArray();
+        $updatePropertyData['availability_status_id'] = AvailabilityStatus::Pending;
+
+        $this->property_repository->updateProperty($propertyId, $updatePropertyData);
+ 
+        if(isset($data['exposure']))
+            $data['property']->directions()->sync($data['exposure']);
+
+        if(isset($data['amenities']))
+            $data['property']->amenities()->sync($data['amenities']);
+
+        if(isset($data['images']))
+            $this->updateImages($propertyId, $data['images']);
+        
+        
+        if ($data['property']->sell_type_id == SellType::PURCHASE) {
+            $updatePurchaseData = collect($data)
+                ->only(['price', 'is_furnished'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+            $this->property_repository->updatePurchase($propertyId, $updatePurchaseData);        
+        }
+        else if($data['property']->sell_type_id == SellType::RENT){
+            $updateRentData = collect($data)
+                ->only(['price', 'lease_period', 'payment_plan', 'is_furnished'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+            $this->property_repository->updateRent($propertyId, $updateRentData);
+        }
+        else if($data['property']->sell_type_id == SellType::OFF_PLAN){
+            $updateOffPlanData = collect($data)
+                ->only(['delivery_date', 'first_pay', 'pay_plan', 'overall_payment'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+            $this->property_repository->updateOffPlan($propertyId, $updateOffPlanData);
+        }
+        
+        
+        if ($data['property']->property_type_id == PropertyType::RESIDENTIAL){
+            $this->_updateResidentialProperty($propertyId, $data) ;
+        }
+        else if ($data['property']->property_type_id == PropertyType::COMMERCIAL){
+            $this->_updateCommercialProperty($propertyId, $data) ;
+        }
+    }
+                
+    public function viewProperties($data){
+        return $this->property_repository->getProperties($data);
 
         throw new \Exception('Unkown Property Type', 422);
     }
 
     public function filterProperties($data){
-        if($data['_sell_type_id'] == SellType::PURCHASE)
+        if($data['sell_type_id'] == SellType::PURCHASE)
             return $this->property_repository->filterPurchaseProperties($data);
-        else if($data['_sell_type_id'] == SellType::RENT)
+        else if($data['sell_type_id'] == SellType::RENT)
             return $this->property_repository->filterRentProperties($data);
-        else if($data['_sell_type_id'] == SellType::OFF_PLAN)
+        else if($data['sell_type_id'] == SellType::OFF_PLAN)
             return $this->property_repository->filterOffPlanProperties($data);
 
         throw new \Exception('Unkown Property Type', 422);
@@ -115,16 +175,105 @@ class PropertyServices extends ImageServices
         return $this->property_repository->viewPropertyDetails($data);
     }
 
+    function deleteProperty($data) {
+        return $this->property_repository->deleteProperty($data);
+    }
+    
+    function viewPendingProperties($data) {
+        return $this->property_repository->viewPendingProperties($data);
+    }
+    
+    function propertyAdjudication($data) {
+        return $this->property_repository->propertyAdjudication($data);
+    }
+    
+    function addPropertyToFavorite($data) {
+        return $this->property_repository->createPropertyFavorite($data);
+    }
+    
+    function removePropertyFromFavorite($data) {
+        return $this->property_repository->deletePropertyFavorite($data);
+    }
+    
+    function viewFavoriteProperties($data) {
+        return $this->property_repository->getFavoriteProperties($data);
+    }
+
+
+
+    function viewAmenities()
+    {
+        return $this->property_repository->viewAmenities();
+    }
+
+    function viewDirections()
+    {
+        return $this->property_repository->viewDirections();
+    }
+
+    function viewPropertyTypes()
+    {
+        return $this->property_repository->viewPropertyTypes();
+    }
+
+    function viewCommercialPropertyTypes()
+    {
+        return $this->property_repository->viewCommercialPropertyTypes();
+    }
+
+    function viewResidentialPropertyTypes()
+    {
+        return $this->property_repository->viewResidentialPropertyTypes();
+    }
+
+    function viewCountries()
+    {
+        return $this->property_repository->viewCountries();
+    }
+
+    function viewAvailabilityStatus()
+    {
+        return $this->property_repository->viewAvailabilityStatus();
+    }
+
+    function viewOwnershipTypes()
+    {
+        return $this->property_repository->viewOwnershipTypes();
+    }
+
 
     protected function _saveImages($propertyId, $images) {
         $imagesPaths = $this->_storeImages($images, 'property', $propertyId);
-        $this->image_repository->addImages($propertyId, $imagesPaths);
+        $this->image_repository->addPropertyImages($propertyId, $imagesPaths);
     }
+
+  public function updateImages($propertyId, array $newImages)
+    {
+        $oldImages = $this->image_repository->getImagesByPropertyId($propertyId);
+
+        foreach ($oldImages as $image) {
+            $filePath = str_replace('storage/', '', $image->image_path);
+            Storage::disk('public')->delete($filePath);
+            $this->image_repository->deleteImage($image->id);
+        }
+
+        $this->_saveImages($propertyId, $newImages);
+    }
+
     
     protected function _saveCommercialProperty($data) {
         $this->property_repository->createCommercialProperty($data);
     }
-    
+
+    protected function _updateCommercialProperty($propertyId, $data) {
+        $updateResidentialProperty = collect($data)
+            ->only(['building_number', 'apartment_number', 'floor'])
+            ->filter(fn($value) => !is_null($value))
+            ->toArray();
+
+        $this->property_repository->updateCommercialProperty($propertyId, $updateResidentialProperty);
+    }
+
     protected function _saveResidentialProperty($data, $property) {
         $residentialProperty = $this->property_repository->createResidentialProperty([
             "property_id" => $property->id,
@@ -147,13 +296,41 @@ class PropertyServices extends ImageServices
             ]);
         }
     }
+
+    protected function _updateResidentialProperty($propertyId, $data) {
+        $updateResidentialProperty = collect($data)
+                ->only(['bedrooms'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+        $this->property_repository->updateResidentialProperty($propertyId, $updateResidentialProperty);
+
+        $residentialProperty = ResidentialProperty::where('property_id', $propertyId)->first();
+        
+        if ($residentialProperty->residential_property_type_id == ResidentialPropertyType::APARTMENT) {
+            $updateApartmentData = collect($data)
+                ->only(['floor', 'building_number', 'apartment_number'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+            $this->property_repository->updateApartment($residentialProperty->id, $updateApartmentData);
+        }
+        else if($residentialProperty->residential_property_type_id == ResidentialPropertyType::VILLA){
+            $updateVillaData = collect($data)
+                ->only(['floors'])
+                ->filter(fn($value) => !is_null($value))
+                ->toArray();
+
+            $this->property_repository->updateVilla($residentialProperty->id, $updateVillaData);
+        }
+    }
     
     protected function _saveLocation($data) {
         return $this->location_repository->create($data); 
     }
 
     protected function _saveProperty($data) {
-        $data['availability_status'] = 'Pending';
+        $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
     }

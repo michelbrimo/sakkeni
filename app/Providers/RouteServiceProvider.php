@@ -28,8 +28,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Route::bind('sell_type_id', function ($value) {
-            request()->route()->setParameter('sell_type_id', $value);
+        Route::bind('sell_type', function ($value) {
+            request()->route()->setParameter('sell_type', $value);
             return SellType::where('name', $value)->firstOrFail()->id;
         });
 

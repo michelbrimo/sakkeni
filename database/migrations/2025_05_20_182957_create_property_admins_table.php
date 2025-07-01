@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sellers', function (Blueprint $table) {
+        Schema::create('property_admins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-            ->constrained('users') 
+            $table->foreignId('property_id')
+            ->constrained('properties') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('account_type_id')
-            ->constrained('account_types') 
+            $table->foreignId('admin_id')
+            ->constrained('admins') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->integer("free_ads_left")->default(3);
+            $table->boolean('approve');
+            $table->string('reason')->nullable();
+
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sellers');
+        Schema::dropIfExists('property_admins');
     }
 };

@@ -18,7 +18,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'username',
+        'first_name',
+        'last_name',
         'email',
         'password',
         "profile_picture_path",
@@ -60,5 +61,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserSearch::class);
     }
+
+    public function seller()
+    {
+        return $this->hasOne(Seller::class);
+    }
+
 
 }

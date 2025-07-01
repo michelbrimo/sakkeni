@@ -54,7 +54,7 @@ class PropertyTest extends TestCase
             'area' => 75,
             'bathrooms' => 1,
             'balconies' => 1,
-            'ownership_type' => 'Freehold',
+            'ownership_type_id' => 'Freehold',
 
             'images' => [
                 UploadedFile::fake()->image('property1.jpg'),
@@ -114,7 +114,7 @@ class PropertyTest extends TestCase
             'area' => 600,
             'bathrooms' => 4,
             'balconies' => 2,
-            'ownership_type' => 'Freehold',
+            'ownership_type_id' => 'Freehold',
 
             'images' => [
                 UploadedFile::fake()->image('property1.jpg'),
@@ -172,7 +172,7 @@ class PropertyTest extends TestCase
             'area' => 75,
             'bathrooms' => 1,
             'balconies' => 1,
-            'ownership_type' => 'Freehold',
+            'ownership_type_id' => 'Freehold',
 
             'images' => [
                 UploadedFile::fake()->image('property1.jpg'),
@@ -229,7 +229,7 @@ class PropertyTest extends TestCase
             // 'area' => 75,
             // 'bathrooms' => 1,
             'balconies' => 1,
-            'ownership_type' => 'Freehold',
+            'ownership_type_id' => 'Freehold',
 
             'images' => [
                 UploadedFile::fake()->image('property1.jpg'),

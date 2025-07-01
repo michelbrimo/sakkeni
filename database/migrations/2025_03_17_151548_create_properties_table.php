@@ -29,7 +29,10 @@ return new class extends Migration
             $table->float('area');
             $table->integer('bathrooms');
             $table->integer('balconies');
-            $table->string('ownership_type');
+            $table->foreignId('ownership_type_id')
+            ->constrained('ownership_types')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->foreignId('property_type_id')
             ->constrained('property_types')
             ->cascadeOnDelete()
@@ -38,7 +41,10 @@ return new class extends Migration
             ->constrained('sell_types')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string('availability_status');             
+            $table->foreignId('availability_status_id')
+            ->constrained('availability_statuses')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

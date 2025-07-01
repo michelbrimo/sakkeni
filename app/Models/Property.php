@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
+use App\Models\PropertyType as ModelsPropertyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,11 +21,11 @@ class Property extends Model
         'area',
         'bathrooms',
         'balconies',
-        'ownership_type',
+        'ownership_type_id',
         'physical_status_type_id',
         'property_type_id',
         'sell_type_id',
-        'availability_status',
+        'availability_status_id',
     ];
 
     public function directions() {
@@ -44,8 +45,58 @@ class Property extends Model
     {
         return $this->hasOne(PropertyImage::class)->orderBy('id');
     }
+    
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
 
+    public function propertyType()
+    {
+        return $this->belongsTo(ModelsPropertyType::class);
+    }
+    
+    public function availabilityStatus()
+    {
+        return $this->belongsTo(AvailabilityStatus::class);
+    }
+    
+    public function ownershipType()
+    {
+        return $this->belongsTo(OwnershipType::class);
+    }
+    
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 
+    public function residential()
+    {
+        return $this->hasOne(ResidentialProperty::class);
+    }
+
+    public function commercial()
+    {
+        return $this->hasOne(CommercialProperty::class);
+    }
+    
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
+
+    public function rent()
+    {
+        return $this->hasOne(Rent::class);
+    }
+
+    public function offPlan()
+    {
+        return $this->hasOne(OffPlanProperty::class);
+    }
+
+    
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)
     {
         if ($countryId !== null) {$query->where('locations.country_id', $countryId);}

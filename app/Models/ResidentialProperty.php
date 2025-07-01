@@ -13,5 +13,11 @@ class ResidentialProperty extends Model
         "residential_property_type_id",
     ];
     
+    public function residentialPropertyType()
+    {
+        return $this->belongsTo(ResidentialPropertyType::class);
+    }
+
+
     use HasFactory;
 }

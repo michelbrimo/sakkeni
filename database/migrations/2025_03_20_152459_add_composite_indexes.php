@@ -18,8 +18,8 @@ return new class extends Migration
 
         // Properties Table
         Schema::table('properties', function (Blueprint $table) {
-            // $table->index(['availability_status', 'is_furnished']); // Common filters
-            $table->index(['availability_status', 'created_at']); // New listings
+            // $table->index(['availability_status_id', 'is_furnished']); // Common filters
+            $table->index(['availability_status_id', 'created_at']); // New listings
         });
 
         // Building Amenities Table
@@ -38,8 +38,8 @@ return new class extends Migration
         });
     
         Schema::table('properties', function (Blueprint $table) {
-            $table->dropIndex(['availability_status', 'is_furnished']);
-            $table->dropIndex(['availability_status', 'created_at']);
+            $table->dropIndex(['availability_status_id', 'is_furnished']);
+            $table->dropIndex(['availability_status_id', 'created_at']);
         });
     
         Schema::table('amenity_building', function (Blueprint $table) {
