@@ -13,6 +13,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        // $schedule->command('preferences:fill-from-searches')->twiceDaily(1, 13);
+        // commad: php artisan preferences:fill-from-searches
+
     }
 
     /**

@@ -18,17 +18,14 @@ class ServiceTransformer{
         'addProperty' => ['TransactionAspect'],
         'updateProperty' => ['TransactionAspect'],
         'viewProperties' => [],
-        'filterProperties' => [],//['UserSearchTrackingAspect']
-        'viewPropertyDetails' => [],
+        'filterProperties' => ['UserSearchTrackingAspect'],
+        'viewPropertyDetails' => ['UserClickTrackingAspect'],
         'deleteProperty' => [],
         'viewPendingProperties' => [],
         'propertyAdjudication' => [],
         'addPropertyToFavorite' => [],
         'removePropertyFromFavorite' => [],
         'viewFavoriteProperties' => [],
-        
-        
-
         'adminLogin' => [],
         'adminLogout' => [],
         'adminRegister' => [],
