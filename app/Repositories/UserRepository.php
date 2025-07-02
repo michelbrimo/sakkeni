@@ -20,9 +20,7 @@ class UserRepository{
     }
 
     public function getUserDetails_byId($id) {
-        $query = User::where('id', $id)->with('seller.accountType')->get();
-
-        return $query;
+       return User::where('id', $id)->with('seller.accountType')->first();
     }
 
     public function updateUser($userId, $data) {
