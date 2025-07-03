@@ -12,9 +12,7 @@ use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
 use App\Models\OwnershipType;
-use App\Models\PhysicalStatusType;
 use App\Models\PropertyType;
-use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType;
 use App\Models\SellType;
 use App\Models\User;
@@ -27,6 +25,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // This part remains the same, it seeds the necessary lookup data first.
         $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
         foreach ($directions as $direction) {
             Direction::create(['name' => $direction]);
@@ -79,5 +78,10 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
         Amenity::factory(10)->create();
+
+        
+        $this->call(PropertySeeder::class);
+
+        $this->call(UserSearchSeeder::class);
     }
 }

@@ -13,17 +13,23 @@ use App\Repositories\LocationRepository;
 use Exception;
 use App\Repositories\PropertyRepository;
 use Illuminate\Support\Facades\Storage;
+use App\Services\RecommendationService;
+
 
 class PropertyServices extends ImageServices
 {
     protected $property_repository; 
     protected $image_repository; 
     protected $location_repository; 
+    protected $recommendation_service;
+
 
     public function __construct() {
         $this->property_repository = new PropertyRepository();
         $this->location_repository = new LocationRepository();
         $this->image_repository = new ImageRepository();
+        $this->recommendation_service = new RecommendationService();
+
     }
 
     public function addProperty($data){
@@ -333,6 +339,15 @@ class PropertyServices extends ImageServices
         $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
+    }
+
+    public function viewRecommendedProperties(array $data)
+    {
+        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);
+        return $this->property_repository->getPropertiesByIds(
+            $recommendedIds,
+            $data['page'] ?? 1
+        );
     }
 }
 

@@ -21,19 +21,19 @@ return new class extends Migration
             $table->unsignedTinyInteger('max_bedrooms')->nullable();
             $table->unsignedTinyInteger('min_balconies')->nullable();
             $table->unsignedTinyInteger('max_balconies')->nullable();
-            $table->unsignedTinyInteger('min_area')->nullable();
-            $table->unsignedTinyInteger('max_area')->nullable();
+            $table->unsignedBigInteger('min_area')->nullable();
+            $table->unsignedBigInteger('max_area')->nullable();
             $table->unsignedTinyInteger('min_bathrooms')->nullable();
             $table->unsignedTinyInteger('max_bathrooms')->nullable();
-            $table->unsignedInteger('min_price')->nullable();
-            $table->unsignedInteger('max_price')->nullable();
+            $table->unsignedBigInteger('min_price')->nullable();
+            $table->unsignedBigInteger('max_price')->nullable();
             $table->json('preferred_locations')->nullable(); // Array of location IDs
             $table->json('must_amenity')->nullable(); // Array of amenities IDs
             $table->boolean('is_furnished')->nullable();
             $table->timestamps(); // Adds both created_at and updated_at
             //off plan sell_type_idsell_type_id=3
-            $table->unsignedInteger('min_first_pay')->nullable();
-            $table->unsignedInteger('max_first_pay')->nullable();
+            $table->unsignedBigInteger('min_first_pay')->nullable();
+            $table->unsignedBigInteger('max_first_pay')->nullable();
             $table->timestamp('delivery_date')->nullable();
             //rent sell_type_idsell_type_id=2
             $table->string('lease_period')->nullable();

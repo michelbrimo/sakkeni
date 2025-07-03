@@ -2,10 +2,6 @@
 namespace App\Aspects;
 
 use App\Models\UserClick;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-
-use Carbon\Carbon;
 
 class UserClickTrackingAspect
 {

@@ -9,6 +9,8 @@ use App\Http\Requests\UpdatingPropertyDataRequest;
 use App\Models\Property;
 use App\Services\ServiceTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
+
 
 class PropertyController extends Controller
 {
@@ -121,7 +123,14 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Favorite Properties fetched Successfully');
     }
 
-
+      public function showRecommendedProperties(Request $request)
+    {
+        $additionalData = [
+          'user_id' => Auth::id(),
+          'page' => $request->query('page', 1)
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Recommended properties fetched successfully');
+    }
 
 
     

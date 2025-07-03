@@ -1,0 +1,164 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\City;
+use App\Models\Amenity;
+use App\Models\Location;
+use App\Models\Property;
+use App\Models\ResidentialProperty;
+use App\Models\CommercialProperty;
+use App\Models\Apartment;
+use App\Models\Villa;
+use App\Models\Purchase;
+use App\Models\Rent;
+use App\Models\OffPlanProperty;
+use App\Models\UserClick;
+use App\Models\PropertyFavorite;
+
+class PropertySeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // Get existing IDs from the database to create relationships
+        $userIds = User::pluck('id');
+        $cityIds = City::pluck('id');
+        $amenityIds = Amenity::pluck('id');
+        $faker = \Faker\Factory::create();
+
+        // Check if required data exists
+        if ($userIds->isEmpty() || $cityIds->isEmpty() || $amenityIds->isEmpty()) {
+            $this->command->error('Users, Cities, or Amenities tables are empty. Please seed them first.');
+            return;
+        }
+
+        $this->command->info('Seeding 200 properties...');
+        $this->command->getOutput()->progressStart(200);
+
+        for ($i = 0; $i < 200; $i++) {
+            // --- 1. Create a Location ---
+            $location = Location::create([
+                'country_id' => 1, // Assuming Syria as per your DatabaseSeeder
+                'city_id' => $cityIds->random(),
+                'latitude' => $faker->latitude(32, 37), // Latitude for Syria
+                'longitude' => $faker->longitude(35, 42), // Longitude for Syria
+                'additional_info' => $faker->streetAddress,
+            ]);
+
+            // --- 2. Randomly determine property and sell types ---
+            $propertyTypeId = rand(1, 2); // 1: Residential, 2: Commercial
+            $sellTypeId = rand(1, 3);     // 1: Purchase, 2: Rent, 3: Off-plan
+
+            // --- 3. Create the main Property record ---
+            $property = Property::create([
+                'location_id' => $location->id,
+                'owner_id' => $userIds->random(),
+                'admin_id' => null, // Can be assigned later
+                'area' => $faker->numberBetween(50, 500),
+                'bathrooms' => rand(1, 5),
+                'balconies' => rand(0, 3),
+                'ownership_type_id' => 1, // Assuming 'Freehold'
+                'property_type_id' => $propertyTypeId,
+                'sell_type_id' => $sellTypeId,
+                'availability_status_id' => 2, // Assuming 'Active'
+            ]);
+
+            // --- 4. Create sub-type and transaction details based on random types ---
+            if ($propertyTypeId == 1) { // Residential
+                $residentialTypeId = rand(1, 2); // 1: apartment, 2: villa
+                $residentialProperty = ResidentialProperty::create([
+                    'property_id' => $property->id,
+                    'bedrooms' => rand(1, 6),
+                    'residential_property_type_id' => $residentialTypeId,
+                ]);
+
+                if ($residentialTypeId == 1) { // Apartment
+                    Apartment::create([
+                        'residential_property_id' => $residentialProperty->id,
+                        'floor' => rand(1, 20),
+                        'building_number' => $faker->buildingNumber,
+                        'apartment_number' => rand(1, 100),
+                    ]);
+                } else { // Villa
+                    Villa::create([
+                        'residential_property_id' => $residentialProperty->id,
+                        'floors' => rand(1, 3),
+                    ]);
+                }
+            } else { // Commercial
+                CommercialProperty::create([
+                    'property_id' => $property->id,
+                    'floor' => rand(1, 10),
+                    'building_number' => $faker->buildingNumber,
+                    'apartment_number' => rand(1, 50), // Office number
+                    'commercial_property_type_id' => 1, // Assuming 'office'
+                ]);
+            }
+
+            // Create transaction details
+            if ($sellTypeId == 1) { // Purchase
+                Purchase::create([
+                    'property_id' => $property->id,
+                    'price' => $faker->numberBetween(100000, 999999),
+                    'is_furnished' => $faker->boolean,
+                ]);
+            } elseif ($sellTypeId == 2) { // Rent
+                Rent::create([
+                    'property_id' => $property->id,
+                    'price' => $faker->numberBetween(500, 5000),
+                    'lease_period' => $faker->randomElement(['Monthly', 'Yearly']),
+                    'payment_plan' => 'Upfront',
+                    'is_furnished' => $faker->boolean,
+                ]);
+            } else { // Off-plan
+                OffPlanProperty::create([
+                    'property_id' => $property->id,
+                    'delivery_date' => $faker->dateTimeBetween('+1 year', '+3 years'),
+                    'first_pay' => $faker->numberBetween(20000, 100000),
+                    'pay_plan' => json_encode(['40/60 payment plan']),
+                    'overall_payment' => $faker->numberBetween(150000, 999999),
+                ]);
+            }
+
+            // --- 5. Attach random amenities ---
+            $randomAmenities = $amenityIds->random(rand(2, 5));
+            $property->amenities()->attach($randomAmenities);
+            
+            $this->command->getOutput()->progressAdvance();
+        }
+        $this->command->getOutput()->progressFinish();
+
+        // --- NEW: Seed user interactions (clicks and favorites) ---
+        $this->command->info("\nSeeding user clicks and favorites...");
+        $propertyIds = Property::pluck('id');
+
+        foreach ($userIds as $userId) {
+            // Each user clicks on 10 to 30 random properties
+            $clickedProperties = $propertyIds->random(rand(10, 30));
+            foreach ($clickedProperties as $propertyId) {
+                UserClick::create([
+                    'user_id' => $userId,
+                    'property_id' => $propertyId,
+                    'click_count' => rand(1, 5), // Simulate multiple clicks
+                ]);
+            }
+
+            // Each user favorites 2 to 8 random properties from the ones they clicked
+            $favoritedProperties = $clickedProperties->random(rand(2, 8));
+            foreach ($favoritedProperties as $propertyId) {
+                PropertyFavorite::create([
+                    'user_id' => $userId,
+                    'property_id' => $propertyId,
+                ]);
+            }
+        }
+        $this->command->info('User interactions seeded successfully.');
+    }
+}

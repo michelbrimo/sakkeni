@@ -27,6 +27,7 @@ use App\Models\Rent;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType as ModelsResidentialPropertyType;
 use App\Models\Villa;
+use Illuminate\Support\Facades\DB;
 
 class PropertyRepository{
     public function create($data) {
@@ -475,8 +476,30 @@ class PropertyRepository{
         return $query;
     }
 
+    public function getPropertiesByIds(array $propertyIds, int $page = 1, int $perPage = 10)
+    {
+        if (empty($propertyIds)) {
+            return collect();
+        }
 
+        $query = Property::whereIn('id', $propertyIds)
+            ->with([
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                'location.country',
+                'location.city',
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType',
+                'rent',
+                'purchase',
+                'offPlan'
+            ])
+            ->orderByRaw("FIELD(id, " . implode(',', $propertyIds) . ")");
 
+        return $query->simplePaginate($perPage, ['*'], 'page', $page);
+    }
 
     function viewAmenities()
     {

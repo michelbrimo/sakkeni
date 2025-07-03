@@ -13,9 +13,9 @@ class UserSearchTrackingAspect
         $user_id =  auth()->user()->id;
         if (!$user_id) return;
 
-        $filters = request()->all(); //ma fhmt kif al filter 3m ymshi 
+        $filters = request()->all(); 
 
-        $sell_type_id = request()->route('sell_type_id');
+        $sell_type_id = request()->route('sell_type');
 
         
         if (!empty($filters)) {

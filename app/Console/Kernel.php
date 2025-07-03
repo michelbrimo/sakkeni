@@ -16,6 +16,14 @@ class Kernel extends ConsoleKernel
         // $schedule->command('preferences:fill-from-searches')->twiceDaily(1, 13);
         // commad: php artisan preferences:fill-from-searches
 
+        // $schedule->command('metrics:update-property-popularity')->dailyAt('02:00');
+        // commad: php artisan metrics:update-property-popularity
+
+        // $schedule->command('recommendations:retrain-models')->dailyAt('03:00');
+        // commad: php artisan recommendations:retrain-models
+
+
+
     }
 
     /**

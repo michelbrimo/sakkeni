@@ -20,6 +20,8 @@ class ServiceTransformer{
         'viewProperties' => [],
         'filterProperties' => ['UserSearchTrackingAspect'],
         'viewPropertyDetails' => ['UserClickTrackingAspect'],
+        'viewRecommendedProperties' => [], 
+
         'deleteProperty' => [],
         'viewPendingProperties' => [],
         'propertyAdjudication' => [],
@@ -33,8 +35,7 @@ class ServiceTransformer{
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
         'searchAdmin'=>[],
-        // 'viewProperty'=>['UserClickTrackingAspect'] // (we don't have this function yet)
-
+        
         'viewAmenities' => [],
         'viewDirections' => [],
         'viewPropertyTypes' => [],
