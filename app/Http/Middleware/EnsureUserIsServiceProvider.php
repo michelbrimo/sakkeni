@@ -16,14 +16,17 @@ class EnsureUserIsServiceProvider
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = User::join('service_providers', 'service_providers.user_id', '=', 'users.id')->get();
+        $user = User::join('service_providers', 'service_providers.user_id', '=', 'users.id')
+                    ->where('users.id', auth()->user()->id)
+                    ->first();
         
-        if(count($user) > 0){
+        if($user){
             return $next($request);
         }
 
         return response()->json([
             'status' => false,
             'message' => 'You do not have permission to perform this action.',
-        ], 403);    }
+        ], 403);    
+    }
 }

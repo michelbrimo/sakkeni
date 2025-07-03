@@ -18,6 +18,7 @@ use App\Models\PropertyType;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType;
 use App\Models\SellType;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -76,6 +77,11 @@ class DatabaseSeeder extends Seeder
         $accountTypes = ['Personal', 'Company'];
         foreach ($accountTypes as $accountType) {
             AccountType::create(['name' => $accountType]);
+        }
+
+        $subscriptionPlans = ['Monthly', 'Yearly'];
+        foreach ($subscriptionPlans as $subscriptionPlan) {
+            SubscriptionPlan::create(['name' => $subscriptionPlan, 'price' => rand(10000, 50000)]);
         }
 
         Amenity::factory(10)->create();

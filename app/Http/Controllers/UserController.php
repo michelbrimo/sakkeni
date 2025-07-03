@@ -47,7 +47,7 @@ class UserController extends Controller
     }
     
     public function upgradeToServiceProvider(Request $request){
-        $additionalData = ['id' => auth()->user()->id];
-        return $this->executeService($this->service_transformer, $request, $additionalData, "password reseted successfully");
+        $additionalData = ['user' => auth()->user()];
+        return $this->executeService($this->service_transformer, $request, $additionalData, "upgraded to service provider successfully");
     }
 }

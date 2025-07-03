@@ -14,6 +14,7 @@ class ServiceTransformer{
         'logout' => [],
         'resetPassword' => [],
         'upgradeToSeller' => [],
+        'upgradeToServiceProvider' => [],
 
         'addProperty' => ['TransactionAspect'],
         'updateProperty' => ['TransactionAspect'],
