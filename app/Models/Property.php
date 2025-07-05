@@ -161,8 +161,8 @@ class Property extends Model
             $query->where("rents.is_furnished", '=', $filters['is_furnished']);
         }
         
-        if ($filters['lease_period'] !== null) {
-            $query->where("rents.lease_period", '=', $filters['lease_period']);
+        if ($filters['lease_period_unit'] !== null) {
+            $query->where("rents.lease_period_unit", '=', $filters['lease_period_unit']);
         }
 
         return $query;

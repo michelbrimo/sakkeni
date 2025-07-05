@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Seller;
+use App\Models\ServiceProvider;
+use App\Models\ServiceProviderSubscriptionPlan;
 use App\Models\User;
 
 class UserRepository{
@@ -14,15 +16,21 @@ class UserRepository{
         return Seller::create($data);
     }
     
+    public function createServiceProvider($data) {
+        return ServiceProvider::create($data);
+    }
+    
+    public function createServiceProviderSubscriptionPlan($data) {
+        return ServiceProviderSubscriptionPlan::create($data);
+    }
+
     public function getUserDetails_byEmail($email) {
         return User::where('email', '=', $email)
                    ->first();
     }
 
     public function getUserDetails_byId($id) {
-        $query = User::where('id', $id)->with('seller.accountType')->get();
-
-        return $query;
+       return User::where('id', $id)->with('seller.accountType')->first();
     }
 
     public function updateUser($userId, $data) {

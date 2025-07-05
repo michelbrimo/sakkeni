@@ -68,8 +68,8 @@ class PropertyServices extends ImageServices
             $this->property_repository->createRent([
                 'property_id' => $property->id,
                 'price' => $data['price'],
-                'lease_period' => $data['lease_period'],
-                'payment_plan' => $data['payment_plan'],
+                'lease_period_unit' => $data['lease_period_unit'],
+                'lease_period_value' => $data['lease_period_value'],
                 'is_furnished' => $data['is_furnished'],
             ]);
         }
@@ -136,7 +136,7 @@ class PropertyServices extends ImageServices
         }
         else if($data['property']->sell_type_id == SellType::RENT){
             $updateRentData = collect($data)
-                ->only(['price', 'lease_period', 'payment_plan', 'is_furnished'])
+                ->only(['price', 'lease_period_unit', 'lease_period_value', 'is_furnished'])
                 ->filter(fn($value) => !is_null($value))
                 ->toArray();
 

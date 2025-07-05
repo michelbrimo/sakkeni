@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AvailabilityStatus;
 use Exception;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -173,10 +174,36 @@ class UserServices extends ImageServices
         $this->user_repository->createSeller([
             'user_id' => $data['user']->id, 'account_type_id'=>$data['account_type_id']
         ]);
+    }
+    
+    function upgradeToServiceProvider($data) {
+        $validator = Validator::make($data, [
+            'user' => 'required',
+            'subscription_plan_id' => 'integer|required',
+        ]);
 
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
 
+        if(!$data['user']->address  || !$data['user']->phone_number){
+            throw new Exception(
+                'Please fill the address and phone number fields in your profile first',
+                422
+            );
+        }
 
+        $serviceProvider = $this->user_repository->createServiceProvider([
+            'user_id' => $data['user']->id,
+            'availability_status_id'=> AvailabilityStatus::Pending,
+        ]);
+
+        $this->user_repository->createServiceProviderSubscriptionPlan([
+            'service_provider_id' => $serviceProvider->id,
+            'subscription_plan_id' => $data['subscription_plan_id'],
+    ]);
 
     }
-
 }

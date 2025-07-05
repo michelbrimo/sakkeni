@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_providers', function (Blueprint $table) {
+        Schema::create('work_galleries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-            ->constrained('users') 
+            $table->foreignId('service_provider_service_id')
+            ->constrained('service_provider_services') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('availability_status_id')
-            ->constrained('availability_statuses')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+            $table->string("image_path");
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_providers');
+        Schema::dropIfExists('work_galleries');
     }
 };

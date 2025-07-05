@@ -256,7 +256,7 @@ class PropertyRepository{
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null,
-            'lease_period' => $filters['lease_period'] ?? null
+            'lease_period_unit' => $filters['lease_period_unit'] ?? null
             ])
             
             ->with([

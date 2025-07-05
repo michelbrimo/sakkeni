@@ -11,13 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_galleries', function (Blueprint $table) {
+        Schema::create('service_provider_subscription_plans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_provider_id')
             ->constrained('service_providers') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("image_path");
+            $table->foreignId('subscription_plan_id')
+            ->constrained('subscription_plans') 
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_galleries');
+        Schema::dropIfExists('service_provider_subscription_plans');
     }
 };
