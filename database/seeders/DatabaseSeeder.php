@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
         }
 
         Amenity::factory(10)->create();
+        User::factory(10)->create();
 
         
         $this->call(PropertySeeder::class);

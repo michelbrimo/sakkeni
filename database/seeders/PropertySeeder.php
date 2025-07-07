@@ -113,8 +113,8 @@ class PropertySeeder extends Seeder
                 Rent::create([
                     'property_id' => $property->id,
                     'price' => $faker->numberBetween(500, 5000),
-                    'lease_period' => $faker->randomElement(['Monthly', 'Yearly']),
-                    'payment_plan' => 'Upfront',
+                    'lease_period_unit' => $faker->randomElement(['Month', 'Year']),
+                    'lease_period_value' => $faker->numberBetween(1, 12),
                     'is_furnished' => $faker->boolean,
                 ]);
             } else { // Off-plan
