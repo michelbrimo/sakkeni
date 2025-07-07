@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\AvailabilityStatus;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class EnsureUserIsServiceProvider
     {
         $user = User::join('service_providers', 'service_providers.user_id', '=', 'users.id')
                     ->where('users.id', auth()->user()->id)
+                    ->where('service_providers.availability_status_id', AvailabilityStatus::Active)
                     ->first();
         
         if($user){

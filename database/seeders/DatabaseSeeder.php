@@ -16,6 +16,8 @@ use App\Models\OwnershipType;
 use App\Models\PropertyType;
 use App\Models\ResidentialPropertyType;
 use App\Models\SellType;
+use App\Models\Service;
+use App\Models\ServiceCategory;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -27,7 +29,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // This part remains the same, it seeds the necessary lookup data first.
+        Amenity::factory(10)->create();
+        User::factory(10)->create();
+        ServiceCategory::factory(10)->create();
+        Service::factory(10)->create();
+
         $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
         foreach ($directions as $direction) {
             Direction::create(['name' => $direction]);
@@ -82,10 +88,6 @@ class DatabaseSeeder extends Seeder
         foreach ($subscriptionPlans as $subscriptionPlan) {
             SubscriptionPlan::create(['name' => $subscriptionPlan, 'price' => rand(10000, 50000)]);
         }
-
-        Amenity::factory(10)->create();
-        User::factory(10)->create();
-
         
         $this->call(PropertySeeder::class);
 

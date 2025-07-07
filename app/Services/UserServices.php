@@ -180,6 +180,7 @@ class UserServices extends ImageServices
         $validator = Validator::make($data, [
             'user' => 'required',
             'subscription_plan_id' => 'integer|required',
+            'services_id' => 'array'
         ]);
 
         if($validator->fails()){
@@ -203,7 +204,14 @@ class UserServices extends ImageServices
         $this->user_repository->createServiceProviderSubscriptionPlan([
             'service_provider_id' => $serviceProvider->id,
             'subscription_plan_id' => $data['subscription_plan_id'],
-    ]);
+        ]);
+
+        foreach ($data['services_id'] as $service_id){
+            $this->user_repository->createServiceProviderServices([
+                'service_provider_id' => $serviceProvider->id,
+                'service_id' => $service_id,
+            ]);
+        }
 
     }
 }

@@ -4,15 +4,21 @@ namespace App\Services;
 
 use Exception;
 use App\Repositories\AdminRepository;
+use App\Repositories\PropertyRepository;
+use App\Repositories\ServiceProviderRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AdminServices{
     protected $admin_repository;
+    protected $property_repository;
+    protected $service_provider_repository;
 
     public function __construct() {
         $this->admin_repository = new AdminRepository();
+        $this->property_repository = new PropertyRepository();
+        $this->service_provider_repository = new ServiceProviderRepository();
     }
 
     public function adminRegister($data){
@@ -112,6 +118,18 @@ class AdminServices{
         $result = $this->admin_repository->searchAdmin_byName($data);
 
         return $result;
+    }
+
+    function viewPendingProperties($data) {
+        return $this->property_repository->viewPendingProperties($data);
+    }
+    
+    function propertyAdjudication($data) {
+        return $this->property_repository->propertyAdjudication($data);
+    }
+    
+    function serviceProviderAdjudication($data) {
+        return $this->service_provider_repository->serviceProviderAdjudication($data);
     }
 
 }

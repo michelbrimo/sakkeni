@@ -374,7 +374,7 @@ class PropertyRepository{
     function propertyAdjudication($data){ 
         if($data['approve'] == 1)
             $this->updateProperty($data['property_id'], [
-                'availability_status_id' => AvailabilityStatus::Avtive,
+                'availability_status_id' => AvailabilityStatus::Active,
             ]);
         else if($data['approve'] == 0)
             $this->updateProperty($data['property_id'], [

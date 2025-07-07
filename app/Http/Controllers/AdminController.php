@@ -58,4 +58,25 @@ class AdminController extends Controller
     public function searchAdmin(Request $request){
         return $this->executeService($this->service_transformer, $request, [], "Admins fetched successfully");
     }
+
+    function viewPendingProperties(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
+    }
+
+    function propertyAdjudication(Request $request)
+    {
+        $additionalData = ['admin_id' => auth('admin')->user()->id];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Property adjudicated Successfully');
+    }
+    
+    function serviceProviderAdjudication(Request $request)
+    {
+        $additionalData = ['admin_id' => auth('admin')->user()->id];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
+    }
 }

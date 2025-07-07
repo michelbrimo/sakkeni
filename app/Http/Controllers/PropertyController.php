@@ -51,7 +51,7 @@ class PropertyController extends Controller
     }
 
     
-    function viewMyProperties(FilterPropertiesRequest $request, $sell_type_id)
+    function viewMyProperties(Request $request, $sell_type_id)
     {
         $additionalData = [
           'page' => $request->query('page', 1),
@@ -59,19 +59,9 @@ class PropertyController extends Controller
           'owner_id' => auth()->user()->id
         ];
 
-        return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Your properties fetched successfully');
     }
     
-    function filterMyProperties(FilterPropertiesRequest $request, $sell_type)
-    {
-        $additionalData = [
-          'page' => $request->input('page', 1),
-          'sell_type_id' => $sell_type,
-          'owner_id' => auth()->user()->id
-        ];
-        return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');
-    }
-
     function viewPropertyDetails($property)
     {
         $additionalData = $property->toArray();
@@ -91,12 +81,6 @@ class PropertyController extends Controller
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
 
-    function propertyAdjudication(Request $request)
-    {
-        $additionalData = ['admin_id' => auth('admin')->user()->id];
-
-        return $this->executeService($this->service_transformer,  $request, $additionalData, 'Property adjudicated Successfully');
-    }
     
     function addPropertyToFavorite($property)
     {

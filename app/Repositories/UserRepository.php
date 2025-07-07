@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Seller;
 use App\Models\ServiceProvider;
+use App\Models\ServiceProviderService;
 use App\Models\ServiceProviderSubscriptionPlan;
 use App\Models\User;
 
@@ -22,6 +23,10 @@ class UserRepository{
     
     public function createServiceProviderSubscriptionPlan($data) {
         return ServiceProviderSubscriptionPlan::create($data);
+    }
+    
+    public function createServiceProviderServices($data) {
+        return ServiceProviderService::create($data);
     }
 
     public function getUserDetails_byEmail($email) {

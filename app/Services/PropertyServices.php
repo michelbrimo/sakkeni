@@ -185,13 +185,6 @@ class PropertyServices extends ImageServices
         return $this->property_repository->deleteProperty($data);
     }
     
-    function viewPendingProperties($data) {
-        return $this->property_repository->viewPendingProperties($data);
-    }
-    
-    function propertyAdjudication($data) {
-        return $this->property_repository->propertyAdjudication($data);
-    }
     
     function addPropertyToFavorite($data) {
         return $this->property_repository->createPropertyFavorite($data);

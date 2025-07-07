@@ -4,10 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Amenity>
- */
-class AmenityFactory extends Factory
+class ServiceFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,6 +15,7 @@ class AmenityFactory extends Factory
     {
         return [
             'name' => fake()->word(),
+            'service_category_id' => fake()->numberBetween(1,10)
         ];
     }
 }

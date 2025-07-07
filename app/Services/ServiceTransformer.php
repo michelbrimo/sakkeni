@@ -14,7 +14,6 @@ class ServiceTransformer{
         'logout' => [],
         'resetPassword' => [],
         'upgradeToSeller' => [],
-        'upgradeToServiceProvider' => [],
 
         'addProperty' => ['TransactionAspect'],
         'updateProperty' => ['TransactionAspect'],
@@ -36,7 +35,10 @@ class ServiceTransformer{
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
         'searchAdmin'=>[],
-        
+
+        'upgradeToServiceProvider' => [],
+        'serviceProviderAdjudication' => [], 
+
         'viewAmenities' => [],
         'viewDirections' => [],
         'viewPropertyTypes' => [],

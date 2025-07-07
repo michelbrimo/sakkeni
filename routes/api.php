@@ -4,7 +4,11 @@ use App\Http\Controllers\PropertyController;
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\SellerController;
+use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\UserController;
+use App\Models\Seller;
+use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -52,6 +56,7 @@ Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name(
 
 Route::middleware('auth:admin')->group(function () {
     Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
+    
     Route::middleware('superadmin')->group(function () {
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
         Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
@@ -60,8 +65,9 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     Route::middleware('admin')->group(function () {
-        Route::get('/view-pending-properties', [PropertyController::class, 'viewPendingProperties'])->name('Property.viewPendingProperties');
-        Route::post('/property-adjudication', [PropertyController::class, 'propertyAdjudication'])->name('Property.propertyAdjudication');
+        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
+        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
+        Route::post('/service-provider-adjudication', [AdminController::class, 'serviceProviderAdjudication'])->name('Admin.serviceProviderAdjudication');
     });
 });
 
