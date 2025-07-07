@@ -13,4 +13,9 @@ class ServiceProvider extends Model
         'user_id',
         'availability_status_id'
     ];
+
+    public function serviceProviderServices()
+    {
+        return $this->hasMany(ServiceProviderService::class);
+    }
 }

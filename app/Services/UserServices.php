@@ -212,6 +212,5 @@ class UserServices extends ImageServices
                 'service_id' => $service_id,
             ]);
         }
-
     }
 }

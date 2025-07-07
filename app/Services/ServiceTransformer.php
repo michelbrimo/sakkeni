@@ -5,7 +5,6 @@ namespace App\Services;
 use Exception;
 
 class ServiceTransformer{
-    # function name => Aspects required
     public $aspect_mapper = [
         'signUp' => [], 
         'login' => [], 
@@ -38,6 +37,7 @@ class ServiceTransformer{
 
         'upgradeToServiceProvider' => [],
         'serviceProviderAdjudication' => [], 
+        'viewServiceProviders' => [], 
 
         'viewAmenities' => [],
         'viewDirections' => [],
@@ -47,6 +47,7 @@ class ServiceTransformer{
         'viewCountries' => [],
         'viewOwnershipTypes' => [],
         'viewAvailabilityStatus' => [],
+        'viewServiceCategories' => [],
     ];
 
     private $service_mapper = [];
@@ -63,6 +64,7 @@ class ServiceTransformer{
             "User" => "App\\Services\\UserServices",
             "Property" => "App\\Services\\PropertyServices",
             "Admin" => "App\\Services\\AdminServices",
+            "ServiceProvider" => "App\\Services\\ServiceProviderServices",
         ];
     }
 

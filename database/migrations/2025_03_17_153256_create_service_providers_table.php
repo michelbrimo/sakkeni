@@ -21,6 +21,7 @@ return new class extends Migration
             ->constrained('availability_statuses')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
+            $table->float('rate')->nullable();
             $table->timestamps();
         });
     }

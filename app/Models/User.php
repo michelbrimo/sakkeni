@@ -67,5 +67,10 @@ class User extends Authenticatable
         return $this->hasOne(Seller::class);
     }
 
+    public function serviceProvider()
+    {
+        return $this->hasOne(serviceProvider::class);
+    }
+
 
 }
