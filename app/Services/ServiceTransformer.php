@@ -22,8 +22,6 @@ class ServiceTransformer{
         'viewRecommendedProperties' => [], 
 
         'deleteProperty' => [],
-        'viewPendingProperties' => [],
-        'propertyAdjudication' => [],
         'addPropertyToFavorite' => [],
         'removePropertyFromFavorite' => [],
         'viewFavoriteProperties' => [],
@@ -34,9 +32,13 @@ class ServiceTransformer{
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
         'searchAdmin'=>[],
-
-        'upgradeToServiceProvider' => [],
+        'viewPendingProperties' => [],
+        'propertyAdjudication' => [],
+        'viewPendingServiceProviders' => [], 
         'serviceProviderAdjudication' => [], 
+
+        
+        'upgradeToServiceProvider' => [],
         'viewServiceProviders' => [], 
 
         'viewAmenities' => [],

@@ -108,6 +108,7 @@ class AdminServices{
     public function searchAdmin($data){
         $validator = Validator::make($data, [
             'name' => 'string|required',
+            'page' => 'integer',
         ]);
         if($validator->fails()){
             throw new Exception(
@@ -116,7 +117,6 @@ class AdminServices{
         }
         
         $result = $this->admin_repository->searchAdmin_byName($data);
-
         return $result;
     }
 
@@ -126,6 +126,10 @@ class AdminServices{
     
     function propertyAdjudication($data) {
         return $this->property_repository->propertyAdjudication($data);
+    }
+
+    function viewPendingServiceProviders($data) {
+        return $this->service_provider_repository->viewPendingServiceProviders($data);
     }
     
     function serviceProviderAdjudication($data) {

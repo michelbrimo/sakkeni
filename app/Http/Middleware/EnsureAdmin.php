@@ -17,11 +17,11 @@ class EnsureAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->guard('admin')->check()) {
+          if (!auth()->guard('admin')->check()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthenticated'
-            ], 401);
+                'message' => 'You must be an admin to proceed'
+            ], 403);
         }
 
         return $next($request);

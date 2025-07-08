@@ -17,17 +17,10 @@ class EnsureSuperAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->guard('admin')->check()) {
+        if (!auth()->guard('admin')->check() || !auth()->guard('admin')->user()->is_super_admin) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthenticated'
-            ], 401);
-        }
-
-        if (!auth()->guard('admin')->user()->is_super_admin) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Forbidden - Super Admin access required'
+                'message' => 'You must be super admin to proceed'
             ], 403);
         }
 

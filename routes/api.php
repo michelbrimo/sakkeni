@@ -54,28 +54,14 @@ Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin
 
 Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
 
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
     
-    Route::middleware('superadmin')->group(function () {
-        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
-        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
-        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
-        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
-    });
 
-    Route::middleware('admin')->group(function () {
-        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
-        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
-        Route::post('/service-provider-adjudication', [AdminController::class, 'serviceProviderAdjudication'])->name('Admin.serviceProviderAdjudication');
-    });
-});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
     Route::get('/logout', [UserController::class, 'logout'])->name('User.logout');
-    Route::post('reset-password', [UserController::class, 'resetPassword'])->name('User.resetPassword');
+    Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('User.resetPassword');
     Route::post('/upgrade-to-seller', [UserController::class, 'upgradeToSeller'])->name('User.upgradeToSeller'); 
     Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider'); 
     
@@ -101,6 +87,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-service-providers/{service_id}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
 
     Route::middleware('serviceProvider')->group(function () {        
+    });
+
+    Route::middleware('superadmin')->group(function () {
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
+        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
+    });
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
+
+        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
+        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
+        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::post('/service-provider-adjudication', [AdminController::class, 'serviceProviderAdjudication'])->name('Admin.serviceProviderAdjudication');
     });
     
     

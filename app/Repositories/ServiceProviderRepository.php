@@ -43,6 +43,18 @@ class ServiceProviderRepository{
         return ServiceCategory::with('services')->get();
     }
 
+    function viewPendingServiceProviders($data) {
+        return User::whereHas('serviceProvider', function($query) {
+            $query->where('availability_status_id', AvailabilityStatus::Pending);
+        })->with('serviceProvider.serviceProviderServices.gallery')
+          ->simplePaginate(10, [
+                'id',
+                'first_name',
+                'last_name',
+                'address',
+        ], 'page', $data['page'] ?? 1);
+    }
+
     function getServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) use ($data) {
             $query->whereHas('serviceProviderServices', function($subQuery) use ($data) {

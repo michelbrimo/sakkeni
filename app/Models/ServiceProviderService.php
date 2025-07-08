@@ -13,4 +13,10 @@ class ServiceProviderService extends Model
         'service_provider_id',
         'service_id'
     ];
+
+    public function gallery()
+    {
+        return $this->hasMany(WorkGallery::class);
+    }
+
 }
