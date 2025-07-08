@@ -28,6 +28,13 @@ class PropertyController extends Controller
 
     function updateProperty(UpdatingPropertyDataRequest $request, $property)
     {
+        if(!$property->owner_id === auth()->user()->id){
+            return response()->json([
+                'status' => 'false',
+                'message' => 'You dont own this property'
+            ], 422);
+        }
+
         $additionalData = ['property' => $property];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property Updated successfully');
     }
@@ -70,6 +77,13 @@ class PropertyController extends Controller
 
     function deleteProperty($property)
     {
+        if(!$property->owner_id === auth()->user()->id){
+            return response()->json([
+                'status' => 'false',
+                'message' => 'You dont own this property'
+            ], 422);
+        }
+
         $additionalData = $property->toArray();
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Deleted successfully');
     }
@@ -77,7 +91,6 @@ class PropertyController extends Controller
     function viewPendingProperties(Request $request)
     {
         $additionalData = ['page' => $request->input('page', 1)];
-
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
 
@@ -85,14 +98,12 @@ class PropertyController extends Controller
     function addPropertyToFavorite($property)
     {
         $additionalData = ['user_id' => auth()->user()->id, 'property_id' => $property->id];
-
         return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Property added to favorite Successfully');
     }
     
     function removePropertyFromFavorite($property)
     {
         $additionalData = ['user_id' => auth()->user()->id, 'property_id' => $property->id];
-
         return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Property removed from favorite Successfully');
     }
     
