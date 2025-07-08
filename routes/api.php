@@ -52,7 +52,6 @@ Route::post('/login', [UserController::class, 'login'])->name('User.login');
 
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
-Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
 
     
 
@@ -89,12 +88,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('serviceProvider')->group(function () {        
     });
 
-    Route::middleware('superadmin')->group(function () {
-        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
-        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
-        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
-        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
-    });
 
     Route::middleware('admin')->group(function () {
         Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
@@ -104,9 +97,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
         Route::post('/service-provider-adjudication', [AdminController::class, 'serviceProviderAdjudication'])->name('Admin.serviceProviderAdjudication');
     });
-    
-    
 
+    Route::middleware('superadmin')->group(function () {
+        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
+        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
+    });
 
     
 

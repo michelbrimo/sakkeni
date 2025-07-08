@@ -34,14 +34,14 @@ class AdminFactory extends Factory
         return [
             'first_name' => $this->faker->unique()->firstName(),
             'last_name' => $this->faker->unique()->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => 'superadmin@example.com',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('12345678'),
             'profile_picture_path' => null,
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->unique()->phoneNumber(),
-            'number_of_accepted_houses' => $this->faker->numberBetween(0, 100),
-            'is_super_admin' => false,
+            'number_of_accepted_houses' => 0,
+            'is_super_admin' => true,
             'remember_token' => Str::random(10),
         ];
     }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\AccountType;
+use App\Models\Admin;
 use App\Models\Amenity;
 use App\Models\AvailabilityStatus;
 use App\Models\City;
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         ServiceCategory::factory(10)->create();
         Service::factory(10)->create();
+        Admin::factory(1)->create();
 
         $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
         foreach ($directions as $direction) {
