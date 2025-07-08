@@ -25,4 +25,12 @@ class ServiceProviderServices extends ImageServices
     function viewServiceProviders($data) {
         return $this->service_provider_repository->getServiceProviders($data);
     }
+
+    function viewServiceProviderDetails($data) {
+        return $this->service_provider_repository->getServiceProviderDetails($data['service_provider_id']);
+    }
+
+    function viewServiceProviderServiceGallery($data) {
+        return $this->service_provider_repository->getServiceProviderServiceGallery($data['service_provider_service_id']);
+    }
 }

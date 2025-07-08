@@ -48,9 +48,9 @@ Route::post('reset-password-mail', [PasswordController::class, 'resetPassword'])
 
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
-
-
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
+
+
 
 
     
@@ -83,7 +83,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
 
-    Route::get('/view-service-providers/{service_id}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
+    Route::get('/view-service-providers/{service}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
+    Route::get('/view-service-provider-details/{service_provider_id}', [ServiceProviderController::class, 'viewServiceProviderDetails'])->name('ServiceProvider.viewServiceProviderDetails'); 
+    Route::get('/view-service-provider-service-gallery/{service_provider_service_id}', [ServiceProviderController::class, 'viewServiceProviderServiceGallery'])->name('ServiceProvider.viewServiceProviderServiceGallery'); 
 
     Route::middleware('serviceProvider')->group(function () {        
     });
@@ -100,7 +102,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('superadmin')->group(function () {
         Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
-
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
         Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
         Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');

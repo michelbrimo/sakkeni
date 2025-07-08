@@ -7,6 +7,7 @@ use App\Models\AdminServiceProvider;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
+use App\Models\ServiceProviderService;
 use App\Models\User;
 
 class ServiceProviderRepository{
@@ -67,5 +68,18 @@ class ServiceProviderRepository{
                 'last_name',
                 'address',
         ], 'page', $data['page'] ?? 1);
+    }
+
+    function getServiceProviderDetails($serviceProviderId) {
+        return User::whereHas('serviceProvider', function($query) use ($serviceProviderId) {
+            $query->where('id', $serviceProviderId);
+        })->with(['serviceProvider.serviceProviderServices.service.'])
+          ->first();
+    }
+
+    function getServiceProviderServiceGallery($serviceProviderServiceId) {
+        return ServiceProviderService::where('id', $serviceProviderServiceId)
+                                     ->with(['service', 'gallery'])
+                                     ->get();
     }
 }

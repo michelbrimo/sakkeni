@@ -19,4 +19,9 @@ class ServiceProviderService extends Model
         return $this->hasMany(WorkGallery::class);
     }
 
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
 }

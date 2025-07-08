@@ -6,6 +6,7 @@ use App\Models\PhysicalStatusType;
 use App\Models\Property;
 use App\Models\PropertyType;
 use App\Models\SellType;
+use App\Models\Service;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -33,10 +34,17 @@ class RouteServiceProvider extends ServiceProvider
             return SellType::where('name', $value)->firstOrFail()->id;
         });
 
+        Route::bind('service', function ($value) {
+            request()->route()->setParameter('service', $value);
+            return Service::where('name', $value)->firstOrFail()->id;
+        });
+
+
         Route::bind('property_id', function ($value) {
             request()->route()->setParameter('property_id', $value);
             return Property::where('id', $value)->firstOrFail();
         });
+
 
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
