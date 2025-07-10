@@ -81,7 +81,7 @@ class ServiceProviderRepository{
     function getServiceProviderDetails($serviceProviderId) {
         return User::whereHas('serviceProvider', function($query) use ($serviceProviderId) {
             $query->where('id', $serviceProviderId);
-        })->with(['serviceProvider.serviceProviderServices.service.'])
+        })->with(['serviceProvider.serviceProviderServices.service'])
           ->first();
     }
 
