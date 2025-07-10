@@ -11,6 +11,7 @@ class ServiceProviderService extends Model
     
     protected $fillable = [
         'service_provider_id',
+        'availability_status_id',
         'service_id'
     ];
 

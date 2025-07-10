@@ -35,7 +35,7 @@ class ServiceTransformer{
         'viewPendingProperties' => [],
         'propertyAdjudication' => [],
         'viewPendingServiceProviders' => [], 
-        'serviceProviderAdjudication' => [], 
+        'serviceProviderServiceAdjudication' => [], 
 
         
         'upgradeToServiceProvider' => [],

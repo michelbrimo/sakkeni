@@ -97,7 +97,7 @@ class UserServices extends ImageServices
 
         $serviceProvider = $this->user_repository->createServiceProvider([
             'user_id' => $data['user']->id,
-            'availability_status_id'=> AvailabilityStatus::Pending,
+            'availability_status_id'=> AvailabilityStatus::Active,
         ]);
 
         $this->user_repository->createServiceProviderSubscriptionPlan([
@@ -109,6 +109,7 @@ class UserServices extends ImageServices
             $this->user_repository->createServiceProviderServices([
                 'service_provider_id' => $serviceProvider->id,
                 'service_id' => $service_id,
+                'availability_status_id'=> AvailabilityStatus::Pending,
             ]);
         }
     }

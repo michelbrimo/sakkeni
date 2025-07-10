@@ -107,6 +107,18 @@ class AdminController extends Controller
     
     function propertyAdjudication(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'property_id' => 'integer|required',
+            'approve' => 'boolean|required',
+            'reason' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
         $additionalData = ['admin_id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property adjudicated Successfully');
     }
@@ -117,8 +129,20 @@ class AdminController extends Controller
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Service Providers fetched successfully');
     }
     
-    function serviceProviderAdjudication(Request $request)
+    function serviceProviderServiceAdjudication(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'service_provider_service_id' => 'integer|required',
+            'approve' => 'boolean|required',
+            'reason' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
         $additionalData = ['admin_id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
     }

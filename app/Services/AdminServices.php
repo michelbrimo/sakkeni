@@ -83,8 +83,8 @@ class AdminServices{
         return $this->service_provider_repository->viewPendingServiceProviders($data);
     }
     
-    function serviceProviderAdjudication($data) {
-        return $this->service_provider_repository->serviceProviderAdjudication($data);
+    function serviceProviderServiceAdjudication($data) {
+        return $this->service_provider_repository->serviceProviderServiceAdjudication($data);
     }
 
 }

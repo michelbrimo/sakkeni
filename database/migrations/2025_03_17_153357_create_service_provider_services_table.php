@@ -21,6 +21,10 @@ return new class extends Migration
             ->constrained('services') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
+            $table->foreignId('availability_status_id')
+            ->constrained('availability_statuses')
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

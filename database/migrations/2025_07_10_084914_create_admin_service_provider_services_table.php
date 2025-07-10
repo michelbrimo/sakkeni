@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admin_service_providers', function (Blueprint $table) {
+        Schema::create('admin_service_provider_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_provider_id')
-            ->constrained('service_providers') 
+            $table->foreignId('service_id')
+            ->constrained('service_provider_services') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->foreignId('admin_id')
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admin_service_providers');
+        Schema::dropIfExists('admin_service_provider_services');
     }
 };

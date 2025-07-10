@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\AvailabilityStatus;
 use App\Models\AdminServiceProvider;
+use App\Models\AdminServiceProviderServices;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
@@ -16,22 +17,27 @@ class ServiceProviderRepository{
                        ->update($data);
     }
 
-    function createAdminServiceProvider($data) {
-        AdminServiceProvider::create($data);
+    function updateServiceProviderService($id, $data) {
+        ServiceProviderService::where('id', $id)
+                              ->update($data);
     }
 
-    function serviceProviderAdjudication($data){
+    function createAdminServiceProvider($data) {
+        AdminServiceProviderServices::create($data);
+    }
+
+    function serviceProviderServiceAdjudication($data){
         if($data['approve'] == 1)
-            $this->updateServiceProvider($data['service_provider_id'], [
+            $this->updateServiceProviderService($data['service_provider_service_id'], [
                 'availability_status_id' => AvailabilityStatus::Active,
             ]);
         else if($data['approve'] == 0)
-            $this->updateServiceProvider($data['service_provider_id'], [
+            $this->updateServiceProviderService($data['service_provider_service_id'], [
                 'availability_status_id' => AvailabilityStatus::Rejected,
             ]);
 
         $this->createAdminServiceProvider([
-            'service_provider_id' => $data['service_provider_id'],
+            'service_id' => $data['service_provider_service_id'],
             'admin_id' => $data['admin_id'],
             'approve' => $data['approve'],
             'reason' => $data['reason'] ?? null
@@ -46,8 +52,10 @@ class ServiceProviderRepository{
 
     function viewPendingServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) {
-            $query->where('availability_status_id', AvailabilityStatus::Pending);
-        })->with('serviceProvider.serviceProviderServices.gallery')
+            $query->whereHas('serviceProviderServices', function($query){
+                $query->where('availability_status_id', AvailabilityStatus::Pending);
+            });
+        })->with('serviceProvider')
           ->simplePaginate(10, [
                 'id',
                 'first_name',

@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdminServiceProvider extends Model
+class AdminServiceProviderServices extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'service_provider_id',
+        'service_id',
         'admin_id',
         'approve',
         'reason'
     ];
+
 }
