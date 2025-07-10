@@ -35,4 +35,8 @@ return [
     'url' => env('RECOMMENDATION_SERVICE_URL', 'http://127.0.0.1:8001'),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+    ],
+
 ];

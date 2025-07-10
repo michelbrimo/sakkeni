@@ -28,6 +28,12 @@ class Property extends Model
         'availability_status_id',
     ];
 
+
+    public function sellType()
+    {
+        return $this->belongsTo(SellType::class);
+    }
+
     public function directions() {
         return $this->belongsToMany(Direction::class);
     }
@@ -248,7 +254,7 @@ class Property extends Model
 
     public function popularityMetrics()
     {
-        return $this->hasOne(PropertyPopularityMetric::class);
+        return $this->hasOne(PropertyPopularityMetrics::class);
     }
 
     public function favorites()

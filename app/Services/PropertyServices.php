@@ -3,17 +3,19 @@
 namespace App\Services;
 
 use App\Enums\AvailabilityStatus;
-use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
 use App\Models\ResidentialProperty;
 use App\Repositories\ImageRepository;
 use App\Repositories\LocationRepository;
+
 use Exception;
 use App\Repositories\PropertyRepository;
 use Illuminate\Support\Facades\Storage;
 use App\Services\RecommendationService;
+use App\Services\AIDescriptionService;
+use App\Models\Property;
 
 
 class PropertyServices extends ImageServices
@@ -22,6 +24,7 @@ class PropertyServices extends ImageServices
     protected $image_repository; 
     protected $location_repository; 
     protected $recommendation_service;
+    protected $ai_description_service;
 
 
     public function __construct() {
@@ -29,6 +32,7 @@ class PropertyServices extends ImageServices
         $this->location_repository = new LocationRepository();
         $this->image_repository = new ImageRepository();
         $this->recommendation_service = new RecommendationService();
+        $this->ai_description_service = new AIDescriptionService();
 
     }
 
@@ -95,6 +99,13 @@ class PropertyServices extends ImageServices
                 "commercial_property_type_id" => $data["commercial_property_type_id"],
             ]);
         }
+
+        $description = $this->ai_description_service->generateForProperty($property);
+
+        if ($description) {
+            $property->description = $description;
+            $property->save();
+        } 
     }
 
     public function updateProperty($data){

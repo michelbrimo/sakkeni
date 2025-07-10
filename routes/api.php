@@ -65,6 +65,14 @@ Route::middleware('auth:admin')->group(function () {
     });
 });
 
+Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
+Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
+
+Route::get('/view-recommended-properties', [PropertyController::class, 'showRecommendedProperties'])->name('Property.viewRecommendedProperties');
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
@@ -81,13 +89,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
     });
     
-
-    Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
-    Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
-    Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
-    
-    Route::get('/view-recommended-properties', [PropertyController::class, 'showRecommendedProperties'])->name('Property.viewRecommendedProperties');
-
 
     Route::get('/add-property-to-favorite/{property_id}', [PropertyController::class, 'addPropertyToFavorite'])->name('Property.addPropertyToFavorite');
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');

@@ -17,6 +17,7 @@ use App\Models\Rent;
 use App\Models\OffPlanProperty;
 use App\Models\UserClick;
 use App\Models\PropertyFavorite;
+use App\Models\PropertyImage;
 
 class PropertySeeder extends Seeder
 {
@@ -27,13 +28,11 @@ class PropertySeeder extends Seeder
      */
     public function run()
     {
-        // Get existing IDs from the database to create relationships
         $userIds = User::pluck('id');
         $cityIds = City::pluck('id');
         $amenityIds = Amenity::pluck('id');
         $faker = \Faker\Factory::create();
 
-        // Check if required data exists
         if ($userIds->isEmpty() || $cityIds->isEmpty() || $amenityIds->isEmpty()) {
             $this->command->error('Users, Cities, or Amenities tables are empty. Please seed them first.');
             return;
@@ -45,16 +44,16 @@ class PropertySeeder extends Seeder
         for ($i = 0; $i < 200; $i++) {
             // --- 1. Create a Location ---
             $location = Location::create([
-                'country_id' => 1, // Assuming Syria as per your DatabaseSeeder
+                'country_id' => 1,
                 'city_id' => $cityIds->random(),
-                'latitude' => $faker->latitude(32, 37), // Latitude for Syria
-                'longitude' => $faker->longitude(35, 42), // Longitude for Syria
+                'latitude' => $faker->latitude(32, 37), 
+                'longitude' => $faker->longitude(35, 42), 
                 'additional_info' => $faker->streetAddress,
             ]);
 
             // --- 2. Randomly determine property and sell types ---
-            $propertyTypeId = rand(1, 2); // 1: Residential, 2: Commercial
-            $sellTypeId = rand(1, 3);     // 1: Purchase, 2: Rent, 3: Off-plan
+            $propertyTypeId = rand(1, 2); 
+            $sellTypeId = rand(1, 3);      
 
             // --- 3. Create the main Property record ---
             $property = Property::create([
@@ -64,10 +63,16 @@ class PropertySeeder extends Seeder
                 'area' => $faker->numberBetween(50, 500),
                 'bathrooms' => rand(1, 5),
                 'balconies' => rand(0, 3),
-                'ownership_type_id' => 1, // Assuming 'Freehold'
+                'ownership_type_id' => 1, 
                 'property_type_id' => $propertyTypeId,
                 'sell_type_id' => $sellTypeId,
-                'availability_status_id' => 2, // Assuming 'Active'
+                'availability_status_id' => 2, 
+            ]);
+
+            // Create one placeholder image for the property
+            PropertyImage::create([
+                'property_id' => $property->id,
+                'image_path' => 'https://placehold.co/600x400/EFEFEF/AAAAAA&text=Property'
             ]);
 
             // --- 4. Create sub-type and transaction details based on random types ---
@@ -135,7 +140,7 @@ class PropertySeeder extends Seeder
         }
         $this->command->getOutput()->progressFinish();
 
-        // --- NEW: Seed user interactions (clicks and favorites) ---
+        // --- Seed user interactions (clicks and favorites) ---
         $this->command->info("\nSeeding user clicks and favorites...");
         $propertyIds = Property::pluck('id');
 
