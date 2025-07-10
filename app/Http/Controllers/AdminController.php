@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\ServiceTransformer;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -14,10 +16,37 @@ class AdminController extends Controller
     }
 
     function adminRegister(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'string|required',
+            'last_name' => 'string|required',
+            'email' => 'email|required',
+            'password' => 'string|min:8|confirmed|required',
+            'phone_number' => 'string|min:10|required',
+            'address' => 'string|required',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }  
+
         return $this->executeService($this->service_transformer, $request, [], 'Admin registered successfully');
     }
 
     function adminLogin(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'email|required',
+            'password' => 'required|string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }  
+
+
         return $this->executeService($this->service_transformer, $request, [], 'admin logged in successfully');
     }
 
@@ -56,36 +85,41 @@ class AdminController extends Controller
     }
 
     public function searchAdmin(Request $request){
-        $additionalData = ['page' => $request->input('page', 1)];
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|required',
+        ]);
 
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
+        $additionalData = ['page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, $request, $additionalData, "Admins fetched successfully");
     }
 
     function viewPendingProperties(Request $request)
     {
         $additionalData = ['page' => $request->input('page', 1)];
-
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
     
     function propertyAdjudication(Request $request)
     {
         $additionalData = ['admin_id' => auth('admin')->user()->id];
-        
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property adjudicated Successfully');
     }
     
     function viewPendingServiceProviders(Request $request)
     {
         $additionalData = ['page' => $request->input('page', 1)];
-
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Service Providers fetched successfully');
     }
     
     function serviceProviderAdjudication(Request $request)
     {
         $additionalData = ['admin_id' => auth('admin')->user()->id];
-
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
     }
 }

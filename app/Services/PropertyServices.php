@@ -162,8 +162,7 @@ class PropertyServices extends ImageServices
                 
     public function viewProperties($data){
         return $this->property_repository->getProperties($data);
-
-        throw new \Exception('Unkown Property Type', 422);
+        throw new Exception('Unkown Property Type', 422);
     }
 
     public function filterProperties($data){
@@ -185,7 +184,6 @@ class PropertyServices extends ImageServices
         return $this->property_repository->deleteProperty($data);
     }
     
-    
     function addPropertyToFavorite($data) {
         return $this->property_repository->createPropertyFavorite($data);
     }
@@ -198,6 +196,14 @@ class PropertyServices extends ImageServices
         return $this->property_repository->getFavoriteProperties($data);
     }
 
+    public function viewRecommendedProperties(array $data)
+    {
+        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);
+        return $this->property_repository->getPropertiesByIds(
+            $recommendedIds,
+            $data['page'] ?? 1
+        );
+    }
 
 
     function viewAmenities()
@@ -332,15 +338,6 @@ class PropertyServices extends ImageServices
         $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
-    }
-
-    public function viewRecommendedProperties(array $data)
-    {
-        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);
-        return $this->property_repository->getPropertiesByIds(
-            $recommendedIds,
-            $data['page'] ?? 1
-        );
     }
 }
 

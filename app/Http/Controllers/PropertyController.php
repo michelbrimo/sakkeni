@@ -114,11 +114,10 @@ class PropertyController extends Controller
             'page' => $request->query('page', 1),
             'sell_type_id' => $sell_type_id,
         ];
-
         return $this->executeService($this->service_transformer,  new Request(), $additionalData, 'Favorite Properties fetched Successfully');
     }
 
-      public function showRecommendedProperties(Request $request)
+    public function showRecommendedProperties(Request $request)
     {
         $additionalData = [
           'user_id' => Auth::id(),
@@ -168,9 +167,4 @@ class PropertyController extends Controller
     {
         return $this->executeService($this->service_transformer, new Request(), [], 'Availability Status fetched successfully');
     }
-
-   
-
-
-
 }

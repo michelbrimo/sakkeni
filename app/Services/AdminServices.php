@@ -21,41 +21,14 @@ class AdminServices{
         $this->service_provider_repository = new ServiceProviderRepository();
     }
 
-    public function adminRegister($data){
-        $validator = Validator::make($data, [
-            'first_name' => 'string|required',
-            'last_name' => 'string|required',
-            'email' => 'email|required',
-            'password' => 'string|min:8|confirmed|required',
-            'phone_number' => 'string|min:10|required',
-            'address' => 'string|required',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }  
-        
+    public function adminRegister($data){        
         $result = $this->admin_repository->create($data);
         $result['token'] = $result->createToken('personal access token')->plainTextToken;
             
         return $result;
-    
     }
 
     public function adminLogin($data){
-        $validator = Validator::make($data, [
-            'email' => 'email|required',
-            'password' => 'required|string',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }  
-        
         $result = $this->admin_repository->getAdminDetails_byEmail($data['email']);
 
         if ($result && Hash::check($data['password'], $result->password)) {
@@ -67,18 +40,7 @@ class AdminServices{
             throw new Exception("Email or Password are incorrect", 400);
     }
 
-    function adminLogout($data) {
-        $validator = Validator::make($data, [
-            'id' => 'integer|required',
-        ]);
-    
-        if ($validator->fails()) {
-            throw new Exception(
-                $validator->errors()->first(),
-                422
-            );
-        }
-    
+    function adminLogout() {
         $admin = Auth::guard('admin')->user();
         if ($admin) {
             $admin->tokens->each(fn($token) => $token->delete());
@@ -106,18 +68,7 @@ class AdminServices{
     } 
 
     public function searchAdmin($data){
-        $validator = Validator::make($data, [
-            'name' => 'string|required',
-            'page' => 'integer',
-        ]);
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-        
-        $result = $this->admin_repository->searchAdmin_byName($data);
-        return $result;
+        return $this->admin_repository->searchAdmin_byName($data);
     }
 
     function viewPendingProperties($data) {

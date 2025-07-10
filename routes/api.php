@@ -51,11 +51,6 @@ Route::post('/login', [UserController::class, 'login'])->name('User.login');
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
 
-
-
-    
-
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
     Route::post('/update-profile', [UserController::class, 'updateMyProfile'])->name('User.updateUserProfile');
