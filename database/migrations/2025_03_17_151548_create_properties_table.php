@@ -29,6 +29,7 @@ return new class extends Migration
             $table->float('area');
             $table->integer('bathrooms');
             $table->integer('balconies');
+            $table->integer('users_clicks')->default(0);
             $table->foreignId('ownership_type_id')
             ->constrained('ownership_types')
             ->cascadeOnDelete()

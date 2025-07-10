@@ -325,6 +325,7 @@ class PropertyRepository{
     }
 
     function viewPropertyDetails($data) {
+        Property::where('id', $data['id'])->increment('users_clicks');
         $query = Property::query()->where('properties.id', $data['id']);
 
         $query = $query->with(

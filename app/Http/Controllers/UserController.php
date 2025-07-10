@@ -54,7 +54,6 @@ class UserController extends Controller
 
     public function updateMyProfile(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'integer|required',
             'first_name' => 'string',
             'last_name' => 'string',
             'address' => 'string',
