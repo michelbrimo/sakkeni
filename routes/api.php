@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PropertyController;
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\ServiceProviderController;
@@ -54,10 +54,7 @@ Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin
 Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
 Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
 Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
-
 Route::get('/view-recommended-properties', [PropertyController::class, 'showRecommendedProperties'])->name('Property.viewRecommendedProperties');
-
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
@@ -80,11 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');
     Route::get('/view-favorite-properties/{sell_type}', [PropertyController::class, 'viewFavoriteProperties'])->name('Property.viewFavoriteProperties');
 
-
     Route::get('/view-service-providers/{service}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
     Route::get('/view-service-provider-details/{service_provider_id}', [ServiceProviderController::class, 'viewServiceProviderDetails'])->name('ServiceProvider.viewServiceProviderDetails'); 
     Route::get('/view-service-provider-service-gallery/{service_provider_service_id}', [ServiceProviderController::class, 'viewServiceProviderServiceGallery'])->name('ServiceProvider.viewServiceProviderServiceGallery'); 
-
 
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
@@ -115,7 +110,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     
-
     // View Default Data
     Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
     Route::get('/view-directions', [PropertyController::class, 'viewDirections'])->name('Property.viewDirections');
