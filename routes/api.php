@@ -51,6 +51,30 @@ Route::post('/login', [UserController::class, 'login'])->name('User.login');
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
 
+Route::middleware('superadmin')->group(function () {
+});
+
+
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
+    
+    Route::middleware('superadmin')->group(function () {
+        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
+        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
+        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
+
+    });
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
+        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
+        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+    });
+});
+
 Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
 Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
 Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
@@ -92,24 +116,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-    Route::middleware('admin')->group(function () {
-        Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
-
-        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
-        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
-        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
-        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
-    });
-
-    Route::middleware('superadmin')->group(function () {
-        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
-        Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
-        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
-        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
-        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
-    });
-
-    
     // View Default Data
     Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
     Route::get('/view-directions', [PropertyController::class, 'viewDirections'])->name('Property.viewDirections');
