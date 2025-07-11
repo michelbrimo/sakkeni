@@ -10,8 +10,12 @@ class UserSearchTrackingAspect
     {
         if ($function_name !== 'filterProperties') return;
 
-        $user_id =  auth()->user()->id;
-        if (!$user_id) return;
+        $user =  auth()->user();
+        if (!$user || !$user->id) {
+            return false;
+        }
+
+        $user_id = $user->id;
 
         $filters = request()->all(); 
 
