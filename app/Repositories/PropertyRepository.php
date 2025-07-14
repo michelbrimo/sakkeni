@@ -35,9 +35,28 @@ class PropertyRepository{
     }
 
     public function createOffPlanProperty($data) {
-        return OffPlanProperty::create($data);
+        $offPlan = OffPlanProperty::create([
+            'property_id' => $data['property_id'],
+            'delivery_date' => $data['delivery_date'],
+            'overall_payment' => $data['overall_payment'],
+        ]);
+
+        $overall = $data['overall_payment'];
+
+        foreach ($data['payment_plan'] as $phase) {
+            $percentage = $phase['payment_percentage'];
+            $value = round(($percentage / 100) * $overall, 2);
+
+            $offPlan->paymentPhases()->attach($phase['payment_phase_id'], [
+                'payment_percentage' => $percentage,
+                'payment_value' => $value,
+                'duration_value' => $phase['duration_value'] ?? null,
+                'duration_unit' => $phase['duration_unit'] ?? null,
+            ]);
+        }
+        return $offPlan;
     }
-    
+
     public function createRent($data) {
         return Rent::create($data);
     }
@@ -127,8 +146,34 @@ class PropertyRepository{
     }
     
     public function updateOffPlan($id, $data){
-        OffPlanProperty::where('property_id', $id)
-                ->update($data);
+        $offPlan = OffPlanProperty::where('property_id', $id)->first();
+
+        if (!$offPlan) {
+            return;
+        }
+        $offPlan->update([
+            'delivery_date' => $data['delivery_date'] ?? $offPlan->delivery_date,
+            'overall_payment' => $data['overall_payment'] ?? $offPlan->overall_payment,
+        ]);
+
+        if (!empty($data['payment_plan'])) {
+            $syncData = [];
+            $overall = $data['overall_payment'] ?? $offPlan->overall_payment;
+
+            foreach ($data['payment_plan'] as $phase) {
+                $percentage = $phase['payment_percentage'];
+                $value = round(($percentage / 100) * $overall, 2);
+
+                $syncData[$phase['payment_phase_id']] = [
+                    'payment_percentage' => $percentage,
+                    'payment_value' => $value,
+                    'duration_value' => $phase['duration_value'] ?? null,
+                    'duration_unit' => $phase['duration_unit'] ?? null,
+                ];
+            }
+
+            $offPlan->paymentPhases()->sync($syncData);
+        }
     }
     
     public function updateCommercialProperty($id, $data){

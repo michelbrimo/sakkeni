@@ -15,6 +15,7 @@ use App\Models\Villa;
 use App\Models\Purchase;
 use App\Models\Rent;
 use App\Models\OffPlanProperty;
+use App\Models\PaymentPhase;
 use App\Models\UserClick;
 use App\Models\PropertyFavorite;
 use App\Models\PropertyImage;
@@ -123,16 +124,45 @@ class PropertySeeder extends Seeder
                     'is_furnished' => $faker->boolean,
                 ]);
             } else { // Off-plan
-                OffPlanProperty::create([
+                $overallPayment = $faker->numberBetween(150000, 999999);
+
+                $offPlan = OffPlanProperty::create([
                     'property_id' => $property->id,
                     'delivery_date' => $faker->dateTimeBetween('+1 year', '+3 years'),
-                    'first_pay' => $faker->numberBetween(20000, 100000),
-                    'pay_plan' => json_encode(['40/60 payment plan']),
-                    'overall_payment' => $faker->numberBetween(150000, 999999),
+                    'overall_payment' => $overallPayment,
                 ]);
+
+                $phaseOptions = PaymentPhase::inRandomOrder()->limit(rand(2, 4))->get();
+
+                $totalPercentage = 0;
+                $remaining = 100;
+                $phasesCount = $phaseOptions->count();
+
+                foreach ($phaseOptions as $index => $phase) {
+                    $percentage = ($index === $phasesCount - 1) 
+                        ? $remaining 
+                        : $faker->randomElement([10, 20, 30]);
+                    $remaining -= $percentage;
+
+                    $paymentValue = round(($percentage / 100) * $overallPayment, 2);
+
+                    if (in_array(strtolower($phase->name), ['down payment', 'on handover', 'on completion'])) {
+                        $durationValue = null;
+                        $durationUnit = null;
+                    } else {
+                        $durationValue = $faker->randomElement([6, 12, 24, 36]);
+                        $durationUnit = $faker->randomElement(['months', 'years']);
+                    }
+
+                    $offPlan->paymentPhases()->attach($phase->id, [
+                        'payment_percentage' => $percentage,
+                        'payment_value' => $paymentValue,
+                        'duration_value' => $durationValue,
+                        'duration_unit' => $durationUnit,
+                    ]);
+                }
             }
 
-            // --- 5. Attach random amenities ---
             $randomAmenities = $amenityIds->random(rand(2, 5));
             $property->amenities()->attach($randomAmenities);
             

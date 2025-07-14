@@ -87,16 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('User.resetPassword');
     Route::post('/upgrade-to-seller', [UserController::class, 'upgradeToSeller'])->name('User.upgradeToSeller'); 
     Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider'); 
-
-
-    Route::middleware('seller')->group(function () {
-        Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
-        Route::patch('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
-        Route::get('/view-my-properties/{sell_type}', [PropertyController::class, 'viewMyProperties'])->name('Property.viewProperties');
-        Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
-    });
     
-
     Route::get('/add-property-to-favorite/{property_id}', [PropertyController::class, 'addPropertyToFavorite'])->name('Property.addPropertyToFavorite');
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');
     Route::get('/view-favorite-properties/{sell_type}', [PropertyController::class, 'viewFavoriteProperties'])->name('Property.viewFavoriteProperties');

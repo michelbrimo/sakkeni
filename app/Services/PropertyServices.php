@@ -81,9 +81,8 @@ class PropertyServices extends ImageServices
             $this->property_repository->createOffPlanProperty([
                 'property_id' => $property->id,
                 'delivery_date' => $data['delivery_date'],
-                'first_pay' => $data['first_pay'],
-                'pay_plan' => $data['pay_plan'],
                 'overall_payment' => $data['overall_payment'],
+                'payment_plan' => $data['payment_plan'], 
             ]);
         }
 
@@ -155,10 +154,10 @@ class PropertyServices extends ImageServices
         }
         else if($data['property']->sell_type_id == SellType::OFF_PLAN){
             $updateOffPlanData = collect($data)
-                ->only(['delivery_date', 'first_pay', 'pay_plan', 'overall_payment'])
-                ->filter(fn($value) => !is_null($value))
-                ->toArray();
-
+            ->only(['delivery_date', 'overall_payment', 'payment_plan'])
+            ->filter(fn($value) => !is_null($value))
+            ->toArray();
+            
             $this->property_repository->updateOffPlan($propertyId, $updateOffPlanData);
         }
         

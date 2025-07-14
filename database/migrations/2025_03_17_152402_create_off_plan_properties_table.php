@@ -18,8 +18,8 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate(); 
             $table->date("delivery_date");
-            $table->float("first_pay");
-            $table->json("pay_plan");
+            // $table->float("first_pay");
+            // $table->json("pay_plan");
             $table->float("overall_payment");
             $table->timestamps();
         });

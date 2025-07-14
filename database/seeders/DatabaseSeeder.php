@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
         ServiceCategory::factory(10)->create();
         Service::factory(10)->create();
         Admin::factory(1)->create();
+        $this->call(PaymentPhaseSeeder::class);
+
 
         $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
         foreach ($directions as $direction) {
