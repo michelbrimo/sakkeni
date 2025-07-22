@@ -119,9 +119,17 @@ class PropertyController extends Controller
 
     public function showRecommendedProperties(Request $request)
     {
+         $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ], 401);
+        }
+
         $additionalData = [
-          'user_id' => Auth::id(),
-          'page' => $request->query('page', 1)
+            'user_id' => $user->id,
+            'page' => $request->query('page', 1)
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Recommended properties fetched successfully');
     }

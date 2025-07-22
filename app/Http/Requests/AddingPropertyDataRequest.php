@@ -35,7 +35,6 @@ class AddingPropertyDataRequest extends FormRequest
             "overall_payment" => "numeric",
             "payment_plan" => [
                 'array',
-                'required',
                 function ($attribute, $value, $fail) {
                     if ($this->input('sell_type_id') == 3) {
                         $totalPercentage = array_sum(array_column($value, 'payment_percentage'));
