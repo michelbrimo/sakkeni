@@ -382,7 +382,8 @@ class PropertyRepository{
             'ownershipType',
             'owner',
             'location.country',
-            'location.city'
+            'location.city', 
+            
         );
 
         if($data['property_type_id'] == PropertyType::RESIDENTIAL)
@@ -395,7 +396,7 @@ class PropertyRepository{
         else if ($data['sell_type_id'] == SellType::RENT)
             $query = $query->with('rent');
         else if ($data['sell_type_id'] == SellType::OFF_PLAN)
-            $query = $query->with('offPlan');
+            $query = $query->with(['offPlan.paymentPhases']);
 
 
         $query = $query->first();

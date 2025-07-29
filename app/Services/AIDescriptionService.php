@@ -96,4 +96,50 @@ class AIDescriptionService
 
         return $prompt;
     }
+    // private function buildPrompt(Property $property): string
+    // {
+    //     $property->load(
+    //         'propertyType', 'sellType', 'location.city', 'amenities',
+    //         'residential', 'commercial', 'purchase', 'rent', 'offPlan'
+    //     );
+
+    //     $prompt = "Generate a professional real estate description using EXACTLY this 4-sentence structure:\n\n";
+    //     $prompt .= "1. [Creative introduction mentioning property type and location]\n";
+    //     $prompt .= "2. [Key features: bedrooms/bathrooms/area with positive adjectives]\n";
+    //     $prompt .= "3. [Amenities and special features as comma-separated list]\n";
+    //     $prompt .= "4. [Pricing/availability call-to-action]\n\n";
+    //     $prompt .= "--- STRICT RULES ---\n";
+    //     $prompt .= "- Maintain exactly 4 sentences in this order\n";
+    //     $prompt .= "- End each sentence with a period\n";
+    //     $prompt .= "- Keep amenities list to 3 key items max\n";
+    //     $prompt .= "- Use professional real estate language\n\n";
+    //     $prompt .= "--- Property Details ---\n";
+    //     $prompt .= "Property Type: " . ($property->propertyType->name ?? 'N/A') . "\n";
+    //     $prompt .= "Status: For " . ($property->sellType->name ?? 'N/A') . "\n";
+    //     $prompt .= "Location: In the city of " . ($property->location->city->name ?? 'N/A') . "\n";
+    //     $prompt .= "Area: " . $property->area . " square meters\n";
+
+    //     if ($property->residential) {
+    //         $prompt .= "Bedrooms: " . $property->residential->bedrooms . "\n";
+    //     }
+    //     $prompt .= "Bathrooms: " . $property->bathrooms . "\n";
+
+    //     if ($property->amenities->isNotEmpty()) {
+    //         $prompt .= "Key Amenities: " . $property->amenities->pluck('name')->implode(', ') . "\n";
+    //     }
+
+    //     if ($property->purchase) {
+    //         $prompt .= "Price: " . number_format($property->purchase->price) . "\n";
+    //     } elseif ($property->rent) {
+    //         $prompt .= "Rent: " . number_format($property->rent->price) . " per " . $property->rent->lease_period . "\n";
+    //     } elseif ($property->offPlan) {
+    //         $prompt .= "Delivery Date: " . $property->offPlan->delivery_date . "\n";
+    //         $prompt .= "Total Payment: " . number_format($property->offPlan->overall_payment) . "\n";
+    //     }
+
+    //     $prompt .= "--- End of Details ---\n\n";
+    //     $prompt .= "Generate the description following the 4-sentence template exactly.";
+
+    //     return $prompt;
+    // }
 }
