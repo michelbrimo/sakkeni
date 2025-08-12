@@ -146,4 +146,36 @@ class AdminController extends Controller
         $additionalData = ['admin_id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
     }
+
+    public function viewPropertyReports(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property reports fetched successfully');
+    }
+
+    public function viewServiceProviderReports(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Service provider reports fetched successfully');
+    }
+
+    public function updateMyProfile(Request $request){
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'address' => 'string',
+            'phone_number' => 'string',
+            'profile_image' => 'file'
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
+        $additionalData = ['id' => auth('admin')->user()->id];
+        return $this->executeService($this->service_transformer, $request, $additionalData, "Admin's profile updated successfully");
+    }
+
 }

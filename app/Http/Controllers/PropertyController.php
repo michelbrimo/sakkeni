@@ -8,8 +8,11 @@ use App\Http\Requests\FilterPropertiesRequest;
 use App\Http\Requests\UpdatingPropertyDataRequest;
 use App\Models\Property;
 use App\Services\ServiceTransformer;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Validator;
+
 
 
 class PropertyController extends Controller
@@ -174,5 +177,31 @@ class PropertyController extends Controller
     function viewAvailabilityStatus()
     {
         return $this->executeService($this->service_transformer, new Request(), [], 'Availability Status fetched successfully');
+    }
+
+    function reportProperty(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'report_reason_id' => 'required|exists:report_reasons,id',
+            'additional_comments' => 'string|nullable|max:1000',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
+        $additionalData = [
+            'user_id' => auth()->user()->id,
+            'reportable_id' => $id,
+        ];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Property reported successfully');
+    }
+
+    function viewPropertyReportReasons()
+    {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Property report reasons fetched successfully');
     }
 }

@@ -56,6 +56,15 @@ class ServiceTransformer{
         'viewOwnershipTypes' => [],
         'viewAvailabilityStatus' => [],
         'viewServiceCategories' => [],
+
+        'reportProperty' => [],
+        'reportServiceProvider' => [],
+        'viewPropertyReports' => [],
+        'viewServiceProviderReports' => [],
+        'viewPropertyReportReasons' => [],
+        'viewServiceProviderReportReasons' => [],
+
+        'updateAdminProfile' => [],
     ];
 
     private $service_mapper = [];
@@ -73,6 +82,8 @@ class ServiceTransformer{
             "Property" => "App\\Services\\PropertyServices",
             "Admin" => "App\\Services\\AdminServices",
             "ServiceProvider" => "App\\Services\\ServiceProviderServices",
+            "Report" => "App\\Services\\ReportServices",
+
         ];
     }
 

@@ -262,6 +262,9 @@ public function availabilityStatus()
         return $this->hasMany(PropertyFavorite::class);
     }
 
-
+    public function reportOnService()
+    {
+        return $this->morphMany(ReportOnService::class, 'reportable');
+    }
 
 }

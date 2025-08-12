@@ -55,11 +55,12 @@ Route::middleware('superadmin')->group(function () {
 });
 
 
+Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+
 Route::middleware('auth:admin')->group(function () {
     Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
     
     Route::middleware('superadmin')->group(function () {
-        Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
         Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
         Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
@@ -72,6 +73,10 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
         Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
         Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+        Route::post('/update-admin-profile', [AdminController::class, 'updateMyProfile'])->name('Admin.updateAdminProfile');
+
+        Route::get('/reports/properties', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
+        Route::get('/reports/service-providers', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
     });
 });
 
@@ -97,6 +102,10 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/view-recommended-properties', [PropertyController::class, 'showRecommendedProperties'])->name('Property.viewRecommendedProperties');
     
+    Route::post('/report-property/{id}', [PropertyController::class, 'reportProperty'])->name('Report.reportProperty');
+    Route::post('/report-service-provider/{id}', [ServiceProviderController::class, 'reportServiceProvider'])->name('Report.reportServiceProvider');
+    
+
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
         Route::post('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
@@ -122,6 +131,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-availability-status', [PropertyController::class, 'viewAvailabilityStatus'])->name('Property.viewAvailabilityStatus');
     Route::get('/view-ownership-types', [PropertyController::class, 'viewOwnershipTypes'])->name('Property.viewOwnershipTypes');
     Route::get('/view-service-categories', [ServiceProviderController::class, 'viewServiceCategories'])->name('ServiceProvider.viewServiceCategories');
+    Route::get('/report-reasons/property', [PropertyController::class, 'viewPropertyReportReasons'])->name('Report.viewPropertyReportReasons');
+    Route::get('/report-reasons/service-provider', [ServiceProviderController::class, 'viewServiceProviderReportReasons'])->name('Report.viewServiceProviderReportReasons');
 
    
 });

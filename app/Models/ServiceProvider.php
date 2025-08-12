@@ -24,4 +24,10 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(ServiceProviderService::class)->where('availability_status_id', AvailabilityStatus::Pending);
     }
+
+    public function reportOnService()
+    {
+        return $this->morphMany(ReportOnService::class, 'reportable');
+    }
+
 }

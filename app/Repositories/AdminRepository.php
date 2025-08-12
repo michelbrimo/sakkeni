@@ -48,4 +48,9 @@ class AdminRepository{
         return Admin::where('email', '=', $email)
                    ->first();
     }
+
+    public function updateAdmin($adminId, $data) {
+        return Admin::where('id', '=', $adminId)
+                   ->update($data);
+    }
 }
