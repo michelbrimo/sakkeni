@@ -18,4 +18,10 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(ServiceProviderService::class);
     }
+
+    public function reportOnService()
+    {
+        return $this->morphMany(ReportOnService::class, 'reportable');
+    }
+
 }

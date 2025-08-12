@@ -262,6 +262,9 @@ class Property extends Model
         return $this->hasMany(PropertyFavorite::class);
     }
 
-
+    public function reportOnService()
+    {
+        return $this->morphMany(ReportOnService::class, 'reportable');
+    }
 
 }

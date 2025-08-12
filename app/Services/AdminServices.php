@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AdminServices{
+class AdminServices extends ImageServices{
     protected $admin_repository;
     protected $property_repository;
     protected $service_provider_repository;
@@ -85,6 +85,18 @@ class AdminServices{
     
     function serviceProviderServiceAdjudication($data) {
         return $this->service_provider_repository->serviceProviderServiceAdjudication($data);
+    }
+
+    public function updateAdminProfile($data) {        
+        $adminId = $data['id'];
+        unset($data['id']);
+
+        if(isset($data['profile_picture'])){
+            $data['profile_picture_path'] = $this->_storeImage($data['profile_picture'], 'admin_profile', auth('admin')->user()->id);
+            unset($data['profile_picture']);
+        }
+
+        $this->admin_repository->updateAdmin($adminId, $data);
     }
 
 }
