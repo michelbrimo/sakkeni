@@ -17,18 +17,6 @@ class UserRepository{
         return Seller::create($data);
     }
     
-    public function createServiceProvider($data) {
-        return ServiceProvider::create($data);
-    }
-    
-    public function createServiceProviderSubscriptionPlan($data) {
-        return ServiceProviderSubscriptionPlan::create($data);
-    }
-    
-    public function createServiceProviderServices($data) {
-        return ServiceProviderService::create($data);
-    }
-
     public function getUserDetails_byEmail($email) {
         return User::where('email', '=', $email)
                    ->first();

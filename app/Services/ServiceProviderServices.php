@@ -3,19 +3,24 @@
 namespace App\Services;
 
 use App\Enums\AvailabilityStatus;
+use App\Repositories\ImageRepository;
 use App\Repositories\ServiceProviderRepository;
 use Exception;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceProviderServices extends ImageServices
 {
     protected $service_provider_repository;
+    protected $image_repository;
 
     public function __construct() {
         $this->service_provider_repository = new ServiceProviderRepository();
+        $this->image_repository = new ImageRepository();
+
     }
 
     function viewServiceCategories() {
@@ -33,4 +38,49 @@ class ServiceProviderServices extends ImageServices
     function viewServiceProviderServiceGallery($data) {
         return $this->service_provider_repository->getServiceProviderServiceGallery($data['service_provider_service_id']);
     }
+
+    function addService($data) {
+        $serviceProviderId = $this->service_provider_repository->getServiceProviderByUserId($data['user_id'])->id;
+        
+        $this->service_provider_repository->createServiceProviderService([
+            'service_provider_id' => $serviceProviderId,
+            'service_id' => $data['service_id'],
+            'description' => $data['service_description'],
+            'availability_status_id'=> AvailabilityStatus::Pending, 
+        ]);
+    }
+
+    function removeService($data) {
+        $this->service_provider_repository->deleteServiceProviderService($data['service_provider_service_id']);
+    }
+
+    function editService($data) {
+        if(isset($data['description']))
+            $this->service_provider_repository->updateService($data['service_provider_service_id'], ['description'=>$data['description']]);
+
+        if(isset($data['service_gallery']))
+            $this->updateImages($data['service_provider_service_id'], $data['service_gallery']);
+    }
+
+
+    public function updateImages($service_id, array $newImages)
+    {
+        $oldImages = $this->image_repository->getImagesByServiceId($service_id);
+
+        foreach ($oldImages as $image) {
+            $filePath = str_replace('storage/', '', $image->image_path);
+            Storage::disk('public')->delete($filePath);
+            $this->image_repository->deleteServiceImage($image->id);
+        }
+
+        $this->saveImages($service_id, $newImages);
+    }
+
+    protected function saveImages($service_id, $images) {
+        $imagesPaths = $this->_storeImages($images, 'services', $service_id);
+        $this->image_repository->addServiceImages($service_id, $imagesPaths);
+    }
+
+
+
 }

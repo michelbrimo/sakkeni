@@ -269,7 +269,7 @@ class PropertyServices extends ImageServices
         foreach ($oldImages as $image) {
             $filePath = str_replace('storage/', '', $image->image_path);
             Storage::disk('public')->delete($filePath);
-            $this->image_repository->deleteImage($image->id);
+            $this->image_repository->deletePropertyImage($image->id);
         }
 
         $this->_saveImages($propertyId, $newImages);

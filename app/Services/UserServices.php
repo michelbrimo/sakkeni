@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AvailabilityStatus;
+use App\Repositories\ServiceProviderRepository;
 use Exception;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -12,9 +13,11 @@ use Illuminate\Support\Facades\Validator;
 class UserServices extends ImageServices
 {
     protected $user_repository;
+    protected $service_provider_repository;
 
     public function __construct() {
         $this->user_repository = new UserRepository();
+        $this->service_provider_repository = new ServiceProviderRepository();
     }
 
     public function signUp($data){
@@ -95,18 +98,18 @@ class UserServices extends ImageServices
             );
         }
 
-        $serviceProvider = $this->user_repository->createServiceProvider([
+        $serviceProvider = $this->service_provider_repository->createServiceProvider([
             'user_id' => $data['user']->id,
-            'availability_status_id'=> AvailabilityStatus::Active,
+            'description'=> $data['description'],
         ]);
 
-        $this->user_repository->createServiceProviderSubscriptionPlan([
+        $this->service_provider_repository->createServiceProviderSubscriptionPlan([
             'service_provider_id' => $serviceProvider->id,
             'subscription_plan_id' => $data['subscription_plan_id'],
         ]);
 
         foreach ($data['services_id'] as $service_id){
-            $this->user_repository->createServiceProviderServices([
+            $this->service_provider_repository->createServiceProviderService([
                 'service_provider_id' => $serviceProvider->id,
                 'service_id' => $service_id,
                 'availability_status_id'=> AvailabilityStatus::Pending,

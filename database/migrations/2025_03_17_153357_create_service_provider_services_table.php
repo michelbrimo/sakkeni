@@ -25,6 +25,7 @@ return new class extends Migration
             ->constrained('availability_statuses')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

@@ -9,9 +9,23 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use App\Models\ServiceProviderService;
+use App\Models\ServiceProviderSubscriptionPlan;
 use App\Models\User;
 
 class ServiceProviderRepository{
+    public function createServiceProvider($data) {
+        return ServiceProvider::create($data);
+    }
+    
+    public function createServiceProviderSubscriptionPlan($data) {
+        return ServiceProviderSubscriptionPlan::create($data);
+    }
+    
+    public function createServiceProviderService($data) {
+        return ServiceProviderService::create($data);
+    }
+
+    
     function updateServiceProvider($id, $data) {
         ServiceProvider::where('id', $id)
                        ->update($data);
@@ -52,10 +66,8 @@ class ServiceProviderRepository{
 
     function viewPendingServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) {
-            $query->whereHas('serviceProviderServices', function($query){
-                $query->where('availability_status_id', AvailabilityStatus::Pending);
-            });
-        })->with('serviceProvider')
+            $query->whereHas('servicePendingProviderServices');
+        })->with('serviceProvider.servicePendingProviderServices')
           ->simplePaginate(10, [
                 'id',
                 'first_name',
@@ -69,20 +81,31 @@ class ServiceProviderRepository{
             $query->whereHas('serviceProviderServices', function($subQuery) use ($data) {
                 $subQuery->where('service_id', $data['service_id']);
             });
-        })->with('serviceProvider')
+        })->with(['serviceProvider'])
           ->simplePaginate(10, [
                 'id',
                 'first_name',
                 'last_name',
                 'address',
+                'profile_picture_path'
         ], 'page', $data['page'] ?? 1);
     }
+
+    function updateService($serviceProviderServiceId, $data) {
+        return ServiceProviderService::where('id', $serviceProviderServiceId)
+                                     ->update($data);
+    }
+
 
     function getServiceProviderDetails($serviceProviderId) {
         return User::whereHas('serviceProvider', function($query) use ($serviceProviderId) {
             $query->where('id', $serviceProviderId);
-        })->with(['serviceProvider.serviceProviderServices.service'])
+        })->with(['serviceProvider.serviceProviderServices.service', 'serviceProvider.serviceProviderServices.availabilityStatus'])
           ->first();
+    }
+
+    function getServiceProviderByUserId($userId) {
+        return ServiceProvider::where('user_id', $userId)->first();
     }
 
     function getServiceProviderServiceGallery($serviceProviderServiceId) {
@@ -90,4 +113,17 @@ class ServiceProviderRepository{
                                      ->with(['service', 'gallery'])
                                      ->get();
     }
+
+    function addService($serviceProviderServiceId) {
+        return ServiceProviderService::where('id', $serviceProviderServiceId)
+                                     ->with(['service', 'gallery'])
+                                     ->get();
+    }
+
+    public function deleteServiceProviderService($id) {
+        return ServiceProviderService::where('id', $id)
+                                     ->delete();
+    }
+
+
 }

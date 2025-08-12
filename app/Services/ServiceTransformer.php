@@ -42,6 +42,10 @@ class ServiceTransformer{
         'viewServiceProviders' => [], 
         'viewServiceProviderDetails' => [], 
         'viewServiceProviderServiceGallery' => [], 
+        'addService' => [], 
+        'removeService' => [], 
+        'editService' => [], 
+
 
         'viewAmenities' => [],
         'viewDirections' => [],

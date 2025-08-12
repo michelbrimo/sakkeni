@@ -17,11 +17,8 @@ return new class extends Migration
             ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->foreignId('availability_status_id')
-            ->constrained('availability_statuses')
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
             $table->float('rate')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

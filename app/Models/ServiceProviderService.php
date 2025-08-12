@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\AvailabilityStatus;
+use App\Models\AvailabilityStatus as ModelsAvailabilityStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +14,7 @@ class ServiceProviderService extends Model
     protected $fillable = [
         'service_provider_id',
         'availability_status_id',
+        'description',
         'service_id'
     ];
 
@@ -24,5 +27,11 @@ class ServiceProviderService extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function availabilityStatus()
+    {
+        return $this->belongsTo(ModelsAvailabilityStatus::class);
+    }
+
 
 }

@@ -104,7 +104,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
     });
 
-    Route::middleware('serviceProvider')->group(function () {        
+    Route::middleware('serviceProvider')->group(function () {     
+        Route::post('/add-service', [ServiceProviderController::class, 'addService'])->name('ServiceProvider.addService'); 
+        Route::delete('/remove-service/{service_provider_service_id}', [ServiceProviderController::class, 'removeService'])->name('ServiceProvider.removeService'); 
+        Route::post('/edit-service', [ServiceProviderController::class, 'editService'])->name('ServiceProvider.editService'); 
+
     });
 
 

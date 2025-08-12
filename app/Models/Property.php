@@ -62,10 +62,10 @@ class Property extends Model
         return $this->belongsTo(ModelsPropertyType::class);
     }
     
-    public function availabilityStatus()
-    {
-        return $this->belongsTo(AvailabilityStatus::class);
-    }
+public function availabilityStatus()
+{
+    return $this->belongsTo(AvailabilityStatus::class);
+}
     
     public function ownershipType()
     {

@@ -110,7 +110,8 @@ class UserController extends Controller
     public function upgradeToServiceProvider(Request $request){
         $validator = Validator::make($request->all(), [
             'subscription_plan_id' => 'integer|required',
-            'services_id' => 'array'
+            'services_id' => 'array',
+            'description' => 'string'
         ]);
 
         if($validator->fails()){
