@@ -6,6 +6,7 @@ use App\Services\ServiceTransformer;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
@@ -147,15 +148,22 @@ class AdminController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
     }
 
-    public function viewPropertyReports(Request $request)
+    public function viewPropertyReports(Request $request, $status)
     {
-        $additionalData = ['page' => $request->input('page', 1)];
+        $additionalData = [
+            'page' => $request->input('page', 1),
+            'status' => $status,
+        ];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property reports fetched successfully');
     }
 
-    public function viewServiceProviderReports(Request $request)
+
+    public function viewServiceProviderReports(Request $request, $status)
     {
-        $additionalData = ['page' => $request->input('page', 1)];
+        $additionalData = [
+            'page' => $request->input('page', 1),
+            'status' => $status,
+        ];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Service provider reports fetched successfully');
     }
 
@@ -176,6 +184,25 @@ class AdminController extends Controller
 
         $additionalData = ['id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, "Admin's profile updated successfully");
+    }
+
+    public function processReport(Request $request, int $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => ['required', Rule::in(['resolved', 'dismissed'])],
+            'admin_notes' => 'string|nullable|max:2000',
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first(), 422);
+        }
+
+        $additionalData = [
+            'report_id' => $id,
+            'admin_id' => auth('admin')->user()->id,
+        ];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Report processed successfully');
     }
 
 }

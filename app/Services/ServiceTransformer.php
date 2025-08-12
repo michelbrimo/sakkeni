@@ -63,6 +63,8 @@ class ServiceTransformer{
         'viewServiceProviderReports' => [],
         'viewPropertyReportReasons' => [],
         'viewServiceProviderReportReasons' => [],
+        'processReport' => [],
+
 
         'updateAdminProfile' => [],
     ];

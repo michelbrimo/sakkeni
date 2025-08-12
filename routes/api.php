@@ -75,8 +75,11 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
         Route::post('/update-admin-profile', [AdminController::class, 'updateMyProfile'])->name('Admin.updateAdminProfile');
 
-        Route::get('/reports/properties', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
-        Route::get('/reports/service-providers', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
+        Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
+        Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
+        
+
+        Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
     });
 });
 
