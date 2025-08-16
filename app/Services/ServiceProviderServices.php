@@ -43,15 +43,17 @@ class ServiceProviderServices extends ImageServices
         return $this->service_provider_repository->getServiceProviderServiceGallery($data['service_provider_service_id']);
     }
 
-    function addService($data) {
-        $serviceProviderId = $this->service_provider_repository->getServiceProviderByUserId($data['user_id'])->id;
-        
+    function addService($data) {        
         $this->service_provider_repository->createServiceProviderService([
-            'service_provider_id' => $serviceProviderId,
+            'service_provider_id' => $data['service_provider_id'],
             'service_id' => $data['service_id'],
             'description' => $data['service_description'],
             'availability_status_id'=> AvailabilityStatus::Pending, 
         ]);
+    }
+
+    function viewMyServices($data) {        
+        return $this->service_provider_repository->getServiceProviderServices($data['service_provider_id']);
     }
 
     function removeService($data) {

@@ -45,6 +45,7 @@ class ServiceTransformer{
         'addService' => [], 
         'removeService' => [], 
         'editService' => [], 
+        'viewMyServices' => [], 
 
 
         'viewAmenities' => [],

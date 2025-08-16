@@ -101,6 +101,12 @@ class ServiceProviderRepository{
                                      ->update($data);
     }
 
+    function getServiceProviderServices($serviceProviderId) {
+        return ServiceProviderService::where('service_provider_id', $serviceProviderId)
+                                    ->with(['service.serviceCategory', 'availabilityStatus'])
+                                    ->get();
+    }
+
 
     function getServiceProviderDetails($serviceProviderId) {
         return User::whereHas('serviceProvider', function($query) use ($serviceProviderId) {

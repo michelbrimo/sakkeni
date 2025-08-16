@@ -38,8 +38,9 @@ class ServiceProviderController extends Controller
         $additionalData = ['service_provider_service_id' => $service_provider_service_id];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, "Service Provider's Service Gallery fetched successfully");
     }
+
     function addService(Request $request) {
-        $additionalData = ['user_id' => auth()->user()->id];
+        $additionalData = ['service_provider_id' => $this->getServiceProviderId()];
 
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|integer',
@@ -53,6 +54,12 @@ class ServiceProviderController extends Controller
         } 
 
         return $this->executeService($this->service_transformer, $request, $additionalData, "Service added successfully");
+    }
+    
+    function viewMyServices(Request $request) {
+        $additionalData = ['service_provider_id' => $this->getServiceProviderId()];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, "Your Services fetched successfully");
     }
 
     function removeService($service_provider_service_id) {

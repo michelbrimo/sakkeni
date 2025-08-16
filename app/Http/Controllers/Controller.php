@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceProvider;
+use App\Repositories\ServiceProviderRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -41,6 +43,11 @@ class Controller extends BaseController
             $serviceFunction['function'],
             $successMessage
         );
+    }
+
+    public function getServiceProviderId(){
+        $service_provider_repository = new ServiceProviderRepository();
+        return $service_provider_repository->getServiceProviderByUserId(auth()->user()->id)->id;
     }
     
 }
