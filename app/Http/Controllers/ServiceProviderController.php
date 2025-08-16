@@ -20,6 +20,10 @@ class ServiceProviderController extends Controller
         return $this->executeService($this->service_transformer, new Request(), [], "Service's Categories fetched successfully");
     }
     
+    function viewSubscriptionPlans() {
+        return $this->executeService($this->service_transformer, new Request(), [], "Subscription Plans fetched successfully");
+    }
+    
     function viewServiceProviders(Request $request, $service_id) {
         $additionalData = ['service_id' => $service_id, 'page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, "Service Providers fetched successfully");

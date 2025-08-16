@@ -123,7 +123,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
-
+    
+    
     // View Default Data
     Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
     Route::get('/view-directions', [PropertyController::class, 'viewDirections'])->name('Property.viewDirections');
@@ -134,8 +135,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-availability-status', [PropertyController::class, 'viewAvailabilityStatus'])->name('Property.viewAvailabilityStatus');
     Route::get('/view-ownership-types', [PropertyController::class, 'viewOwnershipTypes'])->name('Property.viewOwnershipTypes');
     Route::get('/view-service-categories', [ServiceProviderController::class, 'viewServiceCategories'])->name('ServiceProvider.viewServiceCategories');
+    Route::get('/view-subscription-plans', [ServiceProviderController::class, 'viewSubscriptionPlans'])->name('ServiceProvider.viewSubscriptionPlans');
     Route::get('/report-reasons/property', [PropertyController::class, 'viewPropertyReportReasons'])->name('Report.viewPropertyReportReasons');
     Route::get('/report-reasons/service-provider', [ServiceProviderController::class, 'viewServiceProviderReportReasons'])->name('Report.viewServiceProviderReportReasons');
-
+    
    
 });

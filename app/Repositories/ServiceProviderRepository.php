@@ -10,6 +10,7 @@ use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use App\Models\ServiceProviderService;
 use App\Models\ServiceProviderSubscriptionPlan;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 
 class ServiceProviderRepository{
@@ -62,6 +63,10 @@ class ServiceProviderRepository{
 
     function getServiceCategories() {
         return ServiceCategory::with('services')->get();
+    }
+
+    function getSubscriptionPlans() {
+        return SubscriptionPlan::get();
     }
 
     function viewPendingServiceProviders($data) {

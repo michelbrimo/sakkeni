@@ -26,6 +26,10 @@ class ServiceProviderServices extends ImageServices
     function viewServiceCategories() {
         return $this->service_provider_repository->getServiceCategories();
     }
+    
+    function viewSubscriptionPlans($data) {
+        return $this->service_provider_repository->getSubscriptionPlans();
+    }
 
     function viewServiceProviders($data) {
         return $this->service_provider_repository->getServiceProviders($data);

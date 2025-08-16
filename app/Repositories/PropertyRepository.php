@@ -94,6 +94,12 @@ class PropertyRepository{
                                ->where('property_id', $data['property_id'])
                                ->delete();
     }
+
+    public function getPropertyFavorite($propertyId, $userId) {
+        return PropertyFavorite::where('property_id', $propertyId)
+                               ->where('user_id', $userId)
+                               ->first();
+    }
     
     public function getFavoriteProperties($data) {
         $query = PropertyFavorite::where('user_id', $data['user_id'])

@@ -22,8 +22,8 @@ class ServiceTransformer{
         'viewRecommendedProperties' => [], 
 
         'deleteProperty' => [],
-        'addPropertyToFavorite' => [],
-        'removePropertyFromFavorite' => [],
+        'addPropertyToFavorite' => ['favoriteAspect'],
+        'removePropertyFromFavorite' => ['favoriteAspect'],
         'viewFavoriteProperties' => [],
         'adminLogin' => [],
         'adminLogout' => [],
@@ -56,6 +56,7 @@ class ServiceTransformer{
         'viewOwnershipTypes' => [],
         'viewAvailabilityStatus' => [],
         'viewServiceCategories' => [],
+        'viewSubscriptionPlans' => [],
 
         'reportProperty' => [],
         'reportServiceProvider' => [],
@@ -91,7 +92,7 @@ class ServiceTransformer{
 
     public function execute($data, $service, $function_name, $success_message) {
         try{
-            $this->executeBefore($function_name);
+            $this->executeBefore($function_name, $data);
 
             $service_obj = new $this->service_mapper[$service];
             $result = $service_obj->$function_name($data); 
@@ -119,12 +120,12 @@ class ServiceTransformer{
         return $response;
     }
     
-    public function executeBefore($function_name) {
+    public function executeBefore($function_name, $data) {
         $aspects = $this->aspect_mapper[$function_name];
         foreach ($aspects as $aspect) {
             $object = 'App\\Aspects\\'. $aspect;
             $class = new $object();
-            $class->before($function_name);
+            $class->before($function_name, $data);
         }
     }
 
