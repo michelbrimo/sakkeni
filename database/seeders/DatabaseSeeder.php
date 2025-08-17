@@ -12,7 +12,6 @@ use App\Models\City;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
-use App\Models\LeasePeriodUnits;
 use App\Models\OwnershipType;
 use App\Models\PropertyType;
 use App\Models\ResidentialPropertyType;
@@ -30,7 +29,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Amenity::factory(10)->create();
         User::factory(10)->create();
         Admin::factory(1)->create();
         $this->call(PaymentPhaseSeeder::class);
@@ -91,6 +89,26 @@ class DatabaseSeeder extends Seeder
             SubscriptionPlan::create(['name' => $subscriptionPlan, 'price' => rand(10000, 50000)]);
         }
 
+        
+        $propertyTypes = ['Residential', 'Commercial'];
+        foreach ($propertyTypes as $propertyType) {
+            PropertyType::create(['name' => $propertyType]);
+        }
+        
+        $amenities = [
+            'Garage', 'Elevator',
+            'Air Conditioning', 'Heating', 
+            'Solar Panels', 'Electric Car Charging Stations', 'Lithium Batteries', 
+            'Swimming Pool', 'Rooftop Terrace', 'Home Theater', 'Wine Cellar', 'Spa', 'BBQ', 'Playground', 'Pet-Friendly',
+            'Security',
+            'Nearby Schools', 'Nearby Shopping Centers', 'Nearby Restaurants', 'Nearby Parks', 'Nearby Hospitals',
+            'Wheelchair Ramps',
+            'Smart Home', 'High-Speed Internet',
+        ];
+        foreach ($amenities as $amenity) {
+            Amenity::create(['name' => $amenity]);
+        }
+        
         $serviceCategories = ['Fixes and Repairs', 'Cleaning', 'Plumbing', 'Flooring', 'Painting & Finishing', 'Electrical & Power', 'Moving & Transport', 'Garden Upkeep'];
         foreach ($serviceCategories as $serviceCategory) {
             ServiceCategory::create(['name' => $serviceCategory]);
@@ -128,19 +146,13 @@ class DatabaseSeeder extends Seeder
 
                 case 'Garden Upkeep':
                     $services = ['Irrigation', 'Pest Control'];
-                    break;
-                
+                    break;          
             }
 
             foreach ($services as $service) {
                 Service::create(['name'=>$service, 'service_category_id' => $i+1]);
             }
         }
-        $serviceCategories = ['Fixes and Repairs', 'Cleaning', 'Plumbing', 'Flooring', 'Painting & Finishing', 'Electrical & Power', 'Moving & Transport', 'Garden Upkeep'];
-        foreach ($serviceCategories as $serviceCategory) {
-            ServiceCategory::create(['name' => $serviceCategory]);
-        }
-
         
         $this->call(PropertySeeder::class);
 
