@@ -99,7 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');
     Route::get('/view-favorite-properties/{sell_type}', [PropertyController::class, 'viewFavoriteProperties'])->name('Property.viewFavoriteProperties');
     
-    Route::get('/view-service-providers/{service}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
+    Route::get('/view-service-providers', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
     Route::get('/view-service-provider-details/{service_provider_id}', [ServiceProviderController::class, 'viewServiceProviderDetails'])->name('ServiceProvider.viewServiceProviderDetails'); 
     Route::get('/view-service-provider-service-gallery/{service_provider_service_id}', [ServiceProviderController::class, 'viewServiceProviderServiceGallery'])->name('ServiceProvider.viewServiceProviderServiceGallery'); 
     

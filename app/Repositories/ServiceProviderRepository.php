@@ -119,6 +119,10 @@ class ServiceProviderRepository{
         return ServiceProvider::where('user_id', $userId)->first();
     }
 
+    function getServiceByName($service) {
+        return Service::where('name', $service)->first();
+    }
+
     function getServiceProviderServiceGallery($serviceProviderServiceId) {
         return ServiceProviderService::where('id', $serviceProviderServiceId)
                                      ->with(['service', 'gallery'])

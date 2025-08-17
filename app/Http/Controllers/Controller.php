@@ -49,5 +49,10 @@ class Controller extends BaseController
         $service_provider_repository = new ServiceProviderRepository();
         return $service_provider_repository->getServiceProviderByUserId(auth()->user()->id)->id;
     }
+
+    public function getServiceId($service){
+        $service_provider_repository = new ServiceProviderRepository();
+        return $service_provider_repository->getServiceByName($service)->id;
+    }
     
 }
