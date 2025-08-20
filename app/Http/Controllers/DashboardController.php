@@ -20,4 +20,16 @@ class DashboardController extends Controller
     function viewTotalProperties() {
         return $this->executeService($this->service_transformer, new Request(), [], 'Total properties fetched successfully');
     }
+
+    function viewPropertiesStatus() {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Properties status fetched successfully');
+    }
+
+    function viewServiceStatus() {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Services status fetched successfully');
+    }
+
+    function viewPropertiesLocation() {
+        return $this->executeService($this->service_transformer, new Request(), [], 'Properties Locations fetched successfully');
+    }
 }

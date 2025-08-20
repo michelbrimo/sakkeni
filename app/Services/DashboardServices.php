@@ -20,5 +20,15 @@ class DashboardServices
         return $this->dashboard_repository->getPropertyStats();
     }
 
+    function viewPropertiesStatus() {
+        return $this->dashboard_repository->getPropertyStatusStats();
+    }
 
+    function viewServiceStatus() {
+        return $this->dashboard_repository->getServiceStatusStats();
+    }
+
+    function viewPropertiesLocation() {
+        return $this->dashboard_repository->getPropertiesLocations();
+    }
 }

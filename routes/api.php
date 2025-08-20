@@ -82,6 +82,9 @@ Route::middleware('auth:admin')->group(function () {
         
         Route::get('/charts/total-users', [DashboardController::class, 'viewTotalUsers'])->name('Dashboard.viewTotalUsers');
         Route::get('/charts/total-properties', [DashboardController::class, 'viewTotalProperties'])->name('Dashboard.viewTotalProperties');
+        Route::get('/charts/properties-status', [DashboardController::class, 'viewPropertiesStatus'])->name('Dashboard.viewPropertiesStatus');
+        Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
+        Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
     });
 });
 

@@ -74,6 +74,9 @@ class ServiceTransformer{
 
         'viewTotalUsers' => [],
         'viewTotalProperties' => [],
+        'viewPropertiesStatus' => [],
+        'viewServiceStatus' => [],
+        'viewPropertiesLocation' => [],
     ];
 
     private $service_mapper = [];

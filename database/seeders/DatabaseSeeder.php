@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
             Country::create(['name' => $country]);
         }
 
-        $cities = ['Damascus', 'Aleppo', 'Homs', 'Latakia', 'Hama', 'Daraa', 'Deir ez-Zor', 'Raqqa', 'Tartus', 'Idlib', 'Qamishli', 'Al-Hasakah', 'Palmyra', 'Apamea'];
+        $cities = ['Damascus', 'Rif-Damascus', 'Aleppo', 'Homs', 'Hama', 'Al-Hasakah', 'Latakia', 'Tartus', 'Daraa', 'Deir ez-Zor', 'Raqqa',  'Idlib', 'Qunaitra', 'Sweida'];
         foreach ($cities as $city) {
             City::create(['name' => $city, 'country_id' => 1]);
         }
