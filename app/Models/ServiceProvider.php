@@ -30,4 +30,19 @@ class ServiceProvider extends Model
         return $this->morphMany(ReportOnService::class, 'reportable');
     }
 
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

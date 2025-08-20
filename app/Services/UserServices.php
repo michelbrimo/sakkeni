@@ -116,4 +116,23 @@ class UserServices extends ImageServices
             ]);
         }
     }
+
+    // public function confirmCompletion($data)
+    // {
+    //     $user = $data['user'];
+    //     $serviceActivity = $data['service_activity'];
+
+    //     if ($user->id !== $serviceActivity->user_id) {
+    //         throw new Exception('Unauthorized', 403);
+    //     }
+
+    //     if ($serviceActivity->status === 'Completed') {
+    //         throw new Exception('This job has already been marked as complete.', 422);
+    //     }
+
+    //     // In a full implementation, this is where you would trigger the payout to the provider.
+    //     // For example: dispatch(new PayoutProviderJob($serviceActivity));
+
+    //     return $this->service_provider_repository->updateStatus($serviceActivity, 'Completed');
+    // }
 }

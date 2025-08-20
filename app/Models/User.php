@@ -72,5 +72,14 @@ class User extends Authenticatable
         return $this->hasOne(serviceProvider::class);
     }
 
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
 
 }

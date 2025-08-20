@@ -65,8 +65,30 @@ class ServiceTransformer{
         'viewServiceProviderReportReasons' => [],
         'processReport' => [],
 
-
         'updateAdminProfile' => [],
+
+        'viewConversations' => [],
+        'viewMessages' => [],
+        'sendMessage' => [],
+
+        'requestQuote' => [],
+        'updateQuoteRequest' => [],
+
+        'viewProviderQuotes' => [],
+        'submitQuote' => [],
+        'acceptQuote' => [],
+        'declineQuote' => [],
+        'declineUserQuote'=>[],
+
+
+        'createPaymentIntent' => [],
+        'handleWebhook' => [], 
+        
+        'confirmCompletion' => [], 
+
+        'getNotifications' => [], 
+
+
     ];
 
     private $service_mapper = [];
@@ -76,15 +98,20 @@ class ServiceTransformer{
 
     public function __construct()
     {   
+        
         $this->userService = new UserServices();
         $this->adminService = new AdminServices();
-
+        
         $this->service_mapper = [
             "User" => "App\\Services\\UserServices",
             "Property" => "App\\Services\\PropertyServices",
             "Admin" => "App\\Services\\AdminServices",
             "ServiceProvider" => "App\\Services\\ServiceProviderServices",
             "Report" => "App\\Services\\ReportServices",
+            "Conversation" => "App\\Services\\MessagingService",
+            "Quote" => "App\\Services\\QuoteService",
+            "Payment" => "App\\Services\\PaymentService",
+            "Notification" => "App\\Services\\NotificationService", 
 
         ];
     }

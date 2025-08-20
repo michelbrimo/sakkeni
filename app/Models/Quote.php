@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceActivity extends Model
+class Quote extends Model
 {
     use HasFactory;
+    
     protected $guarded = [];
 
     public function user()
@@ -20,13 +21,8 @@ class ServiceActivity extends Model
         return $this->belongsTo(ServiceProvider::class);
     }
 
-    public function quote()
+    public function service()
     {
-        return $this->belongsTo(Quote::class);
-    }
-
-    public function payment()
-    {
-        return $this->hasOne(Payment::class);
+        return $this->belongsTo(Service::class);
     }
 }

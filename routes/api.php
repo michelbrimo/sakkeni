@@ -1,12 +1,19 @@
 <?php
 
+use Illuminate\Support\Facades\Broadcast; 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\QuoteController;
+
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
 
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebhookController;
 use App\Models\Seller;
 use App\Models\ServiceProvider;
 use App\Models\User;
@@ -49,6 +56,9 @@ Route::post('reset-password-mail', [PasswordController::class, 'resetPassword'])
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
 Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
+
+
+Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook'])->name('stripe.handleWebhook');
 
 
 Route::middleware('superadmin')->group(function () {
@@ -108,6 +118,35 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/report-property/{id}', [PropertyController::class, 'reportProperty'])->name('Report.reportProperty');
     Route::post('/report-service-provider/{id}', [ServiceProviderController::class, 'reportServiceProvider'])->name('Report.reportServiceProvider');
     
+    Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider');
+    
+    //done
+    Route::post('/quotes/request', [QuoteController::class, 'requestQuote'])->name('Quote.requestQuote');
+    Route::post('/quotes/{quote}/update-request', [QuoteController::class, 'updateQuoteRequest'])->name('Quote.updateQuoteRequest');
+    Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');
+    Route::post('/quotes/{quote}/decline-user-quote', [QuoteController::class, 'declineUserQuote'])->name('Quote.declineUserQuote');
+
+
+     // --- MESSAGING ---
+    Route::get('/conversations', [ConversationController::class, 'viewConversations'])->name('Conversation.viewConversations');
+    Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'viewMessages'])->name('Conversation.viewMessages');
+    Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');
+
+
+    //testing 
+    Route::post('/quotes/{quote}/submit', [QuoteController::class, 'submitQuote'])->name('Quote.submitQuote'); 
+    Route::post('/quotes/{quote}/accept', [QuoteController::class, 'acceptQuote'])->name('Quote.acceptQuote');
+    Route::post('/quotes/{quote}/decline', [QuoteController::class, 'declineQuote'])->name('Quote.declineQuote');
+
+
+    // --- PAYMENT ---
+    Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
+
+    // --- JOB COMPLETION ---
+    // User confirms the job has been completed satisfactorily
+    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'confirmCompletion'])->name('User.complete');
+
+
 
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
@@ -139,3 +178,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
    
 });
+
+Broadcast::routes();
+
