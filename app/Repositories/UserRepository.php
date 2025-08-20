@@ -22,6 +22,20 @@ class UserRepository{
                    ->first();
     }
 
+    public function getAccountType($id) {
+        $user = User::with(['seller', 'serviceProvider'])->find($id);
+
+        if ($user->seller) {
+            $roles[] = 'Seller';
+        }
+
+        if ($user->serviceProvider) {
+            $roles[] = 'Service Provider';
+        }
+
+        return empty($roles) ? ['User'] : $roles;
+    }
+
     public function getUserDetails_byId($id) {
        return User::where('id', $id)->with('seller.accountType')->first();
     }

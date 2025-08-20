@@ -55,6 +55,7 @@ class UserServices extends ImageServices
 
         if ($result && Hash::check($data['password'], $result->password)) {
             $result['token'] = $result->createToken('personal access token')->plainTextToken;
+            $result['account_type'] = $this->user_repository->getAccountType($result->id);
             return $result;
         }
         else
@@ -141,7 +142,7 @@ class UserServices extends ImageServices
     function upgradeToServiceProvider($data) {
         $validator = Validator::make($data, [
             'subscription_plan_id' => 'integer|required',
-            'services_id' => 'array',
+            'services_id' => 'array | required',
             'description' => 'string'
         ]);
 
