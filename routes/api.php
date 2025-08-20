@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Broadcast; 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
+
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\QuoteController;
 
@@ -87,9 +89,13 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
-        
-
         Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
+        
+        Route::get('/charts/total-users', [DashboardController::class, 'viewTotalUsers'])->name('Dashboard.viewTotalUsers');
+        Route::get('/charts/total-properties', [DashboardController::class, 'viewTotalProperties'])->name('Dashboard.viewTotalProperties');
+        Route::get('/charts/properties-status', [DashboardController::class, 'viewPropertiesStatus'])->name('Dashboard.viewPropertiesStatus');
+        Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
+        Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
     });
 });
 
@@ -109,7 +115,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');
     Route::get('/view-favorite-properties/{sell_type}', [PropertyController::class, 'viewFavoriteProperties'])->name('Property.viewFavoriteProperties');
     
-    Route::get('/view-service-providers/{service}', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
+    Route::get('/view-best-service-providers', [ServiceProviderController::class, 'viewBestServiceProviders'])->name('ServiceProvider.viewBestServiceProviders'); 
+    Route::get('/view-service-providers', [ServiceProviderController::class, 'viewServiceProviders'])->name('ServiceProvider.viewServiceProviders'); 
     Route::get('/view-service-provider-details/{service_provider_id}', [ServiceProviderController::class, 'viewServiceProviderDetails'])->name('ServiceProvider.viewServiceProviderDetails'); 
     Route::get('/view-service-provider-service-gallery/{service_provider_service_id}', [ServiceProviderController::class, 'viewServiceProviderServiceGallery'])->name('ServiceProvider.viewServiceProviderServiceGallery'); 
     
@@ -156,13 +163,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('serviceProvider')->group(function () {     
+        Route::get('/view-my-services', [ServiceProviderController::class, 'viewMyServices'])->name('ServiceProvider.viewMyServices'); 
         Route::post('/add-service', [ServiceProviderController::class, 'addService'])->name('ServiceProvider.addService'); 
         Route::delete('/remove-service/{service_provider_service_id}', [ServiceProviderController::class, 'removeService'])->name('ServiceProvider.removeService'); 
         Route::post('/edit-service', [ServiceProviderController::class, 'editService'])->name('ServiceProvider.editService'); 
-
     });
 
-
+    
+    
     // View Default Data
     Route::get('/view-amenities', [PropertyController::class, 'viewAmenities'])->name('Property.viewAmenities');
     Route::get('/view-directions', [PropertyController::class, 'viewDirections'])->name('Property.viewDirections');
@@ -173,9 +181,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-availability-status', [PropertyController::class, 'viewAvailabilityStatus'])->name('Property.viewAvailabilityStatus');
     Route::get('/view-ownership-types', [PropertyController::class, 'viewOwnershipTypes'])->name('Property.viewOwnershipTypes');
     Route::get('/view-service-categories', [ServiceProviderController::class, 'viewServiceCategories'])->name('ServiceProvider.viewServiceCategories');
+    Route::get('/view-subscription-plans', [ServiceProviderController::class, 'viewSubscriptionPlans'])->name('ServiceProvider.viewSubscriptionPlans');
     Route::get('/report-reasons/property', [PropertyController::class, 'viewPropertyReportReasons'])->name('Report.viewPropertyReportReasons');
     Route::get('/report-reasons/service-provider', [ServiceProviderController::class, 'viewServiceProviderReportReasons'])->name('Report.viewServiceProviderReportReasons');
-
+    
    
 });
 

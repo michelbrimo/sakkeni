@@ -17,37 +17,10 @@ class AdminController extends Controller
     }
 
     function adminRegister(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'string|required',
-            'last_name' => 'string|required',
-            'email' => 'email|required',
-            'password' => 'string|min:8|confirmed|required',
-            'phone_number' => 'string|min:10|required',
-            'address' => 'string|required',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }  
-
         return $this->executeService($this->service_transformer, $request, [], 'Admin registered successfully');
     }
 
     function adminLogin(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'email|required',
-            'password' => 'required|string',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }  
-
-
         return $this->executeService($this->service_transformer, $request, [], 'admin logged in successfully');
     }
 
@@ -86,16 +59,6 @@ class AdminController extends Controller
     }
 
     public function searchAdmin(Request $request){
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|required',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-
         $additionalData = ['page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, $request, $additionalData, "Admins fetched successfully");
     }
@@ -108,18 +71,6 @@ class AdminController extends Controller
     
     function propertyAdjudication(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'property_id' => 'integer|required',
-            'approve' => 'boolean|required',
-            'reason' => 'string',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-
         $additionalData = ['admin_id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property adjudicated Successfully');
     }
@@ -132,18 +83,6 @@ class AdminController extends Controller
     
     function serviceProviderServiceAdjudication(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'service_provider_service_id' => 'integer|required',
-            'approve' => 'boolean|required',
-            'reason' => 'string',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-
         $additionalData = ['admin_id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Service Provider adjudicated Successfully');
     }
@@ -168,35 +107,12 @@ class AdminController extends Controller
     }
 
     public function updateMyProfile(Request $request){
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'string',
-            'last_name' => 'string',
-            'address' => 'string',
-            'phone_number' => 'string',
-            'profile_image' => 'file'
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        } 
-
         $additionalData = ['id' => auth('admin')->user()->id];
         return $this->executeService($this->service_transformer, $request, $additionalData, "Admin's profile updated successfully");
     }
 
     public function processReport(Request $request, int $id)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => ['required', Rule::in(['resolved', 'dismissed'])],
-            'admin_notes' => 'string|nullable|max:2000',
-        ]);
-
-        if ($validator->fails()) {
-            throw new Exception($validator->errors()->first(), 422);
-        }
-
         $additionalData = [
             'report_id' => $id,
             'admin_id' => auth('admin')->user()->id,

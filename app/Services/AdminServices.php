@@ -22,6 +22,21 @@ class AdminServices extends ImageServices{
     }
 
     public function adminRegister($data){        
+        $validator = Validator::make($data, [
+            'first_name' => 'string|required',
+            'last_name' => 'string|required',
+            'email' => 'email|required',
+            'password' => 'string|min:8|confirmed|required',
+            'phone_number' => 'string|min:10|required',
+            'address' => 'string|required',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }  
+
         $result = $this->admin_repository->create($data);
         $result['token'] = $result->createToken('personal access token')->plainTextToken;
             
@@ -29,6 +44,17 @@ class AdminServices extends ImageServices{
     }
 
     public function adminLogin($data){
+        $validator = Validator::make($data, [
+            'email' => 'email|required',
+            'password' => 'required|string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }  
+
         $result = $this->admin_repository->getAdminDetails_byEmail($data['email']);
 
         if ($result && Hash::check($data['password'], $result->password)) {
@@ -68,6 +94,15 @@ class AdminServices extends ImageServices{
     } 
 
     public function searchAdmin($data){
+        $validator = Validator::make($data, [
+            'name' => 'string|required',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
         return $this->admin_repository->searchAdmin_byName($data);
     }
 
@@ -76,6 +111,18 @@ class AdminServices extends ImageServices{
     }
     
     function propertyAdjudication($data) {
+        $validator = Validator::make($data, [
+            'property_id' => 'integer|required',
+            'approve' => 'boolean|required',
+            'reason' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
         return $this->property_repository->propertyAdjudication($data);
     }
 
@@ -84,6 +131,17 @@ class AdminServices extends ImageServices{
     }
     
     function serviceProviderServiceAdjudication($data) {
+        $validator = Validator::make($data, [
+            'service_provider_service_id' => 'integer|required',
+            'approve' => 'boolean|required',
+            'reason' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
         return $this->service_provider_repository->serviceProviderServiceAdjudication($data);
     }
 

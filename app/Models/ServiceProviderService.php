@@ -28,6 +28,11 @@ class ServiceProviderService extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function serviceProvider()
+    {
+        return $this->belongsTo(ServiceProvider::class);
+    }
+
     public function availabilityStatus()
     {
         return $this->belongsTo(ModelsAvailabilityStatus::class);

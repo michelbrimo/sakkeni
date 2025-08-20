@@ -12,12 +12,18 @@ class ServiceProvider extends Model
 
     protected $fillable = [
         'user_id',
-        'description'
+        'description',
+        'rate'
     ];
 
     public function serviceProviderServices()
     {
         return $this->hasMany(ServiceProviderService::class)->where('availability_status_id', AvailabilityStatus::Active);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function servicePendingProviderServices()

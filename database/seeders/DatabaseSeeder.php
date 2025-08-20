@@ -12,7 +12,6 @@ use App\Models\City;
 use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
-use App\Models\LeasePeriodUnits;
 use App\Models\OwnershipType;
 use App\Models\PropertyType;
 use App\Models\ResidentialPropertyType;
@@ -30,10 +29,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Amenity::factory(10)->create();
         User::factory(10)->create();
-        ServiceCategory::factory(10)->create();
-        Service::factory(10)->create();
         Admin::factory(1)->create();
         $this->call(PaymentPhaseSeeder::class);
 
@@ -78,7 +74,7 @@ class DatabaseSeeder extends Seeder
             Country::create(['name' => $country]);
         }
 
-        $cities = ['Damascus', 'Aleppo', 'Homs', 'Latakia', 'Hama', 'Daraa', 'Deir ez-Zor', 'Raqqa', 'Tartus', 'Idlib', 'Qamishli', 'Al-Hasakah', 'Palmyra', 'Apamea'];
+        $cities = ['Damascus', 'Rif-Damascus', 'Aleppo', 'Homs', 'Hama', 'Al-Hasakah', 'Latakia', 'Tartus', 'Daraa', 'Deir ez-Zor', 'Raqqa',  'Idlib', 'Qunaitra', 'Sweida'];
         foreach ($cities as $city) {
             City::create(['name' => $city, 'country_id' => 1]);
         }
@@ -91,6 +87,71 @@ class DatabaseSeeder extends Seeder
         $subscriptionPlans = ['Monthly', 'Yearly'];
         foreach ($subscriptionPlans as $subscriptionPlan) {
             SubscriptionPlan::create(['name' => $subscriptionPlan, 'price' => rand(10000, 50000)]);
+        }
+
+        
+        $propertyTypes = ['Residential', 'Commercial'];
+        foreach ($propertyTypes as $propertyType) {
+            PropertyType::create(['name' => $propertyType]);
+        }
+        
+        $amenities = [
+            'Garage', 'Elevator',
+            'Air Conditioning', 'Heating', 
+            'Solar Panels', 'Electric Car Charging Stations', 'Lithium Batteries', 
+            'Swimming Pool', 'Rooftop Terrace', 'Home Theater', 'Wine Cellar', 'Spa', 'BBQ', 'Playground', 'Pet-Friendly',
+            'Security',
+            'Nearby Schools', 'Nearby Shopping Centers', 'Nearby Restaurants', 'Nearby Parks', 'Nearby Hospitals',
+            'Wheelchair Ramps',
+            'Smart Home', 'High-Speed Internet',
+        ];
+        foreach ($amenities as $amenity) {
+            Amenity::create(['name' => $amenity]);
+        }
+        
+        $serviceCategories = ['Fixes and Repairs', 'Cleaning', 'Plumbing', 'Flooring', 'Painting & Finishing', 'Electrical & Power', 'Moving & Transport', 'Garden Upkeep'];
+        foreach ($serviceCategories as $serviceCategory) {
+            ServiceCategory::create(['name' => $serviceCategory]);
+        }
+
+        for($i=0; $i < count($serviceCategories); $i++){
+            switch ($serviceCategories[$i]) {
+                case 'Fixes and Repairs':
+                    $services = ['Carpenter', 'Metalwork'];
+                    break;
+
+                case 'Cleaning':
+                    $services = ['Deep Cleaning', 'Regular Cleaning', 'Water Tank Cleaning'];
+                    break;
+
+                case 'Plumbing':
+                    $services = ['Plumber', 'Sewage unclogging'];
+                    break;
+
+                case 'Flooring':
+                    $services = ['Tiler'];
+                    break;
+                    
+                case 'Painting & Finishing':
+                    $services = ['Interior', 'Exterior'];
+                    break;
+
+                case 'Electrical & Power':
+                    $services = ['Electrician', 'Solar', 'Generators'];
+                    break;
+
+                case 'Moving & Transport':
+                    $services = ['Moving Service'];
+                    break;
+
+                case 'Garden Upkeep':
+                    $services = ['Irrigation', 'Pest Control'];
+                    break;          
+            }
+
+            foreach ($services as $service) {
+                Service::create(['name'=>$service, 'service_category_id' => $i+1]);
+            }
         }
         
         $this->call(PropertySeeder::class);

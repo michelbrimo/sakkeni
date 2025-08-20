@@ -199,7 +199,7 @@ class PropertyServices extends ImageServices
     }
     
     function removePropertyFromFavorite($data) {
-        return $this->property_repository->deletePropertyFavorite($data);
+        $this->property_repository->deletePropertyFavorite($data);
     }
     
     function viewFavoriteProperties($data) {

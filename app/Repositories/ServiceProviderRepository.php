@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Enums\AvailabilityStatus;
-use App\Models\AdminServiceProvider;
 use App\Models\AdminServiceProviderServices;
 use App\Models\Service;
 use App\Models\ServiceActivity;
@@ -11,6 +10,7 @@ use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use App\Models\ServiceProviderService;
 use App\Models\ServiceProviderSubscriptionPlan;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 
 class ServiceProviderRepository{
@@ -65,6 +65,10 @@ class ServiceProviderRepository{
         return ServiceCategory::with('services')->get();
     }
 
+    function getSubscriptionPlans() {
+        return SubscriptionPlan::get();
+    }
+
     function viewPendingServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) {
             $query->whereHas('servicePendingProviderServices');
@@ -92,9 +96,22 @@ class ServiceProviderRepository{
         ], 'page', $data['page'] ?? 1);
     }
 
+    function getBestServiceProviders($data) {
+        return ServiceProvider::whereHas('serviceProviderServices')
+                              ->with(['user', 'serviceProviderServices.service.serviceCategory'])
+                              ->orderBy('rate', 'desc')
+                              ->paginate(10, ['*'], 'page', $data['page'] ?? 1);
+    }
+
     function updateService($serviceProviderServiceId, $data) {
         return ServiceProviderService::where('id', $serviceProviderServiceId)
                                      ->update($data);
+    }
+
+    function getServiceProviderServices($serviceProviderId) {
+        return ServiceProviderService::where('service_provider_id', $serviceProviderId)
+                                    ->with(['service.serviceCategory', 'availabilityStatus'])
+                                    ->get();
     }
 
 
@@ -107,6 +124,10 @@ class ServiceProviderRepository{
 
     function getServiceProviderByUserId($userId) {
         return ServiceProvider::where('user_id', $userId)->first();
+    }
+
+    function getServiceByName($service) {
+        return Service::where('name', $service)->first();
     }
 
     function getServiceProviderServiceGallery($serviceProviderServiceId) {

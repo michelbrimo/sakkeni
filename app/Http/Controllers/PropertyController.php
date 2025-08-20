@@ -181,17 +181,6 @@ class PropertyController extends Controller
 
     function reportProperty(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'report_reason_id' => 'required|exists:report_reasons,id',
-            'additional_comments' => 'string|nullable|max:1000',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-
         $additionalData = [
             'user_id' => auth()->user()->id,
             'reportable_id' => $id,

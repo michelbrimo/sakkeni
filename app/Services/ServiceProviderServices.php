@@ -26,9 +26,17 @@ class ServiceProviderServices extends ImageServices
     function viewServiceCategories() {
         return $this->service_provider_repository->getServiceCategories();
     }
+    
+    function viewSubscriptionPlans($data) {
+        return $this->service_provider_repository->getSubscriptionPlans();
+    }
 
     function viewServiceProviders($data) {
         return $this->service_provider_repository->getServiceProviders($data);
+    }
+
+    function viewBestServiceProviders($data) {
+        return $this->service_provider_repository->getBestServiceProviders($data);
     }
 
     function viewServiceProviderDetails($data) {
@@ -39,15 +47,28 @@ class ServiceProviderServices extends ImageServices
         return $this->service_provider_repository->getServiceProviderServiceGallery($data['service_provider_service_id']);
     }
 
-    function addService($data) {
-        $serviceProviderId = $this->service_provider_repository->getServiceProviderByUserId($data['user_id'])->id;
-        
+    function addService($data) {        
+        $validator = Validator::make($data, [
+            'service_id' => 'required|integer',
+            'service_description' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
         $this->service_provider_repository->createServiceProviderService([
-            'service_provider_id' => $serviceProviderId,
+            'service_provider_id' => $data['service_provider_id'],
             'service_id' => $data['service_id'],
             'description' => $data['service_description'],
             'availability_status_id'=> AvailabilityStatus::Pending, 
         ]);
+    }
+
+    function viewMyServices($data) {        
+        return $this->service_provider_repository->getServiceProviderServices($data['service_provider_id']);
     }
 
     function removeService($data) {
@@ -55,6 +76,18 @@ class ServiceProviderServices extends ImageServices
     }
 
     function editService($data) {
+        $validator = Validator::make($data, [
+            'service_provider_service_id' => 'required|integer',
+            'service_gallery' => 'array',
+            'description' => 'string'
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
         if(isset($data['description']))
             $this->service_provider_repository->updateService($data['service_provider_service_id'], ['description'=>$data['description']]);
 
