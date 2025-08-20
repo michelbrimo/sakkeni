@@ -44,6 +44,17 @@ class ServiceProviderServices extends ImageServices
     }
 
     function addService($data) {        
+        $validator = Validator::make($data, [
+            'service_id' => 'required|integer',
+            'service_description' => 'string',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
         $this->service_provider_repository->createServiceProviderService([
             'service_provider_id' => $data['service_provider_id'],
             'service_id' => $data['service_id'],
@@ -61,6 +72,18 @@ class ServiceProviderServices extends ImageServices
     }
 
     function editService($data) {
+        $validator = Validator::make($data, [
+            'service_provider_service_id' => 'required|integer',
+            'service_gallery' => 'array',
+            'description' => 'string'
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        } 
+
         if(isset($data['description']))
             $this->service_provider_repository->updateService($data['service_provider_service_id'], ['description'=>$data['description']]);
 

@@ -42,18 +42,6 @@ class ServiceProviderController extends Controller
 
     function addService(Request $request) {
         $additionalData = ['service_provider_id' => $this->getServiceProviderId()];
-
-        $validator = Validator::make($request->all(), [
-            'service_id' => 'required|integer',
-            'service_description' => 'string',
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        } 
-
         return $this->executeService($this->service_transformer, $request, $additionalData, "Service added successfully");
     }
     
@@ -69,33 +57,11 @@ class ServiceProviderController extends Controller
     }
 
     function editService(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'service_provider_service_id' => 'required|integer',
-            'service_gallery' => 'array',
-            'description' => 'string'
-        ]);
-
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        } 
-
         return $this->executeService($this->service_transformer, $request, [], "Service gallery updated successfully");
     }
-    function reportServiceProvider(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'report_reason_id' => 'required|exists:report_reasons,id',
-            'additional_comments' => 'string|nullable|max:1000',
-        ]);
 
-        if($validator->fails()){
-            throw new Exception(
-                $validator->errors()->first(),
-                422);
-        }
-        
+    function reportServiceProvider(Request $request, $id)
+    {   
         $additionalData = [
             'user_id' => auth()->user()->id,
             'reportable_id' => $id,

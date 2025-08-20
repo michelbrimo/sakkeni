@@ -154,6 +154,7 @@ class ServiceTransformer{
         if (!is_int($code) || $code < 100 || $code > 599) {
             $code = 500;
         }
+        
         return response()->json([
             'status' => $status,
             'message' => $message,

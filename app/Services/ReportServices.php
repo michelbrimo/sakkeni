@@ -7,6 +7,9 @@ use App\Models\ReportOnService;
 use App\Models\ServiceProvider;
 use App\Repositories\ReportRepository;
 use Exception;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 
 class ReportServices
 {
@@ -19,6 +22,16 @@ class ReportServices
 
     public function reportProperty(array $data)
     {
+        $validator = Validator::make($data, [
+            'report_reason_id' => 'required|exists:report_reasons,id',
+            'additional_comments' => 'string|nullable|max:1000',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
         //Property::findOrFail($data['reportable_id']);
 
         return $this->reportRepository->createReport([
@@ -32,6 +45,17 @@ class ReportServices
 
     public function reportServiceProvider(array $data)
     {
+        $validator = Validator::make($data, [
+            'report_reason_id' => 'required|exists:report_reasons,id',
+            'additional_comments' => 'string|nullable|max:1000',
+        ]);
+
+        if($validator->fails()){
+            throw new Exception(
+                $validator->errors()->first(),
+                422);
+        }
+
         // ServiceProvider::findOrFail($data['reportable_id']);
 
         return $this->reportRepository->createReport([
@@ -65,6 +89,15 @@ class ReportServices
 
     public function processReport(array $data)
     {
+        $validator = Validator::make($data, [
+            'status' => ['required', Rule::in(['resolved', 'dismissed'])],
+            'admin_notes' => 'string|nullable|max:2000',
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first(), 422);
+        }
+
         $report = ReportOnService::findOrFail($data['report_id']);
 
         return $this->reportRepository->processReport($data['report_id'], [
