@@ -30,9 +30,7 @@ class DashboardRepository{
                 
                 if ($property->commercial) {
                     $carry['commercial']['total']++;
-                    if ($property->commercial->type === 'office') {
-                        $carry['commercial']['office']++;
-                    }
+                    $carry['commercial']['office']++;
                 }
                 
                 if ($property->residential) {
