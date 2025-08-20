@@ -96,6 +96,13 @@ class ServiceProviderRepository{
         ], 'page', $data['page'] ?? 1);
     }
 
+    function getBestServiceProviders($data) {
+        return ServiceProvider::whereHas('serviceProviderServices')
+                              ->with(['user', 'serviceProviderServices.service.serviceCategory'])
+                              ->orderBy('rate', 'desc')
+                              ->paginate(10, ['*'], 'page', $data['page'] ?? 1);
+    }
+
     function updateService($serviceProviderServiceId, $data) {
         return ServiceProviderService::where('id', $serviceProviderServiceId)
                                      ->update($data);

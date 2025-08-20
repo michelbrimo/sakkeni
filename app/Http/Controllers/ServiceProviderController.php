@@ -26,10 +26,17 @@ class ServiceProviderController extends Controller
     
     function viewServiceProviders(Request $request) {
         $service = $request->input('service');
+        $serviceId = $this->getServiceId($service);
+        
         $additionalData = ['service_id' => $this->getServiceId($service), 'page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, "Service Providers fetched successfully");
     }
-    
+
+    function viewBestServiceProviders(Request $request) {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, "Best Service Providers fetched successfully");
+    }
+
     function viewServiceProviderDetails($service_provider_id) {
         $additionalData = ['service_provider_id' => $service_provider_id];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, "Service Provider details fetched successfully");

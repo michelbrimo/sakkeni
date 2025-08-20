@@ -40,6 +40,7 @@ class ServiceTransformer{
         
         'upgradeToServiceProvider' => [],
         'viewServiceProviders' => [], 
+        'viewBestServiceProviders' => [], 
         'viewServiceProviderDetails' => [], 
         'viewServiceProviderServiceGallery' => [], 
         'addService' => [], 
