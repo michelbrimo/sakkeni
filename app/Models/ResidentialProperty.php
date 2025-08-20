@@ -18,6 +18,16 @@ class ResidentialProperty extends Model
         return $this->belongsTo(ResidentialPropertyType::class);
     }
 
+    public function villa()
+    {
+        return $this->hasOne(Villa::class);
+    }
+
+    public function apartment()
+    {
+        return $this->hasOne(Apartment::class);
+    }
+
 
     use HasFactory;
 }

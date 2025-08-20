@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Enums\AvailabilityStatus;
-use App\Models\AdminServiceProvider;
 use App\Models\AdminServiceProviderServices;
 use App\Models\Service;
 use App\Models\ServiceCategory;

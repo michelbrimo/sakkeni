@@ -21,4 +21,5 @@ class CommercialProperty extends Model
     {
         return $this->belongsTo(CommercialPropertyType::class);
     }
+    
 }

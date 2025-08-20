@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PropertyController;
 
 use App\Http\Controllers\PasswordController;
@@ -77,9 +78,10 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
-        
-
         Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
+        
+        Route::get('/charts/total-users', [DashboardController::class, 'viewTotalUsers'])->name('Dashboard.viewTotalUsers');
+        Route::get('/charts/total-properties', [DashboardController::class, 'viewTotalProperties'])->name('Dashboard.viewTotalProperties');
     });
 });
 
@@ -122,7 +124,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/add-service', [ServiceProviderController::class, 'addService'])->name('ServiceProvider.addService'); 
         Route::delete('/remove-service/{service_provider_service_id}', [ServiceProviderController::class, 'removeService'])->name('ServiceProvider.removeService'); 
         Route::post('/edit-service', [ServiceProviderController::class, 'editService'])->name('ServiceProvider.editService'); 
-
     });
 
     
