@@ -46,6 +46,18 @@ class AdminController extends Controller
         }
     }
 
+    public function viewMyProfile(){
+        $additionalData = ['id' => auth('admin')->user()->id];
+        try{
+            return $this->executeService($this->service_transformer, new Request(), $additionalData, "Admin's profile fetched successfully");
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode());
+        }
+    }
+
     public function removeAdmin($admin_id){
         $additionalData = ['id' => $admin_id];
         try {

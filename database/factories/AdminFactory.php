@@ -40,7 +40,10 @@ class AdminFactory extends Factory
             'profile_picture_path' => null,
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->unique()->phoneNumber(),
-            'number_of_accepted_houses' => 0,
+            'accepted_properties' => 0,
+            'rejected_properties' => 0,
+            'accepted_services' => 0,
+            'rejected_services' => 0,
             'is_super_admin' => true,
             'remember_token' => Str::random(10),
         ];

@@ -123,5 +123,5 @@ class DashboardRepository{
                            $carry[$location->city->name]++;
                            return $carry;
                         }, $initialArray);
-    }
+        }
 }
