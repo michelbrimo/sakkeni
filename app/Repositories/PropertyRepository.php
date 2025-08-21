@@ -416,12 +416,29 @@ class PropertyRepository{
     }
 
     function viewPendingProperties($data) {
-        return Property::where('availability_status_id', AvailabilityStatus::Pending)
-                        ->with('owner')
-                        ->simplePaginate(10, [
-                                'properties.id',
-                                'properties.owner_id'
-                            ], 'page', $data['page'] ?? 1);
+        $query = Property::where('availability_status_id', AvailabilityStatus::Pending)
+                        ->with([
+                            'coverImage',
+                            'availabilityStatus',
+                            'owner',
+                            'propertyType',
+                            'location.country',
+                            'location.city',
+                            'residential.residentialPropertyType',
+                            'commercial.commercialPropertyType',
+                            'offPlan',
+                            'Rent',
+                            'Purchase'
+                        ]);
+
+
+        return $query->simplePaginate(10, [
+                    'id',
+                    'location_id',
+                    'property_type_id',
+                    'owner_id',
+                    'availability_status_id',
+        ], 'page', $data['page'] ?? 1);
     }
 
     function propertyAdjudication($data){ 
