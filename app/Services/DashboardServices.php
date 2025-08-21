@@ -29,6 +29,6 @@ class DashboardServices
     }
 
     function viewPropertiesLocation() {
-        return $this->dashboard_repository->getPropertiesLocations();
+        return  $this->dashboard_repository->getPropertiesLocations();
     }
 }

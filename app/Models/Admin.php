@@ -25,7 +25,10 @@ class Admin extends Authenticatable
         'address',
         'phone_number',
         'is_super_admin',
-        'number_of_accepted_houses'
+        'accepted_properties',
+        'rejected_properties',
+        'accepted_services',
+        'rejected_services',
     ];
 
     /**

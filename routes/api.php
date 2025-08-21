@@ -49,42 +49,40 @@ Route::post('reset-password-mail', [PasswordController::class, 'resetPassword'])
 
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
-Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
+
+Route::post('/admin/register', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
+Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
 
-Route::middleware('superadmin')->group(function () {
-});
-
-
-Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
-
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/logout-admin', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
+    Route::get('/logout', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
     
     Route::middleware('superadmin')->group(function () {
         Route::get('/view-admins', [AdminController::class, 'viewAdmins'])->name('Admin.viewAdmins');
-        Route::get('/view-admin-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
-        Route::delete('/remove-admin/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
-        Route::post('/search-admin', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
-
+        Route::get('/view-profile/{admin_id}', [AdminController::class, 'viewAdminProfile'])->name('Admin.viewAdminProfile');
+        Route::delete('/delete/{admin_id}', [AdminController::class, 'removeAdmin'])->name('Admin.removeAdmin');
+        Route::post('/search', [AdminController::class, 'searchAdmin'])->name('Admin.searchAdmin'); 
     });
 
     Route::middleware('admin')->group(function () {
-        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
-        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
-        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
-        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
-        Route::post('/update-admin-profile', [AdminController::class, 'updateMyProfile'])->name('Admin.updateAdminProfile');
+        Route::get('/my-profile', [AdminController::class, 'viewMyProfile'])->name('Admin.viewAdminProfile');
+        Route::post('/update-profile', [AdminController::class, 'updateMyProfile'])->name('Admin.updateAdminProfile');
 
-        Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
-        Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
-        Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
-        
         Route::get('/charts/total-users', [DashboardController::class, 'viewTotalUsers'])->name('Dashboard.viewTotalUsers');
         Route::get('/charts/total-properties', [DashboardController::class, 'viewTotalProperties'])->name('Dashboard.viewTotalProperties');
         Route::get('/charts/properties-status', [DashboardController::class, 'viewPropertiesStatus'])->name('Dashboard.viewPropertiesStatus');
         Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
         Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
+
+        Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
+        Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
+
+        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+
+        Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
+        Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
+        Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
     });
 });
 

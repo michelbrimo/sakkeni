@@ -53,4 +53,25 @@ class AdminRepository{
         return Admin::where('id', '=', $adminId)
                    ->update($data);
     }
+
+    public function incrementAcceptedProperties($adminId)
+    {   
+        return Admin::where('id', $adminId)->increment('accepted_properties');
+    }
+
+    public function incrementRejectedProperties($adminId)
+    {   
+        return Admin::where('id', $adminId)->increment('rejected_properties');
+    }
+
+    public function incrementAcceptedServices($adminId)
+    {   
+        return Admin::where('id', $adminId)->increment('accepted_services');
+    }
+
+    public function incrementRejectedServices($adminId)
+    {   
+        return Admin::where('id', $adminId)->increment('rejected_services');
+    }
+
 }

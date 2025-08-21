@@ -123,7 +123,14 @@ class AdminServices extends ImageServices{
                 422);
         }
 
-        return $this->property_repository->propertyAdjudication($data);
+        $this->property_repository->propertyAdjudication($data);
+        
+        if($data['approve'] == 1){
+            $this->admin_repository->incrementAcceptedProperties($data['admin_id']);     
+        }
+        else{
+            $this->admin_repository->incrementRejectedProperties($data['admin_id']);     
+        }
     }
 
     function viewPendingServiceProviders($data) {
@@ -142,7 +149,16 @@ class AdminServices extends ImageServices{
                 $validator->errors()->first(),
                 422);
         }
-        return $this->service_provider_repository->serviceProviderServiceAdjudication($data);
+
+        $this->service_provider_repository->serviceProviderServiceAdjudication($data);
+
+        if($data['approve'] == 1){   
+            $this->admin_repository->incrementAcceptedServices($data['admin_id']);     
+        }
+        else{
+            $this->admin_repository->incrementRejectedServices($data['admin_id']);     
+        }
+
     }
 
     public function updateAdminProfile($data) {        
