@@ -36,7 +36,7 @@ class QuoteRepository
             'service_provider_id' => $quote->service_provider_id,
             'quote_id' => $quote->id,
             'cost' => $quote->amount,
-            'start_date' => now(), // Placeholder
+            'start_date' => $quote->start_date, // Placeholder
             'status' => 'Awaiting Payment',
         ]);
     }

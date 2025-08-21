@@ -59,6 +59,7 @@ class QuoteService
         $updated = $this->quoteRepository->updateQuote($quote, [
             'amount' => $data['amount'],
             'scope_of_work' => $data['scope_of_work'],
+            'start_date' => $data['start_date'], 
             'status' => 'Pending User Acceptance',
         ]);
         return $updated;
@@ -101,9 +102,7 @@ class QuoteService
         if ($user->id !== $quote->user_id) {
             throw new Exception('Unauthorized', 403);
         }
-
-        $this->quoteRepository->updateQuote($quote, ['status' => 'Declined']);
-        return $this->quoteRepository->createServiceActivityFromQuote($quote);
+        return $this->quoteRepository->updateQuote($quote, ['status' => 'Declined']); 
     }
 
     public function updateQuoteRequest($data)

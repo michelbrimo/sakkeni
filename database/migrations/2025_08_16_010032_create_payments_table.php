@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('payment_gateway_transaction_id')->unique();
             $table->decimal('amount', 8, 2);
             $table->decimal('platform_fee', 8, 2);
-            $table->string('status');// The current status of the payment, received from the payment gateway (e.g., 'succeeded', 'failed', 'refunded').
+            $table->string('status');// (e.g., 'succeeded', 'failed', 'refunded').
             $table->timestamps();
         });
     }

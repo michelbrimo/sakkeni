@@ -62,6 +62,7 @@ class QuoteController extends Controller
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:0',
             'scope_of_work' => 'required|string|max:2000',
+            'start_date' => 'required|date|after_or_equal:today', 
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +91,7 @@ class QuoteController extends Controller
             'user' => $request->user(),
             'quote' => $quote
         ];
-        return $this->executeService($this->service_transformer, $request, $additionalData, 'Quote accepted. Please proceed to payment.');
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Quote Declined.');
     }
 
     public function declineUserQuote(Request $request, Quote $quote)

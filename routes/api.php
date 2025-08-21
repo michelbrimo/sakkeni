@@ -134,23 +134,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quotes/{quote}/update-request', [QuoteController::class, 'updateQuoteRequest'])->name('Quote.updateQuoteRequest');
     Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');
     Route::post('/quotes/{quote}/decline-user-quote', [QuoteController::class, 'declineUserQuote'])->name('Quote.declineUserQuote');
+    Route::post('/quotes/{quote}/submit', [QuoteController::class, 'submitQuote'])->name('Quote.submitQuote'); 
+    Route::post('/quotes/{quote}/decline', [QuoteController::class, 'declineQuote'])->name('Quote.declineQuote');
+    Route::post('/quotes/{quote}/accept', [QuoteController::class, 'acceptQuote'])->name('Quote.acceptQuote');
+
 
     Route::get('/conversations', [ConversationController::class, 'viewConversations'])->name('Conversation.viewConversations');
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'viewMessages'])->name('Conversation.viewMessages');
     Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');
 
-
-    //testing 
-    Route::post('/quotes/{quote}/submit', [QuoteController::class, 'submitQuote'])->name('Quote.submitQuote'); 
-    Route::post('/quotes/{quote}/accept', [QuoteController::class, 'acceptQuote'])->name('Quote.acceptQuote');
-    Route::post('/quotes/{quote}/decline', [QuoteController::class, 'declineQuote'])->name('Quote.declineQuote');
-
-
     // --- PAYMENT ---
     Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
 
-    // --- JOB COMPLETION ---
-    // User confirms the job has been completed satisfactorily
+    // testing 
     Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'confirmCompletion'])->name('User.complete');
 
 
@@ -187,6 +183,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
    
 });
+Route::post('/stripe/webhook', [WebhookController::class, 'handleStripeWebhook'])->name('Payment.handleWebhook');
 
 Broadcast::routes();
 

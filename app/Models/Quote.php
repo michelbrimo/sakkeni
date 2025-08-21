@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Quote extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'service_provider_id',
+        'service_id',
+        'job_description',
+        'amount',
+        'scope_of_work',
+        'status',
+        'start_date', 
+    ];
     
     protected $guarded = [];
 

@@ -48,5 +48,6 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
+    'platform_fee_percentage' => 0.10, 
 
 ];

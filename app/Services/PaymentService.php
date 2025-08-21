@@ -65,11 +65,12 @@ class PaymentService
             $this->paymentRepository->updateServiceActivityStatus($serviceActivity, 'In Progress');
 
             Log::info('Creating payment record in database.'); // <-- ADDED LOG
+            $platformFeeRate = config('services.platform_fee_percentage', 0.10);
             $this->paymentRepository->createPaymentRecord([
                 'service_activity_id' => $serviceActivity->id,
                 'payment_gateway_transaction_id' => $paymentIntent->id,
                 'amount' => $paymentIntent->amount / 100,
-                'platform_fee' => ($paymentIntent->amount / 100) * 0.10, // Example: 10% platform fee
+                'platform_fee' => ($paymentIntent->amount / 100) * $platformFeeRate,
                 'status' => 'succeeded',
             ]);
             Log::info('Webhook processing complete for Service Activity ID: ' . $serviceActivityId); // <-- ADDED LOG
