@@ -133,8 +133,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');
     Route::post('/quotes/{quote}/decline-user-quote', [QuoteController::class, 'declineUserQuote'])->name('Quote.declineUserQuote');
 
-
-     // --- MESSAGING ---
     Route::get('/conversations', [ConversationController::class, 'viewConversations'])->name('Conversation.viewConversations');
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'viewMessages'])->name('Conversation.viewMessages');
     Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');

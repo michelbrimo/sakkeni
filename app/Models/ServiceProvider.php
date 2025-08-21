@@ -45,10 +45,4 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(Conversation::class);
     }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
 }
