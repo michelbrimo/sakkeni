@@ -3,11 +3,13 @@
 
 namespace App\Services;
 
+use App\Models\ServiceActivity;
 use App\Repositories\PaymentRepository;
 use Exception;
 use Illuminate\Support\Facades\Log; // <-- Import the Log facade
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Stripe\Transfer;
 
 class PaymentService
 {
@@ -24,7 +26,6 @@ class PaymentService
         $user = $data['user'];
         $serviceActivity = $data['service_activity'];
 
-        // Authorization logic
         if ($user->id !== $serviceActivity->user_id) {
             throw new Exception('Unauthorized', 403);
         }
@@ -48,7 +49,6 @@ class PaymentService
     public function handleWebhook($data)
     {
         $paymentIntent = $data['payment_intent'];
-        Log::info('Stripe webhook received for PaymentIntent: ' . $paymentIntent->id); // <-- ADDED LOG
 
         if (!isset($paymentIntent->metadata->service_activity_id)) {
             Log::warning('Webhook ignored: Missing service_activity_id in metadata.', ['pi_id' => $paymentIntent->id]); // <-- ADDED LOG
@@ -68,7 +68,7 @@ class PaymentService
             $platformFeeRate = config('services.platform_fee_percentage', 0.10);
             $this->paymentRepository->createPaymentRecord([
                 'service_activity_id' => $serviceActivity->id,
-                'payment_gateway_transaction_id' => $paymentIntent->id,
+                'payment_gateway_transaction_id' => $paymentIntent->latest_charge,
                 'amount' => $paymentIntent->amount / 100,
                 'platform_fee' => ($paymentIntent->amount / 100) * $platformFeeRate,
                 'status' => 'succeeded',
@@ -81,5 +81,33 @@ class PaymentService
                 'status' => $serviceActivity ? $serviceActivity->status : 'not_found'
             ]); // <-- ADDED LOG
         }
+    }
+
+    public function createTransfer(ServiceActivity $serviceActivity)
+    {
+        $serviceProviderUser = $serviceActivity->serviceProvider->user;
+
+        if (!$serviceProviderUser->stripe_account_id) {
+            throw new Exception('Service provider has not connected a payout account.');
+        }
+
+        $payment = $serviceActivity->payment;
+        if (!$payment) {
+            throw new Exception('Cannot create transfer. Original payment record not found.');
+        }
+
+        $platformFee = $serviceActivity->cost * 0.10; 
+        $payoutAmount = $serviceActivity->cost - $platformFee;
+
+        $transfer = Transfer::create([
+            'amount' => $payoutAmount * 100,
+            'currency' => 'usd',
+            'destination' => $serviceProviderUser->stripe_account_id,
+            'transfer_group' => 'SERVICE_ACTIVITY_' . $serviceActivity->id,
+            'source_transaction' => $payment->payment_gateway_transaction_id,
+        ]);
+
+
+        return $transfer;
     }
 }

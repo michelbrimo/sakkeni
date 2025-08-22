@@ -143,12 +143,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'viewMessages'])->name('Conversation.viewMessages');
     Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');
 
-    // --- PAYMENT ---
     Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
 
-    // testing 
-    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'confirmCompletion'])->name('User.complete');
+    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
 
+    Route::post('/service-activities/{serviceActivity}/submitReview', [UserController::class, 'submitReview'])->name('User.submitReview');
 
 
     Route::middleware('seller')->group(function () {

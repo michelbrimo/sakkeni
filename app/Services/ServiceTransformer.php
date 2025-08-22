@@ -92,12 +92,16 @@ class ServiceTransformer{
         'createPaymentIntent' => [],
         'handleWebhook' => [], 
         
-        'confirmCompletion' => [], 
+        'markAsComplete' => [], 
+        'submitReview'=>[]
 
 
     ];
 
     private $service_mapper = [];
+
+    protected $userService;
+    protected $adminService;
 
     public function __construct()
     {   
