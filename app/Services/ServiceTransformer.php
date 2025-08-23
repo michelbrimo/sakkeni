@@ -93,7 +93,8 @@ class ServiceTransformer{
         'handleWebhook' => [], 
         
         'markAsComplete' => [], 
-        'submitReview'=>[]
+
+        'submitReview'=>['UpdateServiceProviderRatingAspect'],
 
 
     ];
@@ -136,7 +137,7 @@ class ServiceTransformer{
                 $result
             );
 
-            $this->executeAfter($function_name);
+            $this->executeAfter($function_name, $result);
         }
         catch(Exception $e){
             $response = $this->response(
@@ -161,13 +162,14 @@ class ServiceTransformer{
         }
     }
 
-    public function executeAfter($function_name) {
+    public function executeAfter($function_name, $result=null) {
+        
         $aspects = $this->aspect_mapper[$function_name];
 
         foreach ($aspects as $aspect) {
             $object = 'App\\Aspects\\'. $aspect;
             $class = new $object();
-            $class->after($function_name);
+            $class->after($function_name, $result);
         }
     }
 

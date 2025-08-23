@@ -13,7 +13,8 @@ class ServiceProvider extends Model
     protected $fillable = [
         'user_id',
         'description',
-        'rate'
+        'rate',
+        'num_of_rating',
     ];
 
     public function serviceProviderServices()

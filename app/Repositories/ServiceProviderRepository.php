@@ -151,6 +151,10 @@ class ServiceProviderRepository{
     {
         return $serviceActivity->update(['status' => $status]);
     }
+    public function getServiceProviderById($id)
+    {
+        return ServiceProvider::where('id', $id)->first();
+    }
 
 
 }
