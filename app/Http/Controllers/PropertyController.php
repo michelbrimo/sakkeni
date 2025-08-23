@@ -44,10 +44,15 @@ class PropertyController extends Controller
 
     function viewProperties(Request $request, $sell_type_id)
     {
+        
         $additionalData = [
-          'page' => $request->query('page', 1),
-          'sell_type_id' => $sell_type_id
+            'page' => $request->query('page', 1),
+            'sell_type_id' => $sell_type_id
         ];
+        
+        if(auth()->check()){
+            $additionalData['user_id'] = auth()->user()->id;    
+        }
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties fetched successfully');
     }
 
@@ -57,6 +62,11 @@ class PropertyController extends Controller
           'page' => $request->input('page', 1),
           'sell_type_id' => $sell_type_id
         ];
+
+        if(auth()->check()){
+            $additionalData['user_id'] = auth()->user()->id;    
+        }
+
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Properties filtered successfully');
     }
 

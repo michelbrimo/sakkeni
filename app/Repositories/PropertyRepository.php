@@ -224,11 +224,19 @@ class PropertyRepository{
                     'location.city',
                     'residential.residentialPropertyType',
                     'commercial.commercialPropertyType',
-                    'favorites' => function($query) {
-                        $query->where('user_id', auth()->user()->id);
-                    }
                 ]);
 
+        if(isset($data['user_id'])){
+            $query->with(['favorites' => function($query) {
+                $query->where('user_id', auth()->user()->id);   
+            }]);
+        }
+        else{
+            $query->with(['favorites' => function($query) {
+                $query->where('user_id', -1);
+            }]);
+        }
+        
         if($data['sell_type_id'] == SellType::OFF_PLAN)
             $query->with('offPlan');
         else if($data['sell_type_id'] == SellType::RENT)
@@ -263,7 +271,7 @@ class PropertyRepository{
 
         $this->_basePropertyfiltering($query, $filters);
 
-        return $query->purchaseFilters([
+        $query->purchaseFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
@@ -279,13 +287,19 @@ class PropertyRepository{
                 'purchase',
                 'residential.residentialPropertyType',
                 'commercial.commercialPropertyType',
-                'favorites' => function($query) {
-                    $query->where('user_id', auth()->user()->id);
-                }
-            ])
+            ]);
+            if(isset($data['user_id'])){
+                $query->with(['favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);   
+                }]);
+            }
+            else{
+                $query->with(['favorites' => function($query) {
+                    $query->where('user_id', -1);
+                }]);
+            }
 
-
-            ->simplePaginate(10, [
+            return $query->simplePaginate(10, [
                 'properties.id',
                 'properties.location_id',
                 'properties.property_type_id',

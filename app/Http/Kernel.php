@@ -68,5 +68,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\EnsureAdmin::class,
         'seller' => \App\Http\Middleware\EnsureUserIsSeller::class,
         'serviceProvider' => \App\Http\Middleware\EnsureUserIsServiceProvider::class,
+        'optional.sanctum' => \App\Http\Middleware\OptionalSanctum::class,
+
     ];
 }
