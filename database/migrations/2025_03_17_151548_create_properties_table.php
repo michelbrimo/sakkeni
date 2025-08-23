@@ -47,6 +47,7 @@ return new class extends Migration
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
             $table->text('description')->nullable();
+            $table->text('tags')->nullable();
             $table->timestamps();
         });
     }

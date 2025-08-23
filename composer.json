@@ -9,7 +9,9 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
+        "laravel/scout": "^10.18",
         "laravel/tinker": "^2.8",
+        "meilisearch/meilisearch-php": "^1.15",
         "pusher/pusher-php-server": "^7.2",
         "stripe/stripe-php": "^17.5"
     },
