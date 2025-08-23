@@ -441,6 +441,32 @@ class PropertyRepository{
         ], 'page', $data['page'] ?? 1);
     }
 
+    function viewLatestAcceptedProperty($page) {
+        return PropertyAdmin::where('approve', 1)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->with(['property.owner', 'admin'])
+                    ->orderBy('created_at', 'desc') 
+                    ->simplePaginate(10, '*', 'page', $page?? 1);
+    }
+
+    function viewLatestRejectedProperty($page) {
+        return PropertyAdmin::where('approve', 0)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->with(['property.owner', 'admin'])
+                    ->orderBy('created_at', 'desc') 
+                    ->simplePaginate(10, '*', 'page', $page?? 1);
+    }
+
+    function viewLatestPropertyAdjudication($page) {
+        return Property::whereMonth('created_at', now()->month)
+                       ->whereYear('created_at', now()->year)
+                       ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus'])
+                       ->orderBy('created_at', 'desc') 
+                       ->simplePaginate(10, '*', 'page', $page?? 1);
+        }
+
     function propertyAdjudication($data){ 
         if($data['approve'] == 1)
             $this->updateProperty($data['property_id'], [

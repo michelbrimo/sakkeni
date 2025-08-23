@@ -32,7 +32,11 @@ class ServiceTransformer{
         'viewAdminProfile'=>[],
         'removeAdmin'=> [],
         'searchAdmin'=>[],
+        
         'viewPendingProperties' => [],        
+        'viewLatestAcceptedProperty' => [],        
+        'viewLatestRejectedProperty' => [],        
+        'viewLatestPropertyAdjudication' => [],        
         'propertyAdjudication' => [],
 
         'viewPendingServiceProviders' => [], 

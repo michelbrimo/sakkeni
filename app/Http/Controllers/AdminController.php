@@ -80,6 +80,24 @@ class AdminController extends Controller
         $additionalData = ['page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Pending Properties fetched successfully');
     }
+
+    function viewLatestAcceptedProperty(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'latest accepted Properties fetched successfully');
+    }
+    
+    function viewLatestRejectedProperty(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'latest rejected Properties fetched successfully');
+    }
+    
+    function viewLatestPropertyAdjudication(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'latest Properties adjudication fetched successfully');
+    }
     
     function propertyAdjudication(Request $request)
     {

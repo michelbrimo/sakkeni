@@ -102,6 +102,11 @@ class Property extends Model
         return $this->hasOne(OffPlanProperty::class);
     }
 
+    public function propertyAdmin()
+    {
+        return $this->hasOne(PropertyAdmin::class);
+    }
+
     
     public function scopefilterByLocation(Builder $query, $countryId, $cityId)
     {

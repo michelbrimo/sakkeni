@@ -109,6 +109,18 @@ class AdminServices extends ImageServices{
     function viewPendingProperties($data) {
         return $this->property_repository->viewPendingProperties($data);
     }
+
+    function viewLatestAcceptedProperty($data) {
+        return $this->property_repository->viewLatestAcceptedProperty($data['page']);
+    }
+    
+    function viewLatestRejectedProperty($data) {
+        return $this->property_repository->viewLatestRejectedProperty($data['page']);
+    }
+    
+    function viewLatestPropertyAdjudication($data) {
+        return $this->property_repository->viewLatestPropertyAdjudication($data['page']);
+    }
     
     function propertyAdjudication($data) {
         $validator = Validator::make($data, [
