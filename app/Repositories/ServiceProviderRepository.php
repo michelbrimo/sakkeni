@@ -12,6 +12,7 @@ use App\Models\ServiceProviderService;
 use App\Models\ServiceProviderSubscriptionPlan;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Services\ServiceProviderServices;
 
 class ServiceProviderRepository{
     public function createServiceProvider($data) {
@@ -71,14 +72,36 @@ class ServiceProviderRepository{
 
     function viewPendingServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) {
-            $query->whereHas('servicePendingProviderServices');
-        })->with('serviceProvider.servicePendingProviderServices')
+            $query->whereHas('serviceProviderPendingServices');
+        })->with('serviceProvider.serviceProviderPendingServices')
           ->simplePaginate(10, [
                 'id',
                 'first_name',
                 'last_name',
                 'address',
         ], 'page', $data['page'] ?? 1);
+    }
+
+    function getLatestServiceProvidersAdjudication($page) {
+        return ServiceProviderService::whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['adminServices.admin', 'availabilityStatus', 'serviceProvider.user'])
+                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);    }
+
+    function getLatestRejectedServiceProviders($page) {
+        return AdminServiceProviderServices::where('approve', 0)
+                                ->whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['services.serviceProvider.user', 'admin'])
+                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);
+    }
+
+    function getLatestAcceptedServiceProviders($page) {
+        return AdminServiceProviderServices::where('approve', 1)
+                                ->whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['services.serviceProvider.user', 'admin'])
+                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);
     }
 
     function getServiceProviders($data) {

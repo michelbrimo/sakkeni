@@ -109,6 +109,18 @@ class AdminServices extends ImageServices{
     function viewPendingProperties($data) {
         return $this->property_repository->viewPendingProperties($data);
     }
+
+    function viewLatestAcceptedProperty($data) {
+        return $this->property_repository->viewLatestAcceptedProperty($data['page']);
+    }
+    
+    function viewLatestRejectedProperty($data) {
+        return $this->property_repository->viewLatestRejectedProperty($data['page']);
+    }
+    
+    function viewLatestPropertyAdjudication($data) {
+        return $this->property_repository->viewLatestPropertyAdjudication($data['page']);
+    }
     
     function propertyAdjudication($data) {
         $validator = Validator::make($data, [
@@ -135,6 +147,18 @@ class AdminServices extends ImageServices{
 
     function viewPendingServiceProviders($data) {
         return $this->service_provider_repository->viewPendingServiceProviders($data);
+    }
+
+    function viewLatestAcceptedServiceProviders($data) {
+        return $this->service_provider_repository->getLatestAcceptedServiceProviders($data['page']);
+    }
+
+    function viewLatestRejectedServiceProviders($data) {
+        return $this->service_provider_repository->getLatestRejectedServiceProviders($data['page']);
+    }
+
+    function viewLatestServiceProvidersAdjudication($data) {
+        return $this->service_provider_repository->getLatestServiceProvidersAdjudication($data['page']);
     }
     
     function serviceProviderServiceAdjudication($data) {

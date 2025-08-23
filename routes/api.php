@@ -88,12 +88,20 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/charts/properties-status', [DashboardController::class, 'viewPropertiesStatus'])->name('Dashboard.viewPropertiesStatus');
         Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
         Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
-
+        
+        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+        
+        Route::get('/view-latest-accepted-service-providers', [AdminController::class, 'viewLatestAcceptedServiceProviders'])->name('Admin.viewLatestAcceptedServiceProviders');
+        Route::get('/view-latest-rejected-service-providers', [AdminController::class, 'viewLatestRejectedServiceProviders'])->name('Admin.viewLatestRejectedServiceProviders');
+        Route::get('/view-latest-service-providers-adjudication', [AdminController::class, 'viewLatestServiceProvidersAdjudication'])->name('Admin.viewLatestServiceProvidersAdjudication');
+        
         Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
 
-        Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
-        Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+        Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');
+        Route::get('/view-latest-rejected-properties', [AdminController::class, 'viewLatestRejectedProperty'])->name('Admin.viewLatestRejectedProperty');
+        Route::get('/view-latest-properties-adjudication', [AdminController::class, 'viewLatestPropertyAdjudication'])->name('Admin.viewLatestPropertyAdjudication');
 
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
@@ -101,9 +109,12 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     });
 });
 
-Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
-Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
-Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
+Route::middleware('optional.sanctum')->group(function () {
+    Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
+    Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
+    Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+});
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
@@ -112,7 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('User.resetPassword');
     Route::post('/upgrade-to-seller', [UserController::class, 'upgradeToSeller'])->name('User.upgradeToSeller'); 
     Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider'); 
-    
+
     Route::get('/add-property-to-favorite/{property_id}', [PropertyController::class, 'addPropertyToFavorite'])->name('Property.addPropertyToFavorite');
     Route::get('/remove-property-from-favorite/{property_id}', [PropertyController::class, 'removePropertyFromFavorite'])->name('Property.removePropertyFromFavorite');
     Route::get('/view-favorite-properties/{sell_type}', [PropertyController::class, 'viewFavoriteProperties'])->name('Property.viewFavoriteProperties');

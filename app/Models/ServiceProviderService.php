@@ -38,5 +38,12 @@ class ServiceProviderService extends Model
         return $this->belongsTo(ModelsAvailabilityStatus::class);
     }
 
+    public function adminServices()
+    {
+        return $this->hasOne(AdminServiceProviderServices::class, 'service_id');
+    }
+
+    
+
 
 }

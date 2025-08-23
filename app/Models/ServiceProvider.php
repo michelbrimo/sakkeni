@@ -22,12 +22,7 @@ class ServiceProvider extends Model
         return $this->hasMany(ServiceProviderService::class)->where('availability_status_id', AvailabilityStatus::Active);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function servicePendingProviderServices()
+    public function serviceProviderPendingServices()
     {
         return $this->hasMany(ServiceProviderService::class)->where('availability_status_id', AvailabilityStatus::Pending);
     }
@@ -36,7 +31,10 @@ class ServiceProvider extends Model
     {
         return $this->morphMany(ReportOnService::class, 'reportable');
     }
-
+public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function quotes()
     {
         return $this->hasMany(Quote::class);

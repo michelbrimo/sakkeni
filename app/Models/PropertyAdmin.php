@@ -15,4 +15,16 @@ class PropertyAdmin extends Model
         'reason',
         'admin_id'
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
+
 }

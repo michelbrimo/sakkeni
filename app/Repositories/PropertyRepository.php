@@ -216,16 +216,27 @@ class PropertyRepository{
 
         $query->where('sell_type_id', $data['sell_type_id'])
               ->with([
-                  'coverImage',
-                  'availabilityStatus',
-                  'owner',
-                  'propertyType',
-                  'location.country',
-                  'location.city',
-                  'residential.residentialPropertyType',
-                  'commercial.commercialPropertyType'
-              ]);
+                    'coverImage',
+                    'availabilityStatus',
+                    'owner',
+                    'propertyType',
+                    'location.country',
+                    'location.city',
+                    'residential.residentialPropertyType',
+                    'commercial.commercialPropertyType',
+                ]);
 
+        if(isset($data['user_id'])){
+            $query->with(['favorites' => function($query) {
+                $query->where('user_id', auth()->user()->id);   
+            }]);
+        }
+        else{
+            $query->with(['favorites' => function($query) {
+                $query->where('user_id', -1);
+            }]);
+        }
+        
         if($data['sell_type_id'] == SellType::OFF_PLAN)
             $query->with('offPlan');
         else if($data['sell_type_id'] == SellType::RENT)
@@ -260,7 +271,7 @@ class PropertyRepository{
 
         $this->_basePropertyfiltering($query, $filters);
 
-        return $query->purchaseFilters([
+        $query->purchaseFilters([
             'min_price' => $filters['min_price'] ?? null,
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
@@ -275,11 +286,22 @@ class PropertyRepository{
                 'location.city',
                 'purchase',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
-            ])
+                'commercial.commercialPropertyType',
+            ]);
+            
+            if(isset($filters['user_id'])){
+                $query->with(['favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);   
+                }]);
+            }
+            
+            else{
+                $query->with(['favorites' => function($query) {
+                    $query->where('user_id', -1);
+                }]);
+            }
 
-
-            ->simplePaginate(10, [
+            return $query->simplePaginate(10, [
                 'properties.id',
                 'properties.location_id',
                 'properties.property_type_id',
@@ -319,7 +341,10 @@ class PropertyRepository{
                 'location.city',
                 'rent',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
+                'commercial.commercialPropertyType',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
 
             ->simplePaginate(10, [
@@ -363,7 +388,10 @@ class PropertyRepository{
                 'location.city',
                 'offPlan',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
+                'commercial.commercialPropertyType',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
 
             ->simplePaginate(10, [
@@ -440,6 +468,32 @@ class PropertyRepository{
                     'availability_status_id',
         ], 'page', $data['page'] ?? 1);
     }
+
+    function viewLatestAcceptedProperty($page) {
+        return PropertyAdmin::where('approve', 1)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->with(['property.owner', 'admin'])
+                    ->orderBy('created_at', 'desc') 
+                    ->simplePaginate(10, '*', 'page', $page?? 1);
+    }
+
+    function viewLatestRejectedProperty($page) {
+        return PropertyAdmin::where('approve', 0)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->with(['property.owner', 'admin'])
+                    ->orderBy('created_at', 'desc') 
+                    ->simplePaginate(10, '*', 'page', $page?? 1);
+    }
+
+    function viewLatestPropertyAdjudication($page) {
+        return Property::whereMonth('created_at', now()->month)
+                       ->whereYear('created_at', now()->year)
+                       ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus'])
+                       ->orderBy('created_at', 'desc') 
+                       ->simplePaginate(10, '*', 'page', $page?? 1);
+        }
 
     function propertyAdjudication($data){ 
         if($data['approve'] == 1)
