@@ -216,15 +216,18 @@ class PropertyRepository{
 
         $query->where('sell_type_id', $data['sell_type_id'])
               ->with([
-                  'coverImage',
-                  'availabilityStatus',
-                  'owner',
-                  'propertyType',
-                  'location.country',
-                  'location.city',
-                  'residential.residentialPropertyType',
-                  'commercial.commercialPropertyType'
-              ]);
+                    'coverImage',
+                    'availabilityStatus',
+                    'owner',
+                    'propertyType',
+                    'location.country',
+                    'location.city',
+                    'residential.residentialPropertyType',
+                    'commercial.commercialPropertyType',
+                    'favorites' => function($query) {
+                        $query->where('user_id', auth()->user()->id);
+                    }
+                ]);
 
         if($data['sell_type_id'] == SellType::OFF_PLAN)
             $query->with('offPlan');
@@ -590,7 +593,10 @@ class PropertyRepository{
                 'commercial.commercialPropertyType',
                 'rent',
                 'purchase',
-                'offPlan'
+                'offPlan',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
             ->orderByRaw("FIELD(id, " . implode(',', $propertyIds) . ")");
 
