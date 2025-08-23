@@ -278,7 +278,10 @@ class PropertyRepository{
                 'location.city',
                 'purchase',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
+                'commercial.commercialPropertyType',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
 
 
@@ -322,7 +325,10 @@ class PropertyRepository{
                 'location.city',
                 'rent',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
+                'commercial.commercialPropertyType',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
 
             ->simplePaginate(10, [
@@ -366,7 +372,10 @@ class PropertyRepository{
                 'location.city',
                 'offPlan',
                 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType'
+                'commercial.commercialPropertyType',
+                'favorites' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }
             ])
 
             ->simplePaginate(10, [
