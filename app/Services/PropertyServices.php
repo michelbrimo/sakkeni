@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\RecommendationService;
 use App\Services\AIDescriptionService;
 use App\Models\Property;
-
+use App\Repositories\UserPreferenceRepository;
 
 class PropertyServices extends ImageServices
 {
@@ -25,6 +25,8 @@ class PropertyServices extends ImageServices
     protected $location_repository; 
     protected $recommendation_service;
     protected $ai_description_service;
+    protected $user_preference_repository;
+
 
 
     public function __construct() {
@@ -33,6 +35,8 @@ class PropertyServices extends ImageServices
         $this->image_repository = new ImageRepository();
         $this->recommendation_service = new RecommendationService();
         $this->ai_description_service = new AIDescriptionService();
+        $this->user_preference_repository = new UserPreferenceRepository();
+
 
     }
 
@@ -208,9 +212,15 @@ class PropertyServices extends ImageServices
 
     public function viewRecommendedProperties(array $data)
     {
-        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);
-        return $this->property_repository->getPropertiesByIds(
+        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id'], 50);
+        if (empty($recommendedIds)) {
+            return collect(); 
+        }
+        $preferences = $this->user_preference_repository->getLatestByUserId($data['user_id']);
+
+        return $this->property_repository->getFilteredPropertiesByIds(
             $recommendedIds,
+            $preferences,
             $data['page'] ?? 1
         );
     }

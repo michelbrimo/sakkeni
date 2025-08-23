@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 8, 2)->nullable();// The price quoted by the service provider.
             $table->text('scope_of_work')->nullable();
             $table->string('status')->default('Pending Provider Response');// (e.g., 'Pending Provider Response', 'Pending User Acceptance', 'Accepted', 'Declined').
-            $table->date('start_date')->nullable()->after('status');
+            $table->date('start_date')->nullable();
             $table->timestamps();
         });
     }

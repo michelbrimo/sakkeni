@@ -546,25 +546,57 @@ class PropertyRepository{
         return $query;
     }
 
-    public function getPropertiesByIds(array $propertyIds, int $page = 1, int $perPage = 10)
+    public function getFilteredPropertiesByIds(array $propertyIds, ?\App\Models\UserPreference $preferences, int $page = 1, int $perPage = 10)
     {
+        $query = Property::whereIn('id', $propertyIds);
+
         if (empty($propertyIds)) {
             return collect();
         }
 
-        $query = Property::whereIn('id', $propertyIds)
-            ->with([
-                'coverImage',
-                'availabilityStatus',
-                'owner',
-                'propertyType',
-                'location.country',
-                'location.city',
-                'residential.residentialPropertyType',
-                'commercial.commercialPropertyType',
-                'rent',
-                'purchase',
-                'offPlan'
+        if ($preferences) {
+            if ($preferences->min_price) {
+                $query->where(function ($q) use ($preferences) {
+                    $q->whereHas('purchase', fn($sub) => $sub->where('price', '>=', $preferences->min_price))
+                      ->orWhereHas('rent', fn($sub) => $sub->where('price', '>=', $preferences->min_price))
+                      ->orWhereHas('offPlan', fn($sub) => $sub->where('overall_payment', '>=', $preferences->min_price));
+                });
+            }
+            if ($preferences->max_price) {
+                $query->where(function ($q) use ($preferences) {
+                    $q->whereHas('purchase', fn($sub) => $sub->where('price', '<=', $preferences->max_price))
+                      ->orWhereHas('rent', fn($sub) => $sub->where('price', '<=', $preferences->max_price))
+                      ->orWhereHas('offPlan', fn($sub) => $sub->where('overall_payment', '<=', $preferences->max_price));
+                });
+            }
+
+            if ($preferences->min_area) { $query->where('area', '>=', $preferences->min_area); }
+            if ($preferences->max_area) { $query->where('area', '<=', $preferences->max_area); }
+
+            if ($preferences->min_bedrooms || $preferences->max_bedrooms) {
+                $query->whereHas('residential', function ($q) use ($preferences) {
+                    if ($preferences->min_bedrooms) { $q->where('bedrooms', '>=', $preferences->min_bedrooms); }
+                    if ($preferences->max_bedrooms) { $q->where('bedrooms', '<=', $preferences->max_bedrooms); }
+                });
+            }
+
+            if (!empty($preferences->preferred_locations)) {
+                $query->whereHas('location', function ($q) use ($preferences) {
+                    $q->whereIn('city_id', $preferences->preferred_locations);
+                });
+            }
+
+            if (!empty($preferences->must_amenity)) {
+                foreach ($preferences->must_amenity as $amenityId) {
+                    $query->whereHas('amenities', fn($q) => $q->where('amenities.id', $amenityId));
+                }
+            }
+        }
+        
+        $query->with([
+                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+                'location.country', 'location.city', 'residential.residentialPropertyType',
+                'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ])
             ->orderByRaw("FIELD(id, " . implode(',', $propertyIds) . ")");
 

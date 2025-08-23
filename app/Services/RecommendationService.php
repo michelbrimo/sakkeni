@@ -16,7 +16,7 @@ class RecommendationService
         $this->baseUrl = config('services.recommendation_service.url');
     }
 
-    public function getRecommendedIds(int $userId): array
+    public function getRecommendedIds(int $userId, int $limit = 50): array
     {
         if (!$this->baseUrl) {
             Log::error('Recommendation service URL is not configured.');
@@ -26,7 +26,9 @@ class RecommendationService
         $endpoint = $this->baseUrl . '/api/v1/recommendations/' . $userId;
 
         try {
-            $response = Http::timeout(10)->post($endpoint);
+            $response = Http::timeout(10)->post($endpoint, [
+                'limit' => $limit
+            ]);
 
             if ($response->successful()) {
                 return $response->json('recommendations', []);
