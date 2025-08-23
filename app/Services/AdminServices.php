@@ -136,6 +136,18 @@ class AdminServices extends ImageServices{
     function viewPendingServiceProviders($data) {
         return $this->service_provider_repository->viewPendingServiceProviders($data);
     }
+
+    function viewLatestAcceptedServiceProviders($data) {
+        return $this->service_provider_repository->getLatestAcceptedServiceProviders($data['page']);
+    }
+
+    function viewLatestRejectedServiceProviders($data) {
+        return $this->service_provider_repository->getLatestRejectedServiceProviders($data['page']);
+    }
+
+    function viewLatestServiceProvidersAdjudication($data) {
+        return $this->service_provider_repository->getLatestServiceProvidersAdjudication($data['page']);
+    }
     
     function serviceProviderServiceAdjudication($data) {
         $validator = Validator::make($data, [

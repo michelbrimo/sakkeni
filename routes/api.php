@@ -79,6 +79,14 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 
         Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
         Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
+        
+        Route::get('/view-latest-accepted-service-providers', [AdminController::class, 'viewLatestAcceptedServiceProviders'])->name('Admin.viewLatestAcceptedServiceProviders');
+        Route::get('/view-latest-rejected-service-providers', [AdminController::class, 'viewLatestRejectedServiceProviders'])->name('Admin.viewLatestRejectedServiceProviders');
+        Route::get('/view-latest-service-providers-adjudication', [AdminController::class, 'viewLatestServiceProvidersAdjudication'])->name('Admin.viewLatestServiceProvidersAdjudication');
+
+        Route::get('/view-latest-pending-properties', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
+        Route::get('/view-latest-rejected-properties', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
 
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
