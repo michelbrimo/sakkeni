@@ -288,11 +288,13 @@ class PropertyRepository{
                 'residential.residentialPropertyType',
                 'commercial.commercialPropertyType',
             ]);
-            if(isset($data['user_id'])){
+            
+            if(isset($filters['user_id'])){
                 $query->with(['favorites' => function($query) {
                     $query->where('user_id', auth()->user()->id);   
                 }]);
             }
+            
             else{
                 $query->with(['favorites' => function($query) {
                     $query->where('user_id', -1);
