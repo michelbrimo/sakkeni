@@ -82,18 +82,24 @@ class ServiceProviderRepository{
     }
 
     function getLatestServiceProvidersAdjudication($page) {
-        return ServiceProviderService::with(['adminServices','availabilityStatus', 'serviceProvider.user'])
-                            ->simplePaginate(10, ['*'], 'page', $page ?? 1);    }
+        return ServiceProviderService::whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['adminServices.admin', 'availabilityStatus', 'serviceProvider.user'])
+                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);    }
 
     function getLatestRejectedServiceProviders($page) {
         return AdminServiceProviderServices::where('approve', 0)
-                                ->with('services.serviceProvider.user')
+                                ->whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['services.serviceProvider.user', 'admin'])
                                 ->simplePaginate(10, ['*'], 'page', $page ?? 1);
     }
 
     function getLatestAcceptedServiceProviders($page) {
         return AdminServiceProviderServices::where('approve', 1)
-                                ->with('services.serviceProvider.user')
+                                ->whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->with(['services.serviceProvider.user', 'admin'])
                                 ->simplePaginate(10, ['*'], 'page', $page ?? 1);
     }
 

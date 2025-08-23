@@ -21,5 +21,10 @@ class AdminServiceProviderServices extends Model
         return $this->belongsTo(ServiceProviderService::class, 'service_id');
     }
 
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
 
 }
