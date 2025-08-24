@@ -203,4 +203,25 @@ class PropertyController extends Controller
     {
         return $this->executeService($this->service_transformer, new Request(), [], 'Property report reasons fetched successfully');
     }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'query' => 'required|string|min:2',
+        ]);
+
+        $query = $request->input('query');
+        $perPage = $request->input('per_page', 10); 
+
+        $properties = Property::search($query)
+            ->query(function ($builder) {
+                $builder->with(['coverImage', 'location.city', 'purchase', 'rent']);
+            })
+            ->paginate($perPage);
+
+        return response()->json([
+            'message' => 'Search results fetched successfully.',
+            'data' => $properties,
+        ]);
+    }
 }

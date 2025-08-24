@@ -31,7 +31,7 @@ class ServiceProvider extends Model
     {
         return $this->morphMany(ReportOnService::class, 'reportable');
     }
-public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

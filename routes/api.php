@@ -115,6 +115,7 @@ Route::middleware('optional.sanctum')->group(function () {
     Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
 });
 
+Route::get('/properties/search', [PropertyController::class, 'search']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
