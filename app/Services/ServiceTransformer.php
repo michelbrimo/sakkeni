@@ -90,6 +90,7 @@ class ServiceTransformer{
         'requestQuote' => [],
         'updateQuoteRequest' => [],
 
+        'viewUserQuotes'=> [],
         'viewProviderQuotes' => [],
         'submitQuote' => [],
         'acceptQuote' => [],
@@ -103,6 +104,9 @@ class ServiceTransformer{
         'markAsComplete' => [], 
 
         'submitReview'=>['UpdateServiceProviderRatingAspect'],
+
+        'search'=>[],
+
 
 
     ];

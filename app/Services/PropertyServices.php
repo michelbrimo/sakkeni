@@ -15,7 +15,6 @@ use App\Repositories\PropertyRepository;
 use Illuminate\Support\Facades\Storage;
 use App\Services\RecommendationService;
 use App\Services\AIDescriptionService;
-use App\Models\Property;
 use App\Repositories\UserPreferenceRepository;
 
 class PropertyServices extends ImageServices
@@ -103,12 +102,13 @@ class PropertyServices extends ImageServices
             ]);
         }
 
-        $description = $this->ai_description_service->generateForProperty($property);
+        $aiContent = $this->ai_description_service->generateForProperty($property);
 
-        if ($description) {
-            $property->description = $description;
+        if ($aiContent) {
+            $property->description = $aiContent['description'];
+            $property->tags = $aiContent['tags']; 
             $property->save();
-        } 
+        }  
     }
 
     public function updateProperty($data){
@@ -358,6 +358,11 @@ class PropertyServices extends ImageServices
         $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
+    }
+
+    public function search($data)
+    {
+        return $this->property_repository->search($data);
     }
 }
 

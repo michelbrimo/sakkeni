@@ -17,7 +17,7 @@ class AIDescriptionService
         $this->apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     }
 
-    public function generateForProperty(Property $property): ?string
+    public function generateForProperty(Property $property): ?array
     {
         if (!$this->apiKey) {
             Log::warning('Gemini API key is not set. Skipping AI description generation.');
@@ -38,8 +38,21 @@ class AIDescriptionService
                     ]
                 ]);
 
-            if ($response->successful()) {
-                return $response->json('candidates.0.content.parts.0.text');
+             if ($response->successful()) {
+                $jsonText = $response->json('candidates.0.content.parts.0.text');
+
+                $cleanedJsonText = str_replace(['```json', '```'], '', $jsonText);
+
+                $data = json_decode(trim($cleanedJsonText), true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($data['description'])) {
+                    return [
+                        'description' => $data['description'],
+                        'tags' => $data['tags'] ?? null,
+                    ];
+                } else {
+                    Log::error('Gemini response was not valid JSON after cleaning.', ['raw_response' => $jsonText]);
+                    return null; 
+                }
             } else {
                 Log::error('Gemini API request failed.', [
                     'status' => $response->status(),

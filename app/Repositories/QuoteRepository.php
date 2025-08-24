@@ -29,6 +29,14 @@ class QuoteRepository
             ->get();
     }
 
+    public function getUserQuotes(int $userId): Collection
+    {
+        return Quote::where('user_id', $userId)
+            ->with('service') 
+            ->latest()
+            ->get();
+    }
+
     public function createServiceActivityFromQuote(Quote $quote): ServiceActivity
     {
         return ServiceActivity::create([

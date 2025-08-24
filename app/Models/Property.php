@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Type\Integer;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = [
         'location_id',
@@ -29,6 +30,40 @@ class Property extends Model
         'tags'
     ];
 
+
+
+    public function toSearchableArray(): array
+    {
+        $this->load(
+            'location.city', 'location.country', 'propertyType', 'amenities', 
+            'sellType', 'ownershipType', 'directions', 'residential.residentialPropertyType',
+            'commercial.commercialPropertyType'
+        );
+
+        return [
+            'id'            => $this->id,
+            'description'   => $this->description,
+            'tags'          => $this->tags,
+            // Location Details
+            'city'          => $this->location->city->name ?? null,
+            'country'       => $this->location->country->name ?? null,
+            // Property Type Details
+            'property_type' => $this->propertyType->name ?? null,
+            'sell_type'     => $this->sellType->name ?? null,
+            'ownership_type'=> $this->ownershipType->name ?? null,
+            // Property Attributes
+            'area'          => $this->area,
+            'bathrooms'     => $this->bathrooms,
+            'balconies'     => $this->balconies,
+            // Relational Details
+            'amenities'     => $this->amenities->pluck('name')->implode(', '),
+            'directions'    => $this->directions->pluck('name')->implode(', '),
+            // Residential/Commercial Specifics
+            'bedrooms'      => $this->residential->bedrooms ?? null,
+            'residential_type' => $this->residential->residentialPropertyType->name ?? null,
+            'commercial_type'  => $this->commercial->commercialPropertyType->name ?? null,
+        ];
+    }
 
     public function sellType()
     {

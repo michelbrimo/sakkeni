@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Enums\AvailabilityStatus;
-use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
@@ -22,12 +21,10 @@ use App\Models\PropertyAdmin;
 use App\Models\PropertyFavorite;
 use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
-use App\Models\ReadyToMoveInProperty;
 use App\Models\Rent;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType as ModelsResidentialPropertyType;
 use App\Models\Villa;
-use Illuminate\Support\Facades\DB;
 
 class PropertyRepository{
     public function create($data) {
@@ -696,4 +693,41 @@ class PropertyRepository{
     {
         return Country::with('cities')->get();
     }
+
+    public function search($data)
+    {
+        $query = $data['query'];
+        $perPage = $data['per_page'] ?? 10;
+        $userId = $data['user_id'] ?? null;
+
+        $query = Property::search($query)
+        ->query(function ($builder) use ($userId) {
+            $builder->with([
+                // Essential details
+                'coverImage',
+                'availabilityStatus',
+                'owner',
+                'propertyType',
+                // Location details
+                'location.country',
+                'location.city',
+                // Property type specifics
+                'residential.residentialPropertyType',
+                'commercial.commercialPropertyType',
+                // Sell type specifics
+                'rent',
+                'purchase',
+                'offPlan'
+            ]);
+
+            if ($userId) {
+                $builder->with(['favorites' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                }]);
+            }
+        })
+        ->paginate($perPage);
+        return $query; 
+    }
+
 }

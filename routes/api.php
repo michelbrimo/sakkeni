@@ -113,9 +113,10 @@ Route::middleware('optional.sanctum')->group(function () {
     Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
     Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
     Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+    Route::get('/properties/search', [PropertyController::class, 'search'])->name('Property.search');
+
 });
 
-Route::get('/properties/search', [PropertyController::class, 'search']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-profile', [UserController::class, 'viewMyProfile'])->name('User.viewUserProfile');
@@ -145,6 +146,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quotes/request', [QuoteController::class, 'requestQuote'])->name('Quote.requestQuote');
     Route::post('/quotes/{quote}/update-request', [QuoteController::class, 'updateQuoteRequest'])->name('Quote.updateQuoteRequest');
     Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');
+    Route::get('/user/quotes', [QuoteController::class, 'viewUserQuotes'])->name('Quote.viewUserQuotes');
+
     Route::post('/quotes/{quote}/decline-user-quote', [QuoteController::class, 'declineUserQuote'])->name('Quote.declineUserQuote');
     Route::post('/quotes/{quote}/submit', [QuoteController::class, 'submitQuote'])->name('Quote.submitQuote'); 
     Route::post('/quotes/{quote}/decline', [QuoteController::class, 'declineQuote'])->name('Quote.declineQuote');
@@ -191,7 +194,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-subscription-plans', [ServiceProviderController::class, 'viewSubscriptionPlans'])->name('ServiceProvider.viewSubscriptionPlans');
     Route::get('/report-reasons/property', [PropertyController::class, 'viewPropertyReportReasons'])->name('Report.viewPropertyReportReasons');
     Route::get('/report-reasons/service-provider', [ServiceProviderController::class, 'viewServiceProviderReportReasons'])->name('Report.viewServiceProviderReportReasons');
-    
+
    
 });
 Route::post('/stripe/webhook', [WebhookController::class, 'handleStripeWebhook'])->name('Payment.handleWebhook');

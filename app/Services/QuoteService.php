@@ -46,6 +46,12 @@ class QuoteService
         return $this->quoteRepository->getProviderQuotes($user->serviceProvider->id);
     }
 
+    public function viewUserQuotes($data)
+    {
+        $user = $data['user'];
+        return $this->quoteRepository->getUserQuotes($user->id);
+    }
+
     public function submitQuote($data)
     {
         $user = $data['user'];

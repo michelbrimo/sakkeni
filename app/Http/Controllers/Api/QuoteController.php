@@ -57,6 +57,12 @@ class QuoteController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Provider quotes fetched successfully.');
     }
 
+    public function viewUserQuotes(Request $request)
+    {
+        $additionalData = ['user' => $request->user()];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'User quotes fetched successfully.');
+    }
+
     public function submitQuote(Request $request, Quote $quote)
     {
         $validator = Validator::make($request->all(), [
