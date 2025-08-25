@@ -186,7 +186,7 @@ class UserServices extends ImageServices
         }
     }
 
-   public function markAsComplete($data)
+    public function markAsComplete($data)
     {
         $user = $data['user'];
         $serviceActivity = $data['service_activity'];
@@ -233,6 +233,9 @@ class UserServices extends ImageServices
         if ($serviceActivity->review) {
             throw new Exception('A review has already been submitted for this service.', 422);
         }
+
+
+        $this->payment_repository->updateServiceActivityStatus($serviceActivity, 'Rated');
 
         $review = $this->user_repository->createReview([
             'service_activity_id' => $serviceActivity->id,
