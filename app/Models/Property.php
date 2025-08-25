@@ -42,12 +42,19 @@ class Property extends Model
 
         $isFurnished = $this->purchase->is_furnished ?? $this->rent->is_furnished ?? false;
 
+        $price = $this->purchase->price 
+             ?? $this->rent->price 
+             ?? $this->offPlan->overall_payment 
+             ?? 0;
 
         return [
             'id'            => $this->id,
             'description'   => $this->description,
             'tags'          => $this->tags,
-            'is_furnished'  => $isFurnished, 
+            'is_furnished'  => $isFurnished,
+            'price'         => (float) $price,
+            'created_at'    => $this->created_at->timestamp, // Meilisearch sorts timestamps better
+ 
 
             // Location Details
             'city'          => $this->location->city->name ?? null,

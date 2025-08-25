@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
+use App\Services\SearchDictionaryService;
 
 class NlpSearchParserService
 {
@@ -15,7 +15,7 @@ class NlpSearchParserService
         $dict = SearchDictionaryService::get();
         $this->synonyms = $dict['synonyms'];
 
-        // --- Build a reverse-lookup map for keywords for faster processing ---
+        // Build a reverse-lookup map for keywords for faster processing
         $this->keywordMap = [];
         $keywordCategories = [
             'property_type' => $dict['property_types'],
@@ -29,10 +29,13 @@ class NlpSearchParserService
             }
         }
 
-        // --- Flatten the full dictionary for typo correction ---
+        // Flatten the full dictionary for typo correction
         $this->dictionary = array_merge(
-            $dict['attributes'], $dict['keywords'], $dict['locations'],
-            $dict['property_types'], $dict['sell_types'], $dict['amenities'], $dict['sorting']
+            array_keys($this->keywordMap),
+            $dict['attributes'],
+            $dict['keywords'],
+            $dict['locations'],
+            $dict['sorting']
         );
     }
 
@@ -52,7 +55,7 @@ class NlpSearchParserService
 
         $textQuery = trim(preg_replace('/\s+/', ' ', $query));
 
-        if (empty($textQuery) && (!empty($filters) || !empty($sorting) || !empty($negations))) {
+        if (empty($textQuery) && (!empty($filters) || !empty($negations) || !empty($sorting))) {
             $textQuery = '*';
         }
 
@@ -63,8 +66,8 @@ class NlpSearchParserService
             'sorting'   => $sorting,
         ];
     }
-    
-    // --- Private Helper Methods for Parsing ---
+
+    // --- All Necessary Private Helper Methods ---
 
     private function _normalizeQuery(string $query): string
     {
@@ -82,16 +85,7 @@ class NlpSearchParserService
                 $correctedWords[] = $word;
                 continue;
             }
-            $closestMatch = '';
-            $shortestDistance = -1;
-            foreach ($this->dictionary as $dictWord) {
-                $distance = levenshtein($word, $dictWord);
-                if ($distance === 0) { $closestMatch = $dictWord; break; }
-                if ($distance <= 2 && ($shortestDistance < 0 || $distance < $shortestDistance)) {
-                    $closestMatch = $dictWord;
-                    $shortestDistance = $distance;
-                }
-            }
+            $closestMatch = $this->_findClosestWord($word);
             $correctedWords[] = !empty($closestMatch) ? $closestMatch : $word;
         }
         return implode(' ', $correctedWords);
@@ -102,11 +96,13 @@ class NlpSearchParserService
         $sorting = [];
         $dict = SearchDictionaryService::get();
         foreach ($dict['sorting'] as $term) {
-            if (str_contains($query, ' ' . $term . ' ')) {
+            // Use a regex with word boundaries to find the term anywhere in the string
+            if (preg_match('/\b' . preg_quote($term, '/') . '\b/i', $query)) {
                 $attribute = $this->synonyms[$term];
                 $direction = in_array($term, ['cheapest', 'newest', 'smallest']) ? 'asc' : 'desc';
                 $sorting = ['attribute' => $attribute, 'direction' => $direction];
-                $query = str_replace($term, '', $query);
+                // Replace only the matched term
+                $query = preg_replace('/\b' . preg_quote($term, '/') . '\b/i', '', $query, 1);
                 break;
             }
         }
@@ -116,41 +112,61 @@ class NlpSearchParserService
     private function _extractNegations(string $query): array
     {
         $negations = [];
-        if (preg_match_all('/(?:without|no)\s+([\p{L}\s,]+(?:and\s+[\p{L}\s,]+)*)/iu', $query, $matches)) {
+        $dictionary = SearchDictionaryService::get();
+        $allKeywords = array_merge($dictionary['amenities'], ['furnished']); // Keywords that can be negated
+
+        if (preg_match_all('/(?:without|no)\s+((?:[\p{L}\s]+,?\s*(?:and)?\s*)+)/iu', $query, $matches)) {
             foreach($matches[1] as $i => $match) {
-                $negatedItems = preg_split('/(?:,|and)\s+/', $match, -1, PREG_SPLIT_NO_EMPTY);
-                $negations = array_merge($negations, array_map('trim', $negatedItems));
+                // Split the captured phrase into individual words
+                $negatedItems = preg_split('/(?:,|\s|and)\s*/', $match, -1, PREG_SPLIT_NO_EMPTY);
+
+                foreach ($negatedItems as $item) {
+                    $item = trim($item);
+                    // IMPORTANT: Only add the item if it's a valid, negatable keyword
+                    if (in_array($item, $allKeywords)) {
+                        $negations[] = $item;
+                    }
+                }
+
                 $query = str_replace($matches[0][$i], '', $query);
             }
         }
-        return [$query, $negations];
+        return [$query, array_unique($negations)];
     }
     
+
     private function _extractRanges(string $query, array $filters): array
     {
-        if (preg_match('/(\d+)\s*-\s*(\d+)\s*(bedrooms|bathrooms)/i', $query, $matches)) {
-            $filters['min_' . $matches[3]] = $matches[1];
-            $filters['max_' . $matches[3]] = $matches[2];
+        // This regex can now handle ranges for area, bedrooms, or bathrooms
+        if (preg_match('/(?:with\s+)?(\d+)\s*-\s*(\d+)\s*(bedrooms|bathrooms|area)/i', $query, $matches)) {
+            $attribute = rtrim($matches[3], 's'); // Normalize to singular (e.g., bedrooms -> bedroom)
+            $filters['min_' . $attribute] = $matches[1];
+            $filters['max_' . $attribute] = $matches[2];
             $query = str_replace($matches[0], '', $query);
         }
+        
         if (preg_match('/price\s+between\s+(\d+)\s+and\s+(\d+)/i', $query, $matches)) {
             $filters['min_price'] = $matches[1];
             $filters['max_price'] = $matches[2];
             $query = str_replace($matches[0], '', $query);
         }
+        
         return [$query, $filters];
     }
     
+
+
     private function _extractEntities(string $query, array $filters): array
     {
         $patterns = [
-            'area'      => '/(\d+)\s*(?:sqm|sq\s*m)/i',
-            'bedrooms'  => '/(\d+)\s+bedrooms?/i',
-            'bathrooms' => '/(\d+)\s+bathrooms?/i',
-            'city'      => '/in\s+([\p{L}\s\'-]+)/iu',
+            'area'      => '/(?:with\s+)?(\d+)\s*(?:sqm|sq\s*m)/i',
+            'bedrooms'  => '/(?:with\s+)?(\d+)\s+bedrooms?/i',
+            'bathrooms' => '/(?:with\s+)?(\d+)\s+bathrooms?/i',
+            // This regex is now non-greedy and will stop before "with"
+            'city'      => '/in\s+((?:(?!\bwith\b)[\p{L}\s\'-])+)/iu',
         ];
         foreach ($patterns as $key => $pattern) {
-             if (preg_match($pattern, $query, $matches)) {
+            if (preg_match($pattern, $query, $matches)) {
                 if(!isset($filters[$key]) && !isset($filters['min_'.$key])) {
                     $filters[$key] = trim($matches[1]);
                 }
@@ -160,32 +176,44 @@ class NlpSearchParserService
         return [$query, $filters];
     }
 
- private function _extractKeywords(string $query, array $filters): array
-    {
-        $words = explode(' ', $query);
-        $remainingWords = [];
 
-        // Add amenities found with the "with" keyword
+    private function _extractKeywords(string $query, array $filters): array
+    {
+        // Regex to find phrases after "with"
         if (preg_match('/with\s+((?:[\p{L}\s]+,?\s*(?:and)?\s*)+)/iu', $query, $matches)) {
-            $features = preg_split('/(?:,|and)\s+/', $matches[1], -1, PREG_SPLIT_NO_EMPTY);
+            // Get the list of actual amenities from the dictionary to validate against
+            $amenitiesDictionary = SearchDictionaryService::get()['amenities'];
             if (!isset($filters['amenities'])) {
                 $filters['amenities'] = [];
             }
-            $filters['amenities'] = array_merge($filters['amenities'], array_map('trim', $features));
+
+            // Split the captured phrase (e.g., "gym and pool") into individual items
+            $potentialAmenities = preg_split('/(?:,|\s|and)\s*/', $matches[1], -1, PREG_SPLIT_NO_EMPTY);
+
+            foreach ($potentialAmenities as $item) {
+                $item = trim($item);
+                // Only add the item if it's a real amenity
+                if (in_array($item, $amenitiesDictionary)) {
+                    $filters['amenities'][] = $item;
+                }
+            }
+            // Remove the entire "with..." phrase from the query
             $query = str_replace($matches[0], '', $query);
-            $words = explode(' ', $query); // Re-split words after removing the 'with' clause
         }
+
+        $words = explode(' ', $query);
+        $remainingWords = [];
 
         foreach ($words as $word) {
             $word = trim($word);
-            if (empty($word)) continue;
+            if (empty($word) || is_numeric($word)) continue;
 
-            // Check if the word is a known keyword
             if (isset($this->keywordMap[$word])) {
                 $type = $this->keywordMap[$word];
                 if ($type === 'is_furnished') {
                     $filters['is_furnished'] = true;
                 } elseif ($type === 'amenities') {
+                    // This handles standalone amenities not following "with"
                     if (!isset($filters['amenities'])) $filters['amenities'] = [];
                     $filters['amenities'][] = $word;
                 } else {
@@ -197,6 +225,26 @@ class NlpSearchParserService
             }
         }
 
+        // Clean up the amenities list
+        if (isset($filters['amenities'])) {
+            $filters['amenities'] = array_values(array_unique($filters['amenities']));
+        }
+
         return [implode(' ', $remainingWords), $filters];
+    }
+
+    private function _findClosestWord(string $word): string
+    {
+        $closestMatch = '';
+        $shortestDistance = -1;
+        foreach ($this->dictionary as $dictWord) {
+            $distance = levenshtein($word, $dictWord);
+            if ($distance === 0) { return $dictWord; }
+            if ($distance <= 2 && ($shortestDistance < 0 || $distance < $shortestDistance)) {
+                $closestMatch = $dictWord;
+                $shortestDistance = $distance;
+            }
+        }
+        return $closestMatch;
     }
 }

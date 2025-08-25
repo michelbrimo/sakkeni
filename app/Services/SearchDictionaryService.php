@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Amenity;
 use App\Models\City;
+use App\Models\CommercialPropertyType;
 use App\Models\PropertyType;
+use App\Models\ResidentialPropertyType;
 use App\Models\SellType;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,14 +24,16 @@ class SearchDictionaryService
             $cities = City::pluck('name')->map(fn($name) => strtolower($name))->all();
             $propertyTypes = PropertyType::pluck('name')->map(fn($name) => strtolower($name))->all();
             $sellTypes = SellType::pluck('name')->map(fn($name) => strtolower($name))->all();
-
+            $residentialTypes = ResidentialPropertyType::pluck('name')->map(fn($name) => strtolower($name))->all();
+            $commercialTypes = CommercialPropertyType::pluck('name')->map(fn($name) => strtolower($name))->all();
+            $propertyTypes = array_merge($residentialTypes, $commercialTypes);
 
             $attributes = [
-                'area', 'price', 'bedrooms', 'bedroom', 'bathrooms', 'bathroom', 'balconies', 'balcony'
+                'area', 'price', 'bedroom', 'bathroom', 'balcony'
             ];
 
             $keywords = [
-                'between', 'and', 'under', 'over', 'above', 'less', 'more', 'than',
+                'in','between', 'and', 'under', 'over', 'above', 'less', 'more', 'than',
                 'with', 'without', 'no', 'furnished', 'unfurnished'
             ];
             
@@ -41,6 +45,8 @@ class SearchDictionaryService
                 'apt' => 'apartment',
                 'br' => 'bedroom',
                 'beds' => 'bedrooms',
+                'bedrooms' => 'bedroom',  // Map plural to singular
+                'bathrooms' => 'bathroom',// Map plural to singular
                 'baths' => 'bathrooms',
                 'for sale' => 'purchase',
                 'for rent' => 'rent',

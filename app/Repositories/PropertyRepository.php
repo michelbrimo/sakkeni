@@ -695,6 +695,8 @@ class PropertyRepository{
         return Country::with('cities')->get();
     }
 
+    // In app/Repositories/PropertyRepository.php
+
     public function search($data)
     {
         $textQuery = $data['query'] ?? '*';
@@ -703,29 +705,27 @@ class PropertyRepository{
         $sorting = $data['sorting'] ?? [];
         $userId = $data['user_id'] ?? null;
         $perPage = $data['per_page'] ?? 10;
-
+        
         unset($filters['query']);
 
         $search = Property::search($textQuery);
 
-        if (!empty($filters)) {
-        // Handle price ranges (no changes)
+        // --- Apply all positive filters ---
+       if (!empty($filters)) {
+            // This handles the special case for price ranges
             if (isset($filters['min_price']) && isset($filters['max_price'])) {
-                $search->whereBetween('price', [(int)$filters['min_price'], (int)$filters['max_price']]);
+                $search->where('price', '>=', (int)$filters['min_price']);
+                $search->where('price', '<=', (int)$filters['max_price']);
                 unset($filters['min_price'], $filters['max_price']);
             }
 
-            // --- THIS IS THE CORRECTED LOGIC ---
-            // Apply all other filters
+            // This is the correct, original logic for all other filters
             foreach ($filters as $key => $value) {
-                // If the filter is for amenities, loop through each one
                 if ($key === 'amenities' && is_array($value)) {
                     foreach ($value as $amenity) {
                         $search->where('amenities', $amenity);
                     }
-                } 
-                // Handle all other simple filters
-                elseif (!is_array($value)) {
+                } elseif (!is_array($value)) {
                     if (str_starts_with($key, 'min_')) {
                         $search->where(substr($key, 4), '>=', (int)$value);
                     } elseif (str_starts_with($key, 'max_')) {
@@ -737,38 +737,32 @@ class PropertyRepository{
             }
         }
 
-
+        // --- Apply negative filters (e.g., "without garage") ---
         if (!empty($negations)) {
             $dictionary = SearchDictionaryService::get();
-
             foreach ($negations as $negatedItem) {
                 $negatedItem = trim($negatedItem);
-
                 if (in_array($negatedItem, $dictionary['amenities'])) {
                     $search->where('amenities', '!=', $negatedItem);
                 }
-
                 if ($negatedItem === 'furnished') {
                     $search->where('is_furnished', '!=', true);
                 }
-                
-                if (in_array($negatedItem, $dictionary['property_types'])) {
-                        $search->where('property_type', '!=', ucfirst($negatedItem));
-                }
             }
-            }
+        }
         
+        // --- Apply sorting ---
         if (!empty($sorting)) {
             $search->orderBy($sorting['attribute'], $sorting['direction']);
         }
 
+        // --- Eager-load all relationships for the final response ---
         $search->query(function ($builder) use ($userId) {
             $builder->with([
                 'coverImage', 'availabilityStatus', 'owner', 'propertyType',
                 'location.country', 'location.city', 'residential.residentialPropertyType',
                 'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ]);
-
             if ($userId) {
                 $builder->with(['favorites' => function ($q) use ($userId) {
                     $q->where('user_id', $userId);
