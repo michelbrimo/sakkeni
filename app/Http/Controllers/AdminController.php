@@ -98,6 +98,12 @@ class AdminController extends Controller
         $additionalData = ['page' => $request->input('page', 1)];
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'latest Properties adjudication fetched successfully');
     }
+
+    function viewSoldProperties(Request $request)
+    {
+        $additionalData = ['page' => $request->input('page', 1)];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Properties Sold fetched successfully');
+    }
     
     function propertyAdjudication(Request $request)
     {

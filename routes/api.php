@@ -74,6 +74,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
         Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
         
+        Route::get('/charts/properties-sold', [DashboardController::class, 'propertiesSold'])->name('Dashboard.propertiesSold');
+
         Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
         Route::post('/service-provider-service-adjudication', [AdminController::class, 'serviceProviderServiceAdjudication'])->name('Admin.serviceProviderServiceAdjudication');
         
@@ -84,9 +86,12 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
 
+        
+
         Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');
         Route::get('/view-latest-rejected-properties', [AdminController::class, 'viewLatestRejectedProperty'])->name('Admin.viewLatestRejectedProperty');
         Route::get('/view-latest-properties-adjudication', [AdminController::class, 'viewLatestPropertyAdjudication'])->name('Admin.viewLatestPropertyAdjudication');
+        Route::get('/view-sold-properties', [AdminController::class, 'viewSoldProperties'])->name('Admin.viewSoldProperties');
 
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');

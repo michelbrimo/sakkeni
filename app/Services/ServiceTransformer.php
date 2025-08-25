@@ -38,6 +38,7 @@ class ServiceTransformer{
         'viewLatestAcceptedProperty' => [],        
         'viewLatestRejectedProperty' => [],        
         'viewLatestPropertyAdjudication' => [],        
+        'viewSoldProperties' => [],        
         'propertyAdjudication' => [],
 
         'viewPendingServiceProviders' => [], 

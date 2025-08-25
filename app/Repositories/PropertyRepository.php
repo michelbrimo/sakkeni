@@ -499,6 +499,15 @@ class PropertyRepository{
                        ->simplePaginate(10, '*', 'page', $page?? 1);
         }
 
+    function getSoldProperties($page) {
+        return Property::where('availability_status_id', AvailabilityStatus::Sold)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count')
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
+            ->simplePaginate(10, '*', 'page', $page?? 1);
+        }
+
     function propertyAdjudication($data){ 
         if($data['approve'] == 1)
             $this->updateProperty($data['property_id'], [
