@@ -477,7 +477,7 @@ class PropertyRepository{
         return PropertyAdmin::where('approve', 1)
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
-                    ->with(['property.owner', 'admin'])
+                    ->with(['property.owner', 'property.location.city', 'property.location.country', 'admin'])
                     ->orderBy('created_at', 'desc') 
                     ->simplePaginate(10, '*', 'page', $page?? 1);
     }
@@ -486,7 +486,7 @@ class PropertyRepository{
         return PropertyAdmin::where('approve', 0)
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
-                    ->with(['property.owner', 'admin'])
+                    ->with(['property.owner', 'property.location.city', 'property.location.country', 'admin'])
                     ->orderBy('created_at', 'desc') 
                     ->simplePaginate(10, '*', 'page', $page?? 1);
     }
@@ -494,7 +494,7 @@ class PropertyRepository{
     function viewLatestPropertyAdjudication($page) {
         return Property::whereMonth('created_at', now()->month)
                        ->whereYear('created_at', now()->year)
-                       ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus'])
+                       ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus', 'location.city', 'location.country'])
                        ->orderBy('created_at', 'desc') 
                        ->simplePaginate(10, '*', 'page', $page?? 1);
         }
