@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentPhaseSeeder::class);
 
 
-        $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
+        $directions = ['North', 'South', 'East', 'West'];
         foreach ($directions as $direction) {
             Direction::create(['name' => $direction]);
         }
