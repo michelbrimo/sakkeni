@@ -23,13 +23,16 @@ class ConversationRepository
     {
         $provider = $user->serviceProvider;
 
-        return Conversation::where('user_id', $user->id)
-            ->when($provider, function ($query) use ($provider) {
+        return Conversation::where(function ($query) use ($user, $provider) {
+            $query->where('user_id', $user->id);
+
+            if ($provider) {
                 $query->orWhere('service_provider_id', $provider->id);
-            })
-            ->with(['user', 'serviceProvider'])
-            ->latest()
-            ->get();
+            }
+        })
+        ->with(['user', 'serviceProvider.user']) 
+        ->latest() 
+        ->get();
     }
 
     public function getMessagesForConversation(Conversation $conversation)
@@ -46,12 +49,13 @@ class ConversationRepository
             $senderId = $sender->serviceProvider->id;
             $senderType = ServiceProvider::class;
         }
-        return $conversation->messages()->create([
+        $messageData = [
             'sender_id'   => $senderId,
             'sender_type' => $senderType,
             'body'        => $body,
-            'type'        => 'text',
-        ]);
+            'type'        => 'text', 
+        ];
+
         if ($file) {
             $path = $this->imageService->_storeImage($file, 'messages', $conversation->id);
             $messageData['file_path'] = $path;

@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/WebhookController.php
 
 namespace App\Http\Controllers;
 
