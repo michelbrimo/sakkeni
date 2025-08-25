@@ -100,6 +100,12 @@ class PropertyController extends Controller
         $additionalData = $property->toArray();
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Deleted successfully');
     }
+
+    function propertySold($property)
+    {   
+        $additionalData = ['property_id' => $property->id];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Property Sold successfully');
+    }
     
     function viewPendingProperties(Request $request)
     {

@@ -20,6 +20,7 @@ class ServiceTransformer{
         'filterProperties' => ['UserSearchTrackingAspect'],
         'viewPropertyDetails' => ['UserClickTrackingAspect'],
         'viewRecommendedProperties' => [], 
+        'propertySold' => [], 
 
         'deleteProperty' => [],
         'addPropertyToFavorite' => ['favoriteAspect'],

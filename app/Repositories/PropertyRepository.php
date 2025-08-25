@@ -34,6 +34,10 @@ class PropertyRepository{
         return Property::create($data);
     }
 
+    public function editProperty($data) {
+        return Property::where($data)->update();
+    }
+
     public function createOffPlanProperty($data) {
         $offPlan = OffPlanProperty::create([
             'property_id' => $data['property_id'],

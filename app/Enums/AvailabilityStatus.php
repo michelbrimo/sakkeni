@@ -8,4 +8,5 @@ class AvailabilityStatus
     const Active = 2;
     const InActive = 3;
     const Rejected = 4;
+    const Sold = 5;
 }

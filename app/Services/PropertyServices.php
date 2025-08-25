@@ -206,6 +206,10 @@ class PropertyServices extends ImageServices
         return $this->property_repository->getFavoriteProperties($data);
     }
 
+    function propertySold($data) {
+        return $this->property_repository->updateProperty($data['property_id'], ['availability_status_id' => AvailabilityStatus::Sold]);
+    }
+
     public function viewRecommendedProperties(array $data)
     {
         $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);

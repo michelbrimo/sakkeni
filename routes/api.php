@@ -129,6 +129,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
         Route::get('/view-my-properties/{sell_type}', [PropertyController::class, 'viewMyProperties'])->name('Property.viewProperties');
         Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
+
+        Route::get('/property-sold/{property_id}', [PropertyController::class, 'propertySold'])->name('Property.propertySold');
     });
 
     Route::middleware('serviceProvider')->group(function () {     
