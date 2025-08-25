@@ -47,8 +47,8 @@ class PropertySeeder extends Seeder
             $location = Location::create([
                 'country_id' => 1,
                 'city_id' => $cityIds->random(),
-                'latitude' => $faker->latitude(32, 37), 
-                'longitude' => $faker->longitude(35, 42), 
+                'latitude' => $faker->latitude(32.3, 37.3), 
+                'longitude' => $faker->longitude(35.6, 42.4),
                 'additional_info' => $faker->streetAddress,
             ]);
 
@@ -71,10 +71,29 @@ class PropertySeeder extends Seeder
             ]);
 
             // Create one placeholder image for the property
-            PropertyImage::create([
-                'property_id' => $property->id,
-                'image_path' => 'https://placehold.co/600x400/EFEFEF/AAAAAA&text=Property'
-            ]);
+            $imageUrls = [
+                'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
+                'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg', 
+                'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg',   
+                'https://images.pexels.com/photos/1571463/pexels-photo-1571463.jpeg',
+                'https://images.pexels.com/photos/209296/pexels-photo-209296.jpeg',   
+                'https://images.pexels.com/photos/534151/pexels-photo-534151.jpeg',   
+                'https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg', 
+                'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg',   
+                'https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg',   
+                'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',   
+                'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg', 
+                'https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg',   
+                'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg',   
+                'https://images.pexels.com/photos/1438832/pexels-photo-1438832.jpeg', 
+            ];
+
+            for ($images = 0; $images < 5; $images++) {
+                PropertyImage::create([
+                    'property_id' => $property->id,
+                    'image_path' => $imageUrls[rand(0, count($imageUrls)-1)] . '?auto=compress&cs=tinysrgb&w=600'
+                ]);
+            }
 
             // --- 4. Create sub-type and transaction details based on random types ---
             if ($propertyTypeId == 1) { // Residential
@@ -112,19 +131,19 @@ class PropertySeeder extends Seeder
             if ($sellTypeId == 1) { // Purchase
                 Purchase::create([
                     'property_id' => $property->id,
-                    'price' => $faker->numberBetween(100000, 999999),
+                    'price' => $faker->numberBetween(200, 2000) * 500,
                     'is_furnished' => $faker->boolean,
                 ]);
             } elseif ($sellTypeId == 2) { // Rent
                 Rent::create([
                     'property_id' => $property->id,
-                    'price' => $faker->numberBetween(500, 5000),
+                    'price' => $faker->numberBetween(100, 1000),
                     'lease_period_unit' => $faker->randomElement(['Month', 'Year']),
                     'lease_period_value' => $faker->numberBetween(1, 12),
                     'is_furnished' => $faker->boolean,
                 ]);
             } else { // Off-plan
-                $overallPayment = $faker->numberBetween(150000, 999999);
+                $overallPayment = $faker->numberBetween(200, 2000) * 500;
 
                 $offPlan = OffPlanProperty::create([
                     'property_id' => $property->id,

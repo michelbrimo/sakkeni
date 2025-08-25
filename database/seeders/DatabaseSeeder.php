@@ -21,6 +21,7 @@ use App\Models\ServiceCategory;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentPhaseSeeder::class);
 
 
-        $directions = ['North', 'South', 'East', 'West', 'North-East', 'North-West', 'South-East', 'South-West'];
+        $directions = ['North', 'South', 'East', 'West'];
         foreach ($directions as $direction) {
             Direction::create(['name' => $direction]);
         }
@@ -59,7 +60,7 @@ class DatabaseSeeder extends Seeder
             SellType::create(['name' => $sellType]);
         }
 
-        $availabilityStatus = ['Pending', 'Active', 'InActive', 'Rejected'];
+        $availabilityStatus = ['Pending', 'Active', 'InActive', 'Rejected', 'Sold'];
         foreach ($availabilityStatus as $status) {
             AvailabilityStatus::create(['name' => $status]);
         }
@@ -155,10 +156,7 @@ class DatabaseSeeder extends Seeder
         }
         
         $this->call(PropertySeeder::class);
-
         $this->call(UserSearchSeeder::class);
-
         $this->call(ReportReasonSeeder::class);
-
     }
 }

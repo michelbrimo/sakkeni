@@ -122,6 +122,10 @@ class AdminServices extends ImageServices{
         return $this->property_repository->viewLatestPropertyAdjudication($data['page']);
     }
     
+    function viewSoldProperties($data) {
+        return $this->property_repository->getSoldProperties($data['page']);
+    }
+    
     function propertyAdjudication($data) {
         $validator = Validator::make($data, [
             'property_id' => 'integer|required',
