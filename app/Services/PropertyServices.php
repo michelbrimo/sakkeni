@@ -25,6 +25,7 @@ class PropertyServices extends ImageServices
     protected $recommendation_service;
     protected $ai_description_service;
     protected $user_preference_repository;
+    protected $nlp_parser_service;
 
 
 
@@ -35,8 +36,7 @@ class PropertyServices extends ImageServices
         $this->recommendation_service = new RecommendationService();
         $this->ai_description_service = new AIDescriptionService();
         $this->user_preference_repository = new UserPreferenceRepository();
-
-
+        $this->nlp_parser_service = new NlpSearchParserService();
     }
 
     public function addProperty($data){
@@ -362,7 +362,25 @@ class PropertyServices extends ImageServices
 
     public function search($data)
     {
-        return $this->property_repository->search($data);
+        // The NlpSearchParser returns a structured array with all parsed details
+        $parsedQuery = $this->nlp_parser_service->parse($data['query']);
+
+        // Merge the parsed data with original request data (like user_id, page)
+        $searchData = array_merge($data, $parsedQuery);
+        
+        // Get the paginated property results from the repository
+        $properties = $this->property_repository->search($searchData);
+
+        // Return a structured array containing both the results and the debug info
+        return [
+            'properties' => $properties,
+            'debug_info' => [
+                'search_term' => $parsedQuery['query'],
+                'applied_filters' => $parsedQuery['filters'],
+                'applied_negations' => $parsedQuery['negations'],
+                'applied_sorting' => $parsedQuery['sorting'],
+            ]
+        ];
     }
 }
 

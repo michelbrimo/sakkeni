@@ -25,6 +25,7 @@ use App\Models\Rent;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType as ModelsResidentialPropertyType;
 use App\Models\Villa;
+use App\Services\SearchDictionaryService;
 
 class PropertyRepository{
     public function create($data) {
@@ -696,28 +697,76 @@ class PropertyRepository{
 
     public function search($data)
     {
-        $query = $data['query'];
-        $perPage = $data['per_page'] ?? 10;
+        $textQuery = $data['query'] ?? '*';
+        $filters = $data['filters'] ?? [];
+        $negations = $data['negations'] ?? [];
+        $sorting = $data['sorting'] ?? [];
         $userId = $data['user_id'] ?? null;
+        $perPage = $data['per_page'] ?? 10;
 
-        $query = Property::search($query)
-        ->query(function ($builder) use ($userId) {
+        unset($filters['query']);
+
+        $search = Property::search($textQuery);
+
+        if (!empty($filters)) {
+        // Handle price ranges (no changes)
+            if (isset($filters['min_price']) && isset($filters['max_price'])) {
+                $search->whereBetween('price', [(int)$filters['min_price'], (int)$filters['max_price']]);
+                unset($filters['min_price'], $filters['max_price']);
+            }
+
+            // --- THIS IS THE CORRECTED LOGIC ---
+            // Apply all other filters
+            foreach ($filters as $key => $value) {
+                // If the filter is for amenities, loop through each one
+                if ($key === 'amenities' && is_array($value)) {
+                    foreach ($value as $amenity) {
+                        $search->where('amenities', $amenity);
+                    }
+                } 
+                // Handle all other simple filters
+                elseif (!is_array($value)) {
+                    if (str_starts_with($key, 'min_')) {
+                        $search->where(substr($key, 4), '>=', (int)$value);
+                    } elseif (str_starts_with($key, 'max_')) {
+                        $search->where(substr($key, 4), '<=', (int)$value);
+                    } else {
+                        $search->where($key, $value);
+                    }
+                }
+            }
+        }
+
+
+        if (!empty($negations)) {
+            $dictionary = SearchDictionaryService::get();
+
+            foreach ($negations as $negatedItem) {
+                $negatedItem = trim($negatedItem);
+
+                if (in_array($negatedItem, $dictionary['amenities'])) {
+                    $search->where('amenities', '!=', $negatedItem);
+                }
+
+                if ($negatedItem === 'furnished') {
+                    $search->where('is_furnished', '!=', true);
+                }
+                
+                if (in_array($negatedItem, $dictionary['property_types'])) {
+                        $search->where('property_type', '!=', ucfirst($negatedItem));
+                }
+            }
+            }
+        
+        if (!empty($sorting)) {
+            $search->orderBy($sorting['attribute'], $sorting['direction']);
+        }
+
+        $search->query(function ($builder) use ($userId) {
             $builder->with([
-                // Essential details
-                'coverImage',
-                'availabilityStatus',
-                'owner',
-                'propertyType',
-                // Location details
-                'location.country',
-                'location.city',
-                // Property type specifics
-                'residential.residentialPropertyType',
-                'commercial.commercialPropertyType',
-                // Sell type specifics
-                'rent',
-                'purchase',
-                'offPlan'
+                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+                'location.country', 'location.city', 'residential.residentialPropertyType',
+                'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ]);
 
             if ($userId) {
@@ -725,9 +774,10 @@ class PropertyRepository{
                     $q->where('user_id', $userId);
                 }]);
             }
-        })
-        ->paginate($perPage);
-        return $query; 
-    }
+        });
 
+        return $search->paginate($perPage);
+    }
 }
+
+

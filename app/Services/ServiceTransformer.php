@@ -141,14 +141,25 @@ class ServiceTransformer{
 
             $service_obj = new $this->service_mapper[$service];
             $result = $service_obj->$function_name($data); 
+            if ($service === 'Property' && $function_name === 'search' && is_array($result) && isset($result['properties'])) {
+                // If it is, merge the debug info with the paginated properties for the final response
+                $paginatedProperties = $result['properties']->toArray();
+                $responseData = array_merge($paginatedProperties, ['debug_info' => $result['debug_info']]);
 
-            $response = $this->response(
-                true,
-                $success_message,
-                200,
-                $result
-            );
-
+                $response = $this->response(
+                    true,
+                    $success_message,
+                    200,
+                    $responseData
+                );
+            } else {
+                $response = $this->response(
+                    true,
+                    $success_message,
+                    200,
+                    $result
+                );
+            }
             $this->executeAfter($function_name, $result);
         }
         catch(Exception $e){

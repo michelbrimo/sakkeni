@@ -40,10 +40,15 @@ class Property extends Model
             'commercial.commercialPropertyType'
         );
 
+        $isFurnished = $this->purchase->is_furnished ?? $this->rent->is_furnished ?? false;
+
+
         return [
             'id'            => $this->id,
             'description'   => $this->description,
             'tags'          => $this->tags,
+            'is_furnished'  => $isFurnished, 
+
             // Location Details
             'city'          => $this->location->city->name ?? null,
             'country'       => $this->location->country->name ?? null,
@@ -56,12 +61,13 @@ class Property extends Model
             'bathrooms'     => $this->bathrooms,
             'balconies'     => $this->balconies,
             // Relational Details
-            'amenities'     => $this->amenities->pluck('name')->implode(', '),
+            'amenities'     => $this->amenities->pluck('name')->all(),
             'directions'    => $this->directions->pluck('name')->implode(', '),
             // Residential/Commercial Specifics
             'bedrooms'      => $this->residential->bedrooms ?? null,
             'residential_type' => $this->residential->residentialPropertyType->name ?? null,
             'commercial_type'  => $this->commercial->commercialPropertyType->name ?? null,
+
         ];
     }
 

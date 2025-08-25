@@ -142,7 +142,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider');
     
-    //done
     Route::post('/quotes/request', [QuoteController::class, 'requestQuote'])->name('Quote.requestQuote');
     Route::post('/quotes/{quote}/update-request', [QuoteController::class, 'updateQuoteRequest'])->name('Quote.updateQuoteRequest');
     Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');

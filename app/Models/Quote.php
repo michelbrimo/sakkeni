@@ -36,4 +36,9 @@ class Quote extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function serviceActivity()
+    {
+        return $this->hasOne(ServiceActivity::class);
+    }
 }

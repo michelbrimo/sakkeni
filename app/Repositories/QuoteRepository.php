@@ -32,7 +32,7 @@ class QuoteRepository
     public function getUserQuotes(int $userId): Collection
     {
         return Quote::where('user_id', $userId)
-            ->with('service') 
+            ->with('service','serviceActivity') 
             ->latest()
             ->get();
     }
