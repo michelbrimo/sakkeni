@@ -90,7 +90,7 @@ class PropertySeeder extends Seeder
                 'https://images.pexels.com/photos-1457844/pexels-photo-1457844.jpeg', 
             ];
 
-            for ($images = 0; $images < 1; $images++) {
+            for ($images = 0; $images < 5; $images++) {
                 PropertyImage::create([
                     'property_id' => $property->id,
                     'image_path' => $imageUrls[rand(0, count($imageUrls)-1)] . '?auto=compress&cs=tinysrgb&w=600'
