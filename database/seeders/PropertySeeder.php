@@ -86,8 +86,6 @@ class PropertySeeder extends Seeder
                 'https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg',   
                 'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg',   
                 'https://images.pexels.com/photos/1438832/pexels-photo-1438832.jpeg', 
-                'https://images.pexels.com/photos-271618/pexels-photo-271618.jpeg',   
-                'https://images.pexels.com/photos-1457844/pexels-photo-1457844.jpeg', 
             ];
 
             for ($images = 0; $images < 5; $images++) {
