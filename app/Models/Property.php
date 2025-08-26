@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Type\Integer;
 
@@ -47,13 +48,15 @@ class Property extends Model
              ?? $this->offPlan->overall_payment 
              ?? 0;
 
+        
+
         return [
-            'id'            => $this->id,
+            'id'            => (int)$this->id,
             'description'   => $this->description,
             'tags'          => $this->tags,
-            'is_furnished'  => $isFurnished,
+            'is_furnished'  => (bool)$isFurnished,
             'price'         => (float) $price,
-            'created_at'    => $this->created_at->timestamp, // Meilisearch sorts timestamps better
+            'created_at'    => $this->created_at->timestamp,
  
 
             // Location Details
@@ -64,9 +67,9 @@ class Property extends Model
             'sell_type'     => $this->sellType->name ?? null,
             'ownership_type'=> $this->ownershipType->name ?? null,
             // Property Attributes
-            'area'          => $this->area,
-            'bathrooms'     => $this->bathrooms,
-            'balconies'     => $this->balconies,
+            'area'          => (float)$this->area,
+            'bathrooms'     => (int)$this->bathrooms,
+            'balconies'     => (int)$this->balconies,
             // Relational Details
             'amenities'     => $this->amenities->pluck('name')->all(),
             'directions'    => $this->directions->pluck('name')->implode(', '),
@@ -78,6 +81,11 @@ class Property extends Model
         ];
     }
 
+    public function shouldBeSearchable()
+    {
+        // This line only allows properties with an "Active" status to be indexed
+        return $this->availability_status_id == 2;
+    }
     public function sellType()
     {
         return $this->belongsTo(SellType::class);

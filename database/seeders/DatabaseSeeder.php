@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
         }
         
         $amenities = [
-            'Garage', 'Elevator',
+            'Garage', 'Elevator', 'gym', 'pool',
             'Air Conditioning', 'Heating', 
             'Solar Panels', 'Electric Car Charging Stations', 'Lithium Batteries', 
             'Swimming Pool', 'Rooftop Terrace', 'Home Theater', 'Wine Cellar', 'Spa', 'BBQ', 'Playground', 'Pet-Friendly',

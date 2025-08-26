@@ -43,7 +43,7 @@ return [
     */
 
     // 'queue' => env('SCOUT_QUEUE', false),
-    'queue' => true,
+    'queue' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -143,15 +143,20 @@ return [
         'index-settings' => [
             'properties' => [
                 'filterableAttributes'=> [
+                    'id',
                     'area', 
                     'price', 
                     'bedrooms', 
                     'bathrooms', 
                     'city', 
+                    'country', 
+                    'balconies',
                     'property_type', 
                     'amenities', 
                     'is_furnished',
-                    'sell_type'
+                    'sell_type',
+                    'residential_type',
+                    'commercial_type',
                 ],
                 'sortableAttributes' => [
                     'price',
@@ -195,7 +200,6 @@ return [
             'num_retries' => env('TYPESENSE_NUM_RETRIES', 3),
             'retry_interval_seconds' => env('TYPESENSE_RETRY_INTERVAL_SECONDS', 1),
         ],
-        // 'max_total_results' => env('TYPESENSE_MAX_TOTAL_RESULTS', 1000),
         'model-settings' => [
             // User::class => [
             //     'collection-schema' => [

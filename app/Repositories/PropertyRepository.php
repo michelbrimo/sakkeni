@@ -708,8 +708,6 @@ class PropertyRepository{
         return Country::with('cities')->get();
     }
 
-    // In app/Repositories/PropertyRepository.php
-
     public function search($data)
     {
         $textQuery = $data['query'] ?? '*';
@@ -721,70 +719,62 @@ class PropertyRepository{
         
         unset($filters['query']);
 
-        $search = Property::search($textQuery);
+        $searchCallback = function ($meilisearch, $query, $options) use ($filters, $negations, $sorting) {
+        $filterParts = [];
 
-        // --- Apply all positive filters ---
-       if (!empty($filters)) {
-            // This handles the special case for price ranges
-            if (isset($filters['min_price']) && isset($filters['max_price'])) {
-                $search->where('price', '>=', (int)$filters['min_price']);
-                $search->where('price', '<=', (int)$filters['max_price']);
-                unset($filters['min_price'], $filters['max_price']);
-            }
-
-            // This is the correct, original logic for all other filters
-            foreach ($filters as $key => $value) {
-                if ($key === 'amenities' && is_array($value)) {
-                    foreach ($value as $amenity) {
-                        $search->where('amenities', $amenity);
-                    }
-                } elseif (!is_array($value)) {
-                    if (str_starts_with($key, 'min_')) {
-                        $search->where(substr($key, 4), '>=', (int)$value);
-                    } elseif (str_starts_with($key, 'max_')) {
-                        $search->where(substr($key, 4), '<=', (int)$value);
-                    } else {
-                        $search->where($key, $value);
-                    }
+        // Manually build the filter string from the parsed data
+        foreach ($filters as $key => $value) {
+            if ($key === 'amenities' && is_array($value)) {
+                foreach ($value as $amenity) {
+                    $filterParts[] = 'amenities = "' . $amenity . '"';
                 }
+            } elseif (str_starts_with($key, 'min_')) {
+                $filterParts[] = substr($key, 4) . ' >= ' . (int)$value;
+            } elseif (str_starts_with($key, 'max_')) {
+                $filterParts[] = substr($key, 4) . ' <= ' . (int)$value;
+            } elseif ($key === 'is_furnished') {
+                $filterParts[] = 'is_furnished = true';
+            } elseif (!is_array($value)) {
+                 // Add double quotes for string filters
+                $filterParts[] = $key . ' = "' . $value . '"';
             }
         }
 
-        // --- Apply negative filters (e.g., "without garage") ---
-        if (!empty($negations)) {
-            $dictionary = SearchDictionaryService::get();
-            foreach ($negations as $negatedItem) {
-                $negatedItem = trim($negatedItem);
-                if (in_array($negatedItem, $dictionary['amenities'])) {
-                    $search->where('amenities', '!=', $negatedItem);
-                }
-                if ($negatedItem === 'furnished') {
-                    $search->where('is_furnished', '!=', true);
-                }
-            }
+        foreach ($negations as $negatedItem) {
+            $filterParts[] = 'amenities != "' . $negatedItem . '"';
         }
-        
-        // --- Apply sorting ---
+
+        // Add the combined filter string to the search options
+        if (!empty($filterParts)) {
+            $options['filter'] = implode(' AND ', $filterParts);
+        }
+
+        // Add sorting to the search options
         if (!empty($sorting)) {
-            $search->orderBy($sorting['attribute'], $sorting['direction']);
+            $options['sort'] = [$sorting['attribute'] . ':' . $sorting['direction']];
         }
 
-        // --- Eager-load all relationships for the final response ---
-        $search->query(function ($builder) use ($userId) {
-            $builder->with([
-                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
-                'location.country', 'location.city', 'residential.residentialPropertyType',
-                'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
-            ]);
-            if ($userId) {
-                $builder->with(['favorites' => function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                }]);
-            }
-        });
+        return $meilisearch->search($query, $options);
+    };
 
-        return $search->paginate($perPage);
-    }
+    $search = Property::search($textQuery, $searchCallback);
+
+    // Eager-load relationships after the search
+    $search->query(function ($builder) use ($userId) {
+        $builder->with([
+            'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+            'location.country', 'location.city', 'residential.residentialPropertyType',
+            'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
+        ]);
+        if ($userId) {
+            $builder->with(['favorites' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }]);
+        }
+    });
+
+    return $search->paginate($perPage);
+}
 }
 
 
