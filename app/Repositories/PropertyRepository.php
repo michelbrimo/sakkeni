@@ -722,7 +722,6 @@ class PropertyRepository{
         $searchCallback = function ($meilisearch, $query, $options) use ($filters, $negations, $sorting) {
         $filterParts = [];
 
-        // Manually build the filter string from the parsed data
         foreach ($filters as $key => $value) {
             if ($key === 'amenities' && is_array($value)) {
                 foreach ($value as $amenity) {
@@ -735,7 +734,6 @@ class PropertyRepository{
             } elseif ($key === 'is_furnished') {
                 $filterParts[] = 'is_furnished = true';
             } elseif (!is_array($value)) {
-                 // Add double quotes for string filters
                 $filterParts[] = $key . ' = "' . $value . '"';
             }
         }
@@ -744,12 +742,10 @@ class PropertyRepository{
             $filterParts[] = 'amenities != "' . $negatedItem . '"';
         }
 
-        // Add the combined filter string to the search options
         if (!empty($filterParts)) {
             $options['filter'] = implode(' AND ', $filterParts);
         }
 
-        // Add sorting to the search options
         if (!empty($sorting)) {
             $options['sort'] = [$sorting['attribute'] . ':' . $sorting['direction']];
         }
@@ -759,7 +755,6 @@ class PropertyRepository{
 
     $search = Property::search($textQuery, $searchCallback);
 
-    // Eager-load relationships after the search
     $search->query(function ($builder) use ($userId) {
         $builder->with([
             'coverImage', 'availabilityStatus', 'owner', 'propertyType',
