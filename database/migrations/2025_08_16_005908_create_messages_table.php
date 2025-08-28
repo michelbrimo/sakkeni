@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('conversation_id')->constrained('conversations')->cascadeOnDelete();
             $table->unsignedBigInteger('sender_id');
             $table->string('sender_type');//user or service provider
-            $table->text('body')->nullable()->change();
+            $table->text('body')->nullable();
             $table->string('type')->default('text');
             $table->string('file_path')->nullable();
             $table->timestamps();

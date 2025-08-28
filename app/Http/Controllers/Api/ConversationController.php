@@ -51,11 +51,11 @@ class ConversationController extends Controller
         }
 
         $additionalData = [
-            'user' => $request->user(),
-            'conversation' => $conversation,
-            'request' => $request, 
-
-        ];
+        'user' => $request->user(),
+        'conversation' => $conversation,
+        'body' => $request->input('body'), 
+        'file' => $request->file('file'),   
+    ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Message sent successfully.');
     }
 }
