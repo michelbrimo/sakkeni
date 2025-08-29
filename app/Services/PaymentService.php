@@ -1,12 +1,11 @@
 <?php
-// app/Services/PaymentService.php
 
 namespace App\Services;
 
 use App\Models\ServiceActivity;
 use App\Repositories\PaymentRepository;
 use Exception;
-use Illuminate\Support\Facades\Log; // <-- Import the Log facade
+use Illuminate\Support\Facades\Log; 
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Transfer;
