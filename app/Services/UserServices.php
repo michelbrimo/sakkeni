@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enums\AvailabilityStatus;
+use App\Repositories\PaymentRepository;
 use App\Repositories\ServiceProviderRepository;
 use Exception;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,10 +16,16 @@ class UserServices extends ImageServices
 {
     protected $user_repository;
     protected $service_provider_repository;
+    protected $payment_service;
+    protected $payment_repository;
+
 
     public function __construct() {
         $this->user_repository = new UserRepository();
         $this->service_provider_repository = new ServiceProviderRepository();
+        $this->payment_repository = new PaymentRepository(); 
+        $this->payment_service = new PaymentService();
+
     }
 
     public function signUp($data){
@@ -176,5 +184,67 @@ class UserServices extends ImageServices
                 'availability_status_id'=> AvailabilityStatus::Pending,
             ]);
         }
+    }
+
+    public function markAsComplete($data)
+    {
+        $user = $data['user'];
+        $serviceActivity = $data['service_activity'];
+
+        if ($user->id !== $serviceActivity->user_id) {
+            throw new Exception('Unauthorized', 403);
+        }
+
+        if ($serviceActivity->status !== 'In Progress') {
+            throw new Exception('This service is not in a state that can be completed.', 422);
+        }
+
+        return DB::transaction(function () use ($serviceActivity) {
+            $this->payment_repository->updateServiceActivityStatus($serviceActivity, 'Completed');
+
+            $this->payment_service->createTransfer($serviceActivity);
+
+            return $serviceActivity; 
+        });
+    }
+
+    public function submitReview($data)
+    {
+        $validator = Validator::make($data, [
+            'rating' => 'required|integer|min:1|max:5',
+            'review_text' => 'nullable|string|max:2000',
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first(), 422);
+        }
+
+        $user = $data['user'];
+        $serviceActivity = $data['service_activity'];
+
+        if ($user->id !== $serviceActivity->user_id) {
+            throw new Exception('Unauthorized', 403);
+        }
+
+        if ($serviceActivity->status !== 'Completed') {
+            throw new Exception('You can only review a completed service.', 422);
+        }
+        
+        if ($serviceActivity->review) {
+            throw new Exception('A review has already been submitted for this service.', 422);
+        }
+
+
+        $this->payment_repository->updateServiceActivityStatus($serviceActivity, 'Rated');
+
+        $review = $this->user_repository->createReview([
+            'service_activity_id' => $serviceActivity->id,
+            'user_id' => $user->id,
+            'service_provider_id' => $serviceActivity->service_provider_id,
+            'rating' => $data['rating'],
+            'review_text' => $data['review_text'] ?? null,
+        ]);
+
+        return $review;
     }
 }

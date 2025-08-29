@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Models\Property;
 use App\Models\ReportOnService;
 use App\Models\ReportReason;
+use App\Models\ServiceProvider;
 
 class ReportRepository
 {
@@ -21,7 +23,19 @@ class ReportRepository
             $query->where('status', $status);
         }
 
-        return $query->with(['user:id,first_name,last_name', 'reason', 'reportable'])
+        $relationships = [
+            'user:id,first_name,last_name,email,phone_number', 
+            'reason'
+        ];
+
+        if ($reportableType === Property::class) {
+            $relationships[] = 'reportable.location.country';
+            $relationships[] = 'reportable.location.city';
+        } elseif ($reportableType === ServiceProvider::class) {
+            $relationships[] = 'reportable.user:id,first_name,last_name,email';
+        }
+
+        return $query->with($relationships)
             ->latest()
             ->simplePaginate(15, ['*'], 'page', $page);
     }

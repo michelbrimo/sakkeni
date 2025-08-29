@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Review;
 use App\Models\Seller;
 use App\Models\ServiceProvider;
 use App\Models\ServiceProviderService;
@@ -43,6 +44,11 @@ class UserRepository{
     public function updateUser($userId, $data) {
         return User::where('id', '=', $userId)
                    ->update($data);
+    }
+    
+    public function createReview(array $data): Review
+    {
+        return Review::create($data);
     }
 
 }

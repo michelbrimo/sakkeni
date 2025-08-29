@@ -17,7 +17,7 @@ class AIDescriptionService
         $this->apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     }
 
-    public function generateForProperty(Property $property): ?string
+    public function generateForProperty(Property $property): ?array
     {
         if (!$this->apiKey) {
             Log::warning('Gemini API key is not set. Skipping AI description generation.');
@@ -38,8 +38,21 @@ class AIDescriptionService
                     ]
                 ]);
 
-            if ($response->successful()) {
-                return $response->json('candidates.0.content.parts.0.text');
+             if ($response->successful()) {
+                $jsonText = $response->json('candidates.0.content.parts.0.text');
+
+                $cleanedJsonText = str_replace(['```json', '```'], '', $jsonText);
+
+                $data = json_decode(trim($cleanedJsonText), true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($data['description'])) {
+                    return [
+                        'description' => $data['description'],
+                        'tags' => $data['tags'] ?? null,
+                    ];
+                } else {
+                    Log::error('Gemini response was not valid JSON after cleaning.', ['raw_response' => $jsonText]);
+                    return null; 
+                }
             } else {
                 Log::error('Gemini API request failed.', [
                     'status' => $response->status(),
@@ -61,11 +74,9 @@ class AIDescriptionService
             'residential', 'commercial', 'purchase', 'rent', 'offPlan'
         );
 
-        $prompt = " Generate a professional and appealing real estate description for the following property.
-                    Be creative and highlight the key selling points.  
-                    The description should be a single, 
-                    The summary must be minimal and short, ideally 4 sentences long, 
-                    in a well structured paragraph\n\n";
+        $prompt = "Generate two things for the following property:\n";
+        $prompt .= "1. A professional and appealing real estate description. The description should be a single, well-structured paragraph, ideally 4 sentences long, highlighting the key selling points.\n";
+        $prompt .= "2. A comma-separated list of 5-10 descriptive search tags. These tags should capture the essence of the property (e.g., 'family-friendly', 'natural light', 'modern kitchen', 'city views', 'quiet neighborhood').\n\n";
 
         $prompt .= "--- Property Details ---\n";
         $prompt .= "Property Type: " . ($property->propertyType->name ?? 'N/A') . "\n";
@@ -92,54 +103,9 @@ class AIDescriptionService
         }
 
         $prompt .= "--- End of Details ---\n\n";
-        $prompt .= "Based on these details, write the description.";
+        $prompt .= "Provide the output in this exact JSON format: {\"description\": \"...\", \"tags\": \"tag1, tag2, ...\"}";
 
         return $prompt;
     }
-    // private function buildPrompt(Property $property): string
-    // {
-    //     $property->load(
-    //         'propertyType', 'sellType', 'location.city', 'amenities',
-    //         'residential', 'commercial', 'purchase', 'rent', 'offPlan'
-    //     );
-
-    //     $prompt = "Generate a professional real estate description using EXACTLY this 4-sentence structure:\n\n";
-    //     $prompt .= "1. [Creative introduction mentioning property type and location]\n";
-    //     $prompt .= "2. [Key features: bedrooms/bathrooms/area with positive adjectives]\n";
-    //     $prompt .= "3. [Amenities and special features as comma-separated list]\n";
-    //     $prompt .= "4. [Pricing/availability call-to-action]\n\n";
-    //     $prompt .= "--- STRICT RULES ---\n";
-    //     $prompt .= "- Maintain exactly 4 sentences in this order\n";
-    //     $prompt .= "- End each sentence with a period\n";
-    //     $prompt .= "- Keep amenities list to 3 key items max\n";
-    //     $prompt .= "- Use professional real estate language\n\n";
-    //     $prompt .= "--- Property Details ---\n";
-    //     $prompt .= "Property Type: " . ($property->propertyType->name ?? 'N/A') . "\n";
-    //     $prompt .= "Status: For " . ($property->sellType->name ?? 'N/A') . "\n";
-    //     $prompt .= "Location: In the city of " . ($property->location->city->name ?? 'N/A') . "\n";
-    //     $prompt .= "Area: " . $property->area . " square meters\n";
-
-    //     if ($property->residential) {
-    //         $prompt .= "Bedrooms: " . $property->residential->bedrooms . "\n";
-    //     }
-    //     $prompt .= "Bathrooms: " . $property->bathrooms . "\n";
-
-    //     if ($property->amenities->isNotEmpty()) {
-    //         $prompt .= "Key Amenities: " . $property->amenities->pluck('name')->implode(', ') . "\n";
-    //     }
-
-    //     if ($property->purchase) {
-    //         $prompt .= "Price: " . number_format($property->purchase->price) . "\n";
-    //     } elseif ($property->rent) {
-    //         $prompt .= "Rent: " . number_format($property->rent->price) . " per " . $property->rent->lease_period . "\n";
-    //     } elseif ($property->offPlan) {
-    //         $prompt .= "Delivery Date: " . $property->offPlan->delivery_date . "\n";
-    //         $prompt .= "Total Payment: " . number_format($property->offPlan->overall_payment) . "\n";
-    //     }
-
-    //     $prompt .= "--- End of Details ---\n\n";
-    //     $prompt .= "Generate the description following the 4-sentence template exactly.";
-
-    //     return $prompt;
-    // }
+   
 }

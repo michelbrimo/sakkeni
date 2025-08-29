@@ -1,13 +1,21 @@
 <?php
 
+use Illuminate\Support\Facades\Broadcast; 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
+
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\QuoteController;
+
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
 
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebhookController;
 use App\Models\Seller;
 use App\Models\ServiceProvider;
 use App\Models\User;
@@ -49,10 +57,17 @@ Route::post('reset-password-mail', [PasswordController::class, 'resetPassword'])
 
 Route::post('/sign-up', [UserController::class, 'signUp'])->name('User.signUp'); 
 Route::post('/login', [UserController::class, 'login'])->name('User.login'); 
-
 Route::post('/admin/register', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
-Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
 
+Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin.adminLogin');
+
+Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook'])->name('stripe.handleWebhook');
+
+Route::middleware('superadmin')->group(function () {
+});
+
+
+Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
 
 Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('/logout', [AdminController::class, 'adminLogout'])->name('Admin.adminLogout'); 
@@ -106,6 +121,8 @@ Route::middleware('optional.sanctum')->group(function () {
     Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
     Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
     Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
+    Route::get('/properties/search', [PropertyController::class, 'search'])->name('Property.search');
+
 });
 
 
@@ -131,6 +148,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/report-property/{id}', [PropertyController::class, 'reportProperty'])->name('Report.reportProperty');
     Route::post('/report-service-provider/{id}', [ServiceProviderController::class, 'reportServiceProvider'])->name('Report.reportServiceProvider');
     
+    Route::post('/upgrade-to-service-provider', [UserController::class, 'upgradeToServiceProvider'])->name('User.upgradeToServiceProvider');
+    
+    Route::post('/quotes/request', [QuoteController::class, 'requestQuote'])->name('Quote.requestQuote');
+    Route::post('/quotes/{quote}/update-request', [QuoteController::class, 'updateQuoteRequest'])->name('Quote.updateQuoteRequest');
+    Route::get('/provider/quotes', [QuoteController::class, 'viewProviderQuotes'])->name('Quote.viewProviderQuotes');
+    Route::get('/user/quotes', [QuoteController::class, 'viewUserQuotes'])->name('Quote.viewUserQuotes');
+
+    Route::post('/quotes/{quote}/decline-user-quote', [QuoteController::class, 'declineUserQuote'])->name('Quote.declineUserQuote');
+    Route::post('/quotes/{quote}/submit', [QuoteController::class, 'submitQuote'])->name('Quote.submitQuote'); 
+    Route::post('/quotes/{quote}/decline', [QuoteController::class, 'declineQuote'])->name('Quote.declineQuote');
+    Route::post('/quotes/{quote}/accept', [QuoteController::class, 'acceptQuote'])->name('Quote.acceptQuote');
+
+
+    Route::get('/conversations', [ConversationController::class, 'viewConversations'])->name('Conversation.viewConversations');
+    Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'viewMessages'])->name('Conversation.viewMessages');
+    Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');
+
+    Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
+
+    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
+
+    Route::post('/service-activities/{serviceActivity}/submitReview', [UserController::class, 'submitReview'])->name('User.submitReview');
+
 
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
@@ -163,6 +203,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/view-subscription-plans', [ServiceProviderController::class, 'viewSubscriptionPlans'])->name('ServiceProvider.viewSubscriptionPlans');
     Route::get('/report-reasons/property', [PropertyController::class, 'viewPropertyReportReasons'])->name('Report.viewPropertyReportReasons');
     Route::get('/report-reasons/service-provider', [ServiceProviderController::class, 'viewServiceProviderReportReasons'])->name('Report.viewServiceProviderReportReasons');
-    
+
    
 });
+Route::post('/stripe/webhook', [WebhookController::class, 'handleStripeWebhook'])->name('Payment.handleWebhook');
+
+Broadcast::routes();
+

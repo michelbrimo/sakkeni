@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Enums\AvailabilityStatus;
-use App\Enums\PhysicalStatusType;
 use App\Enums\PropertyType;
 use App\Enums\ResidentialPropertyType;
 use App\Enums\SellType;
@@ -23,12 +22,11 @@ use App\Models\PropertyAdmin;
 use App\Models\PropertyFavorite;
 use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
-use App\Models\ReadyToMoveInProperty;
 use App\Models\Rent;
 use App\Models\ResidentialProperty;
 use App\Models\ResidentialPropertyType as ModelsResidentialPropertyType;
 use App\Models\Villa;
-use Illuminate\Support\Facades\DB;
+use App\Services\SearchDictionaryService;
 
 class PropertyRepository{
     public function create($data) {
@@ -616,28 +614,57 @@ class PropertyRepository{
         return $query;
     }
 
-    public function getPropertiesByIds(array $propertyIds, int $page = 1, int $perPage = 10)
+    public function getFilteredPropertiesByIds(array $propertyIds, ?\App\Models\UserPreference $preferences, int $page = 1, int $perPage = 10)
     {
+        $query = Property::whereIn('id', $propertyIds);
+
         if (empty($propertyIds)) {
             return collect();
         }
 
-        $query = Property::whereIn('id', $propertyIds)
-            ->with([
-                'coverImage',
-                'availabilityStatus',
-                'owner',
-                'propertyType',
-                'location.country',
-                'location.city',
-                'residential.residentialPropertyType',
-                'commercial.commercialPropertyType',
-                'rent',
-                'purchase',
-                'offPlan',
-                'favorites' => function($query) {
-                    $query->where('user_id', auth()->user()->id);
+        if ($preferences) {
+            if ($preferences->min_price) {
+                $query->where(function ($q) use ($preferences) {
+                    $q->whereHas('purchase', fn($sub) => $sub->where('price', '>=', $preferences->min_price))
+                      ->orWhereHas('rent', fn($sub) => $sub->where('price', '>=', $preferences->min_price))
+                      ->orWhereHas('offPlan', fn($sub) => $sub->where('overall_payment', '>=', $preferences->min_price));
+                });
+            }
+            if ($preferences->max_price) {
+                $query->where(function ($q) use ($preferences) {
+                    $q->whereHas('purchase', fn($sub) => $sub->where('price', '<=', $preferences->max_price))
+                      ->orWhereHas('rent', fn($sub) => $sub->where('price', '<=', $preferences->max_price))
+                      ->orWhereHas('offPlan', fn($sub) => $sub->where('overall_payment', '<=', $preferences->max_price));
+                });
+            }
+
+            if ($preferences->min_area) { $query->where('area', '>=', $preferences->min_area); }
+            if ($preferences->max_area) { $query->where('area', '<=', $preferences->max_area); }
+
+            if ($preferences->min_bedrooms || $preferences->max_bedrooms) {
+                $query->whereHas('residential', function ($q) use ($preferences) {
+                    if ($preferences->min_bedrooms) { $q->where('bedrooms', '>=', $preferences->min_bedrooms); }
+                    if ($preferences->max_bedrooms) { $q->where('bedrooms', '<=', $preferences->max_bedrooms); }
+                });
+            }
+
+            if (!empty($preferences->preferred_locations)) {
+                $query->whereHas('location', function ($q) use ($preferences) {
+                    $q->whereIn('city_id', $preferences->preferred_locations);
+                });
+            }
+
+            if (!empty($preferences->must_amenity)) {
+                foreach ($preferences->must_amenity as $amenityId) {
+                    $query->whereHas('amenities', fn($q) => $q->where('amenities.id', $amenityId));
                 }
+            }
+        }
+        
+        $query->with([
+                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+                'location.country', 'location.city', 'residential.residentialPropertyType',
+                'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ])
             ->orderByRaw("FIELD(id, " . implode(',', $propertyIds) . ")");
 
@@ -683,4 +710,69 @@ class PropertyRepository{
     {
         return Country::with('cities')->get();
     }
+
+    public function search($data)
+    {
+        $textQuery = $data['query'] ?? '*';
+        $filters = $data['filters'] ?? [];
+        $negations = $data['negations'] ?? [];
+        $sorting = $data['sorting'] ?? [];
+        $userId = $data['user_id'] ?? null;
+        $perPage = $data['per_page'] ?? 10;
+        
+        unset($filters['query']);
+
+        $searchCallback = function ($meilisearch, $query, $options) use ($filters, $negations, $sorting) {
+        $filterParts = [];
+
+        foreach ($filters as $key => $value) {
+            if ($key === 'amenities' && is_array($value)) {
+                foreach ($value as $amenity) {
+                    $filterParts[] = 'amenities = "' . $amenity . '"';
+                }
+            } elseif (str_starts_with($key, 'min_')) {
+                $filterParts[] = substr($key, 4) . ' >= ' . (int)$value;
+            } elseif (str_starts_with($key, 'max_')) {
+                $filterParts[] = substr($key, 4) . ' <= ' . (int)$value;
+            } elseif ($key === 'is_furnished') {
+                $filterParts[] = 'is_furnished = true';
+            } elseif (!is_array($value)) {
+                $filterParts[] = $key . ' = "' . $value . '"';
+            }
+        }
+
+        foreach ($negations as $negatedItem) {
+            $filterParts[] = 'amenities != "' . $negatedItem . '"';
+        }
+
+        if (!empty($filterParts)) {
+            $options['filter'] = implode(' AND ', $filterParts);
+        }
+
+        if (!empty($sorting)) {
+            $options['sort'] = [$sorting['attribute'] . ':' . $sorting['direction']];
+        }
+
+        return $meilisearch->search($query, $options);
+    };
+
+    $search = Property::search($textQuery, $searchCallback);
+
+    $search->query(function ($builder) use ($userId) {
+        $builder->with([
+            'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+            'location.country', 'location.city', 'residential.residentialPropertyType',
+            'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
+        ]);
+        if ($userId) {
+            $builder->with(['favorites' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }]);
+        }
+    });
+
+    return $search->paginate($perPage);
 }
+}
+
+

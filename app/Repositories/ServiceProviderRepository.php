@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\AvailabilityStatus;
 use App\Models\AdminServiceProviderServices;
 use App\Models\Service;
+use App\Models\ServiceActivity;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use App\Models\ServiceProviderService;
@@ -167,6 +168,15 @@ class ServiceProviderRepository{
     public function deleteServiceProviderService($id) {
         return ServiceProviderService::where('id', $id)
                                      ->delete();
+    }
+
+    public function updateStatus(ServiceActivity $serviceActivity, string $status): bool
+    {
+        return $serviceActivity->update(['status' => $status]);
+    }
+    public function getServiceProviderById($id)
+    {
+        return ServiceProvider::where('id', $id)->first();
     }
 
 

@@ -15,8 +15,7 @@ use App\Repositories\PropertyRepository;
 use Illuminate\Support\Facades\Storage;
 use App\Services\RecommendationService;
 use App\Services\AIDescriptionService;
-use App\Models\Property;
-
+use App\Repositories\UserPreferenceRepository;
 
 class PropertyServices extends ImageServices
 {
@@ -25,6 +24,9 @@ class PropertyServices extends ImageServices
     protected $location_repository; 
     protected $recommendation_service;
     protected $ai_description_service;
+    protected $user_preference_repository;
+    protected $nlp_parser_service;
+
 
 
     public function __construct() {
@@ -33,7 +35,8 @@ class PropertyServices extends ImageServices
         $this->image_repository = new ImageRepository();
         $this->recommendation_service = new RecommendationService();
         $this->ai_description_service = new AIDescriptionService();
-
+        $this->user_preference_repository = new UserPreferenceRepository();
+        $this->nlp_parser_service = new NlpSearchParserService();
     }
 
     public function addProperty($data){
@@ -99,12 +102,13 @@ class PropertyServices extends ImageServices
             ]);
         }
 
-        $description = $this->ai_description_service->generateForProperty($property);
+        $aiContent = $this->ai_description_service->generateForProperty($property);
 
-        if ($description) {
-            $property->description = $description;
+        if ($aiContent) {
+            $property->description = $aiContent['description'];
+            $property->tags = $aiContent['tags']; 
             $property->save();
-        } 
+        }  
     }
 
     public function updateProperty($data){
@@ -212,9 +216,15 @@ class PropertyServices extends ImageServices
 
     public function viewRecommendedProperties(array $data)
     {
-        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id']);
-        return $this->property_repository->getPropertiesByIds(
+        $recommendedIds = $this->recommendation_service->getRecommendedIds($data['user_id'], 50);
+        if (empty($recommendedIds)) {
+            return collect(); 
+        }
+        $preferences = $this->user_preference_repository->getLatestByUserId($data['user_id']);
+
+        return $this->property_repository->getFilteredPropertiesByIds(
             $recommendedIds,
+            $preferences,
             $data['page'] ?? 1
         );
     }
@@ -352,6 +362,29 @@ class PropertyServices extends ImageServices
         $data['availability_status_id'] = AvailabilityStatus::Pending;
 
         return $this->property_repository->create($data); 
+    }
+
+    public function search($data)
+    {
+        // The NlpSearchParser returns a structured array with all parsed details
+        $parsedQuery = $this->nlp_parser_service->parse($data['query']);
+
+        // Merge the parsed data with original request data (like user_id, page)
+        $searchData = array_merge($data, $parsedQuery);
+        
+        // Get the paginated property results from the repository
+        $properties = $this->property_repository->search($searchData);
+
+        // Return a structured array containing both the results and the debug info
+        return [
+            'properties' => $properties,
+            'debug_info' => [
+                'search_term' => $parsedQuery['query'],
+                'applied_filters' => $parsedQuery['filters'],
+                'applied_negations' => $parsedQuery['negations'],
+                'applied_sorting' => $parsedQuery['sorting'],
+            ]
+        ];
     }
 }
 

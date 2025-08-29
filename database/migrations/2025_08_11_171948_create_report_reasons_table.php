@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('report_reasons', function (Blueprint $table) {
             $table->id();
             $table->string('reason');
-            // 'type' helps us show relevant reasons for properties vs. services
             $table->enum('type', ['property', 'service_provider', 'general'])->default('general');
             $table->timestamps();
         });

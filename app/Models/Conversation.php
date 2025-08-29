@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceActivity extends Model
+class Conversation extends Model
 {
     use HasFactory;
     protected $guarded = [];
@@ -20,18 +19,8 @@ class ServiceActivity extends Model
         return $this->belongsTo(ServiceProvider::class);
     }
 
-    public function quote()
+    public function messages()
     {
-        return $this->belongsTo(Quote::class);
-    }
-
-    public function payment()
-    {
-        return $this->hasOne(Payment::class);
-    }
-
-    public function review()
-    {
-        return $this->hasOne(Review::class);
+        return $this->hasMany(Message::class);
     }
 }

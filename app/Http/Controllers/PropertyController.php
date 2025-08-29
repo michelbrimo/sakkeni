@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\SellType;
 use App\Http\Requests\AddingPropertyDataRequest;
 use App\Http\Requests\FilterPropertiesRequest;
 use App\Http\Requests\UpdatingPropertyDataRequest;
-use App\Models\Property;
 use App\Services\ServiceTransformer;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
-use Illuminate\Support\Facades\Validator;
 
 
 
@@ -208,5 +204,14 @@ class PropertyController extends Controller
     function viewPropertyReportReasons()
     {
         return $this->executeService($this->service_transformer, new Request(), [], 'Property report reasons fetched successfully');
+    }
+
+    
+    public function search(Request $request)
+    {
+        $request->validate([
+            'query' => 'required|string|min:2',
+        ]);
+        return $this->executeService($this->service_transformer, $request, [], 'Search results fetched successfully.');
     }
 }

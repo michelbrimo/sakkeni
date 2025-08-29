@@ -78,9 +78,7 @@ class ServiceTransformer{
         'viewServiceProviderReportReasons' => [],
         'processReport' => [],
 
-
         'updateAdminProfile' => [],
-
 
         'viewTotalUsers' => [],
         'viewTotalProperties' => [],
@@ -89,18 +87,52 @@ class ServiceTransformer{
         'viewPropertiesLocation' => [],
         
         'viewLog' => [],
+
+        'viewConversations' => [],
+        'viewMessages' => [],
+        'sendMessage' => [],
+
+        'requestQuote' => [],
+        'updateQuoteRequest' => [],
+
+        'viewUserQuotes'=> [],
+        'viewProviderQuotes' => [],
+        'submitQuote' => [],
+        'acceptQuote' => [],
+        'declineQuote' => [],
+        'declineUserQuote'=>[],
+
+
+        'createPaymentIntent' => [],
+        'handleWebhook' => [], 
+        
+        'markAsComplete' => [], 
+
+        'submitReview'=>['UpdateServiceProviderRatingAspect'],
+
+        'search'=>[],
     ];
 
     private $service_mapper = [];
 
+    protected $userService;
+    protected $adminService;
+
     public function __construct()
     {   
+        $this->userService = new UserServices();
+        $this->adminService = new AdminServices();
+
         $this->service_mapper = [
             "User" => "App\\Services\\UserServices",
             "Property" => "App\\Services\\PropertyServices",
             "Admin" => "App\\Services\\AdminServices",
             "ServiceProvider" => "App\\Services\\ServiceProviderServices",
             "Report" => "App\\Services\\ReportServices",
+            "Conversation" => "App\\Services\\MessagingService",
+            "Quote" => "App\\Services\\QuoteService",
+            "Payment" => "App\\Services\\PaymentService",
+            "Notification" => "App\\Services\\NotificationService", 
             "Dashboard" => "App\\Services\\DashboardServices",
         ];
     }
@@ -111,15 +143,26 @@ class ServiceTransformer{
 
             $service_obj = new $this->service_mapper[$service];
             $result = $service_obj->$function_name($data); 
+            if ($service === 'Property' && $function_name === 'search' && is_array($result) && isset($result['properties'])) {
+                // If it is, merge the debug info with the paginated properties for the final response
+                $paginatedProperties = $result['properties']->toArray();
+                $responseData = array_merge($paginatedProperties, ['debug_info' => $result['debug_info']]);
 
-            $response = $this->response(
-                true,
-                $success_message,
-                200,
-                $result
-            );
-
-            $this->executeAfter($function_name);
+                $response = $this->response(
+                    true,
+                    $success_message,
+                    200,
+                    $responseData
+                );
+            } else {
+                $response = $this->response(
+                    true,
+                    $success_message,
+                    200,
+                    $result
+                );
+            }
+            $this->executeAfter($function_name, $result);
         }
         catch(Exception $e){
             $response = $this->response(
@@ -144,13 +187,14 @@ class ServiceTransformer{
         }
     }
 
-    public function executeAfter($function_name) {
+    public function executeAfter($function_name, $result=null) {
+        
         $aspects = $this->aspect_mapper[$function_name];
 
         foreach ($aspects as $aspect) {
             $object = 'App\\Aspects\\'. $aspect;
             $class = new $object();
-            $class->after($function_name);
+            $class->after($function_name, $result);
         }
     }
 

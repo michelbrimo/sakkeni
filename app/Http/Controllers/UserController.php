@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceActivity;
 use App\Services\ServiceTransformer;
 use Exception;
 use Illuminate\Http\Request;
@@ -62,5 +63,23 @@ class UserController extends Controller
     public function upgradeToServiceProvider(Request $request){
         $additionalData = ['user' => auth()->user()];
         return $this->executeService($this->service_transformer, $request, $additionalData, "upgraded to service provider successfully");
+    }
+
+    public function markAsComplete(Request $request, ServiceActivity $serviceActivity)
+    {
+        $additionalData = [
+            'user' => $request->user(),
+            'service_activity' => $serviceActivity
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Job marked as complete.');
+    }
+
+    public function submitReview(Request $request, ServiceActivity $serviceActivity)
+    {
+        $additionalData = [
+            'user' => $request->user(),
+            'service_activity' => $serviceActivity
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Review submited.');
     }
 }

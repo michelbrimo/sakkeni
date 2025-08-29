@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('sell_type_id')->constrained('sell_types')->cascadeOnDelete();
-            // $table->string('search_query')->nullable();
             $table->json('filters')->nullable(); // Stores all search filters as JSON
             $table->timestamps(); // Adds both created_at and updated_at
         });

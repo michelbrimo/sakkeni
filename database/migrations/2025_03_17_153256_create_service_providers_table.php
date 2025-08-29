@@ -17,7 +17,8 @@ return new class extends Migration
             ->constrained('users') 
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->float('rate')->nullable();
+            $table->float('rate')->default(0.00);
+            $table->integer('num_of_rating')->default(0);
             $table->string('description')->nullable();
             $table->timestamps();
         });

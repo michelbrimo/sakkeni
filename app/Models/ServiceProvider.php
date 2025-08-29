@@ -13,7 +13,8 @@ class ServiceProvider extends Model
     protected $fillable = [
         'user_id',
         'description',
-        'rate'
+        'rate',
+        'num_of_rating',
     ];
 
     public function serviceProviderServices()
@@ -30,10 +31,17 @@ class ServiceProvider extends Model
     {
         return $this->morphMany(ReportOnService::class, 'reportable');
     }
-
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
 
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
 }
