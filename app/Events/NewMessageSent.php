@@ -44,4 +44,9 @@ class NewMessageSent implements ShouldBroadcast
         // who are part of this conversation can listen to it.
         return new PrivateChannel('conversation.' . $this->message->conversation_id);
     }
+
+    public function broadcastAs()
+    {
+        return 'NewMessage'; 
+    }
 }
