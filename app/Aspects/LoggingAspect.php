@@ -11,7 +11,7 @@ class LoggingAspect
     public function before($operation){
         Log::create([
             "user_id" => auth()->user() != null ? auth()->user()->id : null,
-            "name" => auth()->user() != null ? auth()->user()->first_name + ' ' + auth()->user()->first_name : 'unregistered user',
+            "name" => auth()->user() != null ? auth()->user()->first_name . ' ' . auth()->user()->last_name : 'unregistered user',
             "operation" => $operation,
             "status" => "Started",
         ]);
@@ -21,7 +21,7 @@ class LoggingAspect
     public function after($operation){
         Log::create([
             "user_id" => auth()->user() != null ? auth()->user()->id : null,
-            "name" => auth()->user() != null ? auth()->user()->username : 'unregistered user',
+            "name" => auth()->user() != null ? auth()->user()->first_name . ' ' . auth()->user()->last_name : 'unregistered user',
             "operation" => $operation,
             "status" => "Finished",
         ]);
@@ -30,7 +30,7 @@ class LoggingAspect
     public function exception($operation){
         Log::create([
             "user_id" => auth()->user() != null ? auth()->user()->id : null,
-            "name" => auth()->user() != null ? auth()->user()->username : 'unregistered user',
+            "name" => auth()->user() != null ? auth()->user()->first_name . ' ' . auth()->user()->last_name : 'unregistered user',
             "operation" => $operation,
             "status" => "Exception",
         ]);
