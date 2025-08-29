@@ -96,6 +96,9 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
         Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
+
+
+        Route::get('/view-log', [AdminController::class, 'viewLog'])->name('Admin.viewLog');
     });
 });
 

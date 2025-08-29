@@ -125,6 +125,10 @@ class AdminServices extends ImageServices{
     function viewSoldProperties($data) {
         return $this->property_repository->getSoldProperties($data['page']);
     }
+
+    function viewLog($data) {
+        return $this->admin_repository->getLog($data['page']);
+    }
     
     function propertyAdjudication($data) {
         $validator = Validator::make($data, [

@@ -175,4 +175,12 @@ class AdminController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Report processed successfully');
     }
 
+    public function viewLog(Request $request)
+    {
+        $additionalData = [
+            'page' => $request->input('page', 1)
+        ];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Log fetched successfully');
+    }
+
 }

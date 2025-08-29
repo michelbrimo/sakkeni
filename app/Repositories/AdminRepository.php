@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Admin;
+use App\Models\Log;
 use App\Models\User;
 
 class AdminRepository{
@@ -72,6 +73,10 @@ class AdminRepository{
     public function incrementRejectedServices($adminId)
     {   
         return Admin::where('id', $adminId)->increment('rejected_services');
+    }
+
+    function getLog($page) {
+        return Log::simplePaginate(10, '*', 'page', $data['page'] ?? 1);
     }
 
 }

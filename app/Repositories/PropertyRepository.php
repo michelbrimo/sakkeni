@@ -15,6 +15,7 @@ use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
 use App\Models\Location;
+use App\Models\Log;
 use App\Models\OffPlanProperty;
 use App\Models\OwnershipType;
 use App\Models\Property;
@@ -497,7 +498,9 @@ class PropertyRepository{
                        ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus', 'location.city', 'location.country'])
                        ->orderBy('created_at', 'desc') 
                        ->simplePaginate(10, '*', 'page', $page?? 1);
-        }
+    }
+
+    
 
     function getSoldProperties($page) {
         return Property::where('availability_status_id', AvailabilityStatus::Sold)

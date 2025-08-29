@@ -9,22 +9,22 @@ class ServiceTransformer{
         'signUp' => [], 
         'login' => [], 
         'viewUserProfile' => [], 
-        'updateUserProfile' => [],
+        'updateUserProfile' => ['LoggingAspect'],
         'logout' => [],
-        'resetPassword' => [],
-        'upgradeToSeller' => [],
+        'resetPassword' => ['LoggingAspect'],
+        'upgradeToSeller' => ['LoggingAspect'],
 
-        'addProperty' => ['TransactionAspect'],
-        'updateProperty' => ['TransactionAspect'],
+        'addProperty' => ['TransactionAspect', 'LoggingAspect'],
+        'updateProperty' => ['TransactionAspect', 'LoggingAspect'],
         'viewProperties' => [],
         'filterProperties' => ['UserSearchTrackingAspect'],
         'viewPropertyDetails' => ['UserClickTrackingAspect'],
         'viewRecommendedProperties' => [], 
-        'propertySold' => [], 
+        'propertySold' => ['LoggingAspect'], 
 
-        'deleteProperty' => [],
-        'addPropertyToFavorite' => ['favoriteAspect'],
-        'removePropertyFromFavorite' => ['favoriteAspect'],
+        'deleteProperty' => ['LoggingAspect'],
+        'addPropertyToFavorite' => ['favoriteAspect', 'LoggingAspect'],
+        'removePropertyFromFavorite' => ['favoriteAspect', 'LoggingAspect'],
         'viewFavoriteProperties' => [],
         'adminLogin' => [],
         'adminLogout' => [],
@@ -48,14 +48,14 @@ class ServiceTransformer{
         'serviceProviderServiceAdjudication' => [], 
         
         
-        'upgradeToServiceProvider' => [],
+        'upgradeToServiceProvider' => ['LoggingAspect'],
         'viewServiceProviders' => [], 
         'viewBestServiceProviders' => [], 
         'viewServiceProviderDetails' => [], 
         'viewServiceProviderServiceGallery' => [], 
-        'addService' => [], 
-        'removeService' => [], 
-        'editService' => [], 
+        'addService' => ['LoggingAspect'], 
+        'removeService' => ['LoggingAspect'], 
+        'editService' => ['LoggingAspect'], 
         'viewMyServices' => [], 
 
 
@@ -70,8 +70,8 @@ class ServiceTransformer{
         'viewServiceCategories' => [],
         'viewSubscriptionPlans' => [],
 
-        'reportProperty' => [],
-        'reportServiceProvider' => [],
+        'reportProperty' => ['LoggingAspect'],
+        'reportServiceProvider' => ['LoggingAspect'],
         'viewPropertyReports' => [],
         'viewServiceProviderReports' => [],
         'viewPropertyReportReasons' => [],
@@ -87,6 +87,8 @@ class ServiceTransformer{
         'viewPropertiesStatus' => [],
         'viewServiceStatus' => [],
         'viewPropertiesLocation' => [],
+        
+        'viewLog' => [],
     ];
 
     private $service_mapper = [];
