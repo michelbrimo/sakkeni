@@ -40,7 +40,6 @@ class PropertyController extends Controller
 
     function viewProperties(Request $request, $sell_type_id)
     {
-        
         $additionalData = [
             'page' => $request->query('page', 1),
             'sell_type_id' => $sell_type_id

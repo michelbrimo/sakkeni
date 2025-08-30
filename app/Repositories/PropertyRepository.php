@@ -218,6 +218,7 @@ class PropertyRepository{
         }
 
         $query->where('sell_type_id', $data['sell_type_id'])
+              ->where('availability_status_id', AvailabilityStatus::Active)
               ->with([
                     'coverImage',
                     'availabilityStatus',
@@ -279,6 +280,8 @@ class PropertyRepository{
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
             ])
+            
+            ->where('availability_status_id', AvailabilityStatus::Active)
 
             ->with([
                 'coverImage',
@@ -334,7 +337,9 @@ class PropertyRepository{
             'is_furnished' => $filters['is_furnished'] ?? null,
             'lease_period_unit' => $filters['lease_period_unit'] ?? null
             ])
-            
+
+            ->where('availability_status_id', AvailabilityStatus::Active)
+
             ->with([
                 'coverImage',
                 'availabilityStatus',
@@ -382,6 +387,9 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
 
+            ->where('availability_status_id', AvailabilityStatus::Active)
+
+
             ->with([
                 'coverImage',
                 'availabilityStatus',
@@ -420,7 +428,6 @@ class PropertyRepository{
             'owner',
             'location.country',
             'location.city', 
-            
         );
 
         if($data['property_type_id'] == PropertyType::RESIDENTIAL)
@@ -436,7 +443,8 @@ class PropertyRepository{
             $query = $query->with(['offPlan.paymentPhases']);
 
 
-        $query = $query->first();
+        $query = $query->where('availability_status_id', AvailabilityStatus::Active)
+                       ->first();
         
         return $query;
     }
