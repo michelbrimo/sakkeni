@@ -63,10 +63,6 @@ Route::post('/admin-login', [AdminController::class, 'adminLogin'])->name('Admin
 
 Route::post('/webhooks/stripe', [WebhookController::class, 'handleStripeWebhook'])->name('stripe.handleWebhook');
 
-Route::middleware('superadmin')->group(function () {
-});
-
-
 Route::post('/register-admin', [AdminController::class, 'adminRegister'])->name('Admin.adminRegister'); 
 
 Route::middleware('auth:admin')->prefix('admin')->group(function () {
@@ -101,7 +97,9 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
 
-        
+        Route::get('/view-my-properties/{sell_type}', [AdminController::class, 'viewMyProperties'])->name('Admin.viewMyProperties');
+        Route::post('/search-id', [AdminController::class, 'searchId'])->name('Admin.searchId');
+
 
         Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');
         Route::get('/view-latest-rejected-properties', [AdminController::class, 'viewLatestRejectedProperty'])->name('Admin.viewLatestRejectedProperty');
@@ -111,6 +109,9 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/reports/properties/{status}', [AdminController::class, 'viewPropertyReports'])->name('Report.viewPropertyReports');
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
         Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
+
+
+        Route::get('/view-log', [AdminController::class, 'viewLog'])->name('Admin.viewLog');
     });
 });
 

@@ -125,6 +125,10 @@ class AdminServices extends ImageServices{
     function viewSoldProperties($data) {
         return $this->property_repository->getSoldProperties($data['page']);
     }
+
+    function viewLog($data) {
+        return $this->admin_repository->getLog($data['page']);
+    }
     
     function propertyAdjudication($data) {
         $validator = Validator::make($data, [
@@ -143,11 +147,28 @@ class AdminServices extends ImageServices{
         
         if($data['approve'] == 1){
             $this->admin_repository->incrementAcceptedProperties($data['admin_id']);     
+            $this->property_repository->updateProperty($data['property_id'], ['admin_id' => auth('admin')->user()->id]);     
         }
         else{
             $this->admin_repository->incrementRejectedProperties($data['admin_id']);     
         }
     }
+    
+    
+    public function viewMyProperties($data){
+        return $this->admin_repository->getMyProperties($data);
+    }
+    
+    public function searchId($data){
+        $property = $this->admin_repository->searchPropertyId($data);
+        if($property){
+            return $property;
+    }else{
+            throw new Exception('No Property Found', 422);
+        }
+    }
+
+
 
     function viewPendingServiceProviders($data) {
         return $this->service_provider_repository->viewPendingServiceProviders($data);

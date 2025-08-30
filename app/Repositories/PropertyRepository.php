@@ -14,6 +14,7 @@ use App\Models\CommercialPropertyType;
 use App\Models\Country;
 use App\Models\Direction;
 use App\Models\Location;
+use App\Models\Log;
 use App\Models\OffPlanProperty;
 use App\Models\OwnershipType;
 use App\Models\Property;
@@ -217,10 +218,10 @@ class PropertyRepository{
         }
 
         $query->where('sell_type_id', $data['sell_type_id'])
+              ->where('availability_status_id', AvailabilityStatus::Active)
               ->with([
                     'coverImage',
                     'availabilityStatus',
-                    'owner',
                     'propertyType',
                     'location.country',
                     'location.city',
@@ -278,11 +279,13 @@ class PropertyRepository{
             'max_price' => $filters['max_price'] ?? null,
             'is_furnished' => $filters['is_furnished'] ?? null
             ])
+            
+            ->where('availability_status_id', AvailabilityStatus::Active)
 
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -333,11 +336,13 @@ class PropertyRepository{
             'is_furnished' => $filters['is_furnished'] ?? null,
             'lease_period_unit' => $filters['lease_period_unit'] ?? null
             ])
-            
+
+            ->where('availability_status_id', AvailabilityStatus::Active)
+
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -381,10 +386,13 @@ class PropertyRepository{
                 'delivery_date' => $filters['delivery_date'] ?? null,
                 ])
 
+            ->where('availability_status_id', AvailabilityStatus::Active)
+
+
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -416,10 +424,9 @@ class PropertyRepository{
             'propertyType',
             'availabilityStatus',
             'ownershipType',
-            'owner',
+            'admin',
             'location.country',
             'location.city', 
-            
         );
 
         if($data['property_type_id'] == PropertyType::RESIDENTIAL)
@@ -435,7 +442,8 @@ class PropertyRepository{
             $query = $query->with(['offPlan.paymentPhases']);
 
 
-        $query = $query->first();
+        $query = $query->where('availability_status_id', AvailabilityStatus::Active)
+                       ->first();
         
         return $query;
     }
@@ -659,7 +667,7 @@ class PropertyRepository{
         }
         
         $query->with([
-                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+                'coverImage', 'availabilityStatus', 'admin', 'propertyType',
                 'location.country', 'location.city', 'residential.residentialPropertyType',
                 'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ])
