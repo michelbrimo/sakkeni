@@ -155,8 +155,8 @@ class DatabaseSeeder extends Seeder
             }
         }
         
-        // $this->call(PropertySeeder::class);
-        // $this->call(UserSearchSeeder::class);
-        // $this->call(ReportReasonSeeder::class);
+        $this->call(PropertySeeder::class);
+        $this->call(UserSearchSeeder::class);
+        $this->call(ReportReasonSeeder::class);
     }
 }
