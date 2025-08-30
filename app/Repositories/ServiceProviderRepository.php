@@ -106,7 +106,8 @@ class ServiceProviderRepository{
 
     function getServiceProviders($data) {
         return User::whereHas('serviceProvider', function($query) use ($data) {
-            $query->whereHas('serviceProviderServices', function($subQuery) use ($data) {
+            $query->where('status', 'active')
+                  ->whereHas('serviceProviderServices', function($subQuery) use ($data) {
                 $subQuery->where('service_id', $data['service_id']);
             });
         })->with(['serviceProvider'])
