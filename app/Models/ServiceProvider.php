@@ -15,6 +15,8 @@ class ServiceProvider extends Model
         'description',
         'rate',
         'num_of_rating',
+        'status',
+        'pending_subscription_plan_id'
     ];
 
     public function serviceProviderServices()

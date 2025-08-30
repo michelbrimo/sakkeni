@@ -181,12 +181,20 @@ class AdminServices extends ImageServices{
         $this->service_provider_repository->serviceProviderServiceAdjudication($data);
 
         if($data['approve'] == 1){   
+            // Get the service provider associated with the service being approved
+            $serviceProvider = $this->service_provider_repository->getServiceProviderByServiceId($data['service_provider_service_id']);
+
+            if ($serviceProvider && $serviceProvider->status === 'pending_approval') {
+                $this->service_provider_repository->updateServiceProvider($serviceProvider->id, ['status' => 'pending_payment']);                
+            }
+
             $this->admin_repository->incrementAcceptedServices($data['admin_id']);     
         }
         else{
             $this->admin_repository->incrementRejectedServices($data['admin_id']);     
         }
 
+        $this->service_provider_repository->serviceProviderServiceAdjudication($data);
     }
 
     public function updateAdminProfile($data) {        

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->float('rate')->default(0.00);
             $table->integer('num_of_rating')->default(0);
             $table->string('description')->nullable();
+            $table->string('status')->default('pending_approval');
+            $table->foreignId('pending_subscription_plan_id')->nullable()->constrained('subscription_plans');
             $table->timestamps();
         });
     }

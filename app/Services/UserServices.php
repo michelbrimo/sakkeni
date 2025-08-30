@@ -170,12 +170,13 @@ class UserServices extends ImageServices
         $serviceProvider = $this->service_provider_repository->createServiceProvider([
             'user_id' => $data['user']->id,
             'description'=> $data['description'],
+            'pending_subscription_plan_id' => $data['subscription_plan_id'],
         ]);
 
-        $this->service_provider_repository->createServiceProviderSubscriptionPlan([
-            'service_provider_id' => $serviceProvider->id,
-            'subscription_plan_id' => $data['subscription_plan_id'],
-        ]);
+        // $this->service_provider_repository->createServiceProviderSubscriptionPlan([
+        //     'service_provider_id' => $serviceProvider->id,
+        //     'subscription_plan_id' => $data['subscription_plan_id'],
+        // ]);
 
         foreach ($data['services_id'] as $service_id){
             $this->service_provider_repository->createServiceProviderService([

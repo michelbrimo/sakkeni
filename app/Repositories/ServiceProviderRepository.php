@@ -179,5 +179,10 @@ class ServiceProviderRepository{
         return ServiceProvider::where('id', $id)->first();
     }
 
+    public function getServiceProviderByServiceId($serviceProviderServiceId)
+    {
+        $service = ServiceProviderService::find($serviceProviderServiceId);
+        return $service ? $service->serviceProvider : null;
+    }
 
 }
