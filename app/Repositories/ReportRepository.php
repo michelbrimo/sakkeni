@@ -37,7 +37,7 @@ class ReportRepository
 
         return $query->with($relationships)
             ->latest()
-            ->simplePaginate(15, ['*'], 'page', $page);
+            ->paginate(15, ['*'], 'page', $page);
     }
     
     public function getReportReasons(string $type)
