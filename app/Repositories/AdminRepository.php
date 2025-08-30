@@ -76,7 +76,7 @@ class AdminRepository{
     }
 
     function getLog($page) {
-        return Log::simplePaginate(10, '*', 'page', $data['page'] ?? 1)
+        return Log::simplePaginate(10, '*', 'page', $page ?? 1)
                   ->orderBy('created_at', 'desc'); 
     }
 
