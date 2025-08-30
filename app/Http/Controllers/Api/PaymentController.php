@@ -24,4 +24,12 @@ class PaymentController extends Controller
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Payment intent created successfully.');
     }
+
+    public function createSubscriptionPaymentIntent(Request $request)
+    {
+        $additionalData = [
+            'user' => $request->user(),
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Subscription payment intent created successfully.');
+    }
 }

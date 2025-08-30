@@ -68,7 +68,33 @@ class ServiceProviderServices extends ImageServices
     }
 
     function viewMyServices($data) {        
-        return $this->service_provider_repository->getServiceProviderServices($data['service_provider_id']);
+        $serviceProviderId = $data['service_provider_id'];
+        $serviceProvider = $this->service_provider_repository->getServiceProviderById($serviceProviderId);
+
+        if (!$serviceProvider) {
+            throw new Exception('Service provider profile not found.', 404);
+        }
+
+        switch ($serviceProvider->status) {
+            case 'active':
+                return $this->service_provider_repository->getServiceProviderServices($serviceProviderId);
+            case 'pending_payment':
+                throw new Exception(
+                    'Your application is approved. Please complete payment to activate your services.',
+                    402
+                );
+            case 'pending_approval':                
+                throw new Exception(
+                    'Your application is currently under review by our team.',
+                    403
+                );
+            
+            default:
+                throw new Exception(
+                    'Your account is not active.',
+                    403
+                );
+        }
     }
 
     function removeService($data) {

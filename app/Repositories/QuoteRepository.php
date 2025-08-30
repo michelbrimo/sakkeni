@@ -24,7 +24,7 @@ class QuoteRepository
     public function getProviderQuotes(int $serviceProviderId): Collection
     {
         return Quote::where('service_provider_id', $serviceProviderId)
-            ->with('user', 'service') 
+            ->with('user', 'service', 'serviceActivity') 
             ->latest()
             ->get();
     }

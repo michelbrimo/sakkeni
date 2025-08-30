@@ -128,7 +128,7 @@ class PropertyRepository{
             $query->with('property.purchase');
 
 
-        return $query->simplePaginate(10, [
+        return $query->paginate(10, [
                 'id',
                 'property_id',
         ], 'page', $data['page'] ?? 1);
@@ -248,7 +248,7 @@ class PropertyRepository{
             $query->with('purchase');
 
 
-        return $query->simplePaginate(10, [
+        return $query->paginate(10, [
                     'id',
                     'location_id',
                     'property_type_id',
@@ -306,7 +306,7 @@ class PropertyRepository{
                 }]);
             }
 
-            return $query->simplePaginate(10, [
+            return $query->paginate(10, [
                 'properties.id',
                 'properties.location_id',
                 'properties.property_type_id',
@@ -354,7 +354,7 @@ class PropertyRepository{
                 }
             ])
 
-            ->simplePaginate(10, [
+            ->paginate(10, [
                 'properties.id',
                 'properties.location_id',
                 'properties.property_type_id',
@@ -404,7 +404,7 @@ class PropertyRepository{
                 }
             ])
 
-            ->simplePaginate(10, [
+            ->paginate(10, [
                 'properties.id',
                 'properties.location_id',
                 'properties.property_type_id',
@@ -470,7 +470,7 @@ class PropertyRepository{
                         ]);
 
 
-        return $query->simplePaginate(10, [
+        return $query->paginate(10, [
                     'id',
                     'location_id',
                     'property_type_id',
@@ -485,7 +485,7 @@ class PropertyRepository{
                     ->whereYear('created_at', now()->year)
                     ->with(['property.owner', 'property.location.city', 'property.location.country', 'admin'])
                     ->orderBy('created_at', 'desc') 
-                    ->simplePaginate(10, '*', 'page', $page?? 1);
+                    ->paginate(10, '*', 'page', $page?? 1);
     }
 
     function viewLatestRejectedProperty($page) {
@@ -494,7 +494,7 @@ class PropertyRepository{
                     ->whereYear('created_at', now()->year)
                     ->with(['property.owner', 'property.location.city', 'property.location.country', 'admin'])
                     ->orderBy('created_at', 'desc') 
-                    ->simplePaginate(10, '*', 'page', $page?? 1);
+                    ->paginate(10, '*', 'page', $page?? 1);
     }
 
     function viewLatestPropertyAdjudication($page) {
@@ -502,10 +502,8 @@ class PropertyRepository{
                        ->whereYear('created_at', now()->year)
                        ->with(['owner', 'propertyAdmin.admin', 'availabilityStatus', 'location.city', 'location.country'])
                        ->orderBy('created_at', 'desc') 
-                       ->simplePaginate(10, '*', 'page', $page?? 1);
-    }
-
-    
+                       ->paginate(10, '*', 'page', $page?? 1);
+        }
 
     function getSoldProperties($page) {
         return Property::where('availability_status_id', AvailabilityStatus::Sold)
@@ -513,7 +511,7 @@ class PropertyRepository{
             ->groupBy('year', 'month')
             ->orderBy('year', 'desc')
             ->orderBy('month', 'desc')
-            ->simplePaginate(10, '*', 'page', $page?? 1);
+            ->paginate(10, '*', 'page', $page?? 1);
         }
 
     function propertyAdjudication($data){ 
@@ -675,7 +673,7 @@ class PropertyRepository{
             ])
             ->orderByRaw("FIELD(id, " . implode(',', $propertyIds) . ")");
 
-        return $query->simplePaginate($perPage, ['*'], 'page', $page);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     function viewAmenities()

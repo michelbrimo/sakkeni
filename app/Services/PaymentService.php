@@ -1,12 +1,13 @@
 <?php
-// app/Services/PaymentService.php
 
 namespace App\Services;
 
 use App\Models\ServiceActivity;
+use App\Models\SubscriptionPlan;
 use App\Repositories\PaymentRepository;
+use App\Repositories\ServiceProviderRepository;
 use Exception;
-use Illuminate\Support\Facades\Log; // <-- Import the Log facade
+use Illuminate\Support\Facades\Log; 
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Transfer;
@@ -46,10 +47,129 @@ class PaymentService
         return ['clientSecret' => $paymentIntent->client_secret];
     }
 
+    
+
+    public function createTransfer(ServiceActivity $serviceActivity)
+    {
+        $serviceProviderUser = $serviceActivity->serviceProvider->user;
+
+        if (!$serviceProviderUser->stripe_account_id) {
+            throw new Exception('Service provider has not connected a payout account.');
+        }
+
+        $payment = $serviceActivity->payment;
+        if (!$payment) {
+            throw new Exception('Cannot create transfer. Original payment record not found.');
+        }
+
+        $platformFee = $serviceActivity->cost * 0.10; 
+        $payoutAmount = $serviceActivity->cost - $platformFee;
+
+        $transfer = Transfer::create([
+            'amount' => $payoutAmount * 100,
+            'currency' => 'usd',
+            'destination' => $serviceProviderUser->stripe_account_id,
+            'transfer_group' => 'SERVICE_ACTIVITY_' . $serviceActivity->id,
+            'source_transaction' => $payment->payment_gateway_transaction_id,
+        ]);
+
+
+        return $transfer;
+    }
+
+    public function createSubscriptionPaymentIntent($data)
+    {
+        $user = $data['user'];
+        $serviceProvider = $user->serviceProvider;
+
+        if (!$serviceProvider || $serviceProvider->status !== 'pending_payment') {
+            throw new Exception('This account is not eligible for payment.', 403);
+        }
+        
+        $pendingPlanId = $serviceProvider->pending_subscription_plan_id;
+        if (!$pendingPlanId) {
+            throw new Exception('Could not find a selected subscription plan.', 422);
+        }
+        
+        $plan = SubscriptionPlan::find($pendingPlanId);
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $plan->price * 100,
+            'currency' => 'usd',
+            'metadata' => [
+                'type' => 'subscription_payment', // Critical for webhook handling
+                'user_id' => $user->id,
+                'service_provider_id' => $serviceProvider->id,
+                'subscription_plan_id' => $plan->id,
+            ],
+            'automatic_payment_methods' => [
+                'enabled' => true,
+                'allow_redirects' => 'never',
+            ],
+        ]);
+
+        return ['clientSecret' => $paymentIntent->client_secret];
+    }
+
+    // In app/Services/PaymentService.php
+
     public function handleWebhook($data)
     {
         $paymentIntent = $data['payment_intent'];
+        $metadata = $paymentIntent->metadata;
 
+        if (isset($metadata->type) && $metadata->type === 'subscription_payment') {
+            $this->handleSubscriptionPayment($paymentIntent);
+        } else if (isset($metadata->service_activity_id)) {
+            $this->handleServiceActivityPayment($paymentIntent);
+        } else {
+            Log::warning('Webhook ignored: Missing identifying metadata.', ['pi_id' => $paymentIntent->id]);
+        }
+    }
+
+    public function handleSubscriptionPayment(PaymentIntent $paymentIntent)
+    {
+        $metadata = $paymentIntent->metadata;
+        $serviceProviderId = $metadata->service_provider_id;
+        $planId = $metadata->subscription_plan_id;
+
+        $providerRepository = new ServiceProviderRepository();
+        $serviceProvider = $providerRepository->getServiceProviderById($serviceProviderId);
+
+        if ($serviceProvider && $serviceProvider->status === 'pending_payment') {
+            
+            $providerRepository->updateServiceProvider($serviceProviderId, [
+                'status' => 'active',
+                'pending_subscription_plan_id' => null 
+            ]);
+
+            $plan = SubscriptionPlan::find($planId);
+            $endDate = null;
+            if (strtolower($plan->name) === 'monthly') {
+                $endDate = now()->addMonth();
+            } else if (strtolower($plan->name) === 'yearly') {
+                $endDate = now()->addYear();
+            }
+
+            $providerRepository->createServiceProviderSubscriptionPlan([
+                'service_provider_id' => $serviceProviderId,
+                'subscription_plan_id' => $planId,
+                'start_date' => now(),
+                'end_date' => $endDate,
+            ]);
+            
+            Log::info('Subscription activated for provider ID: ' . $serviceProviderId);
+
+        } else {
+            Log::warning('Webhook skipped for subscription payment.', [
+                'pi_id' => $paymentIntent->id,
+                'reason' => 'Provider not found or not in pending_payment status.'
+            ]);
+        }
+    }
+
+    public function handleServiceActivityPayment(PaymentIntent $paymentIntent)
+    {
         if (!isset($paymentIntent->metadata->service_activity_id)) {
             Log::warning('Webhook ignored: Missing service_activity_id in metadata.', ['pi_id' => $paymentIntent->id]); // <-- ADDED LOG
             return;
@@ -81,33 +201,5 @@ class PaymentService
                 'status' => $serviceActivity ? $serviceActivity->status : 'not_found'
             ]); // <-- ADDED LOG
         }
-    }
-
-    public function createTransfer(ServiceActivity $serviceActivity)
-    {
-        $serviceProviderUser = $serviceActivity->serviceProvider->user;
-
-        if (!$serviceProviderUser->stripe_account_id) {
-            throw new Exception('Service provider has not connected a payout account.');
-        }
-
-        $payment = $serviceActivity->payment;
-        if (!$payment) {
-            throw new Exception('Cannot create transfer. Original payment record not found.');
-        }
-
-        $platformFee = $serviceActivity->cost * 0.10; 
-        $payoutAmount = $serviceActivity->cost - $platformFee;
-
-        $transfer = Transfer::create([
-            'amount' => $payoutAmount * 100,
-            'currency' => 'usd',
-            'destination' => $serviceProviderUser->stripe_account_id,
-            'transfer_group' => 'SERVICE_ACTIVITY_' . $serviceActivity->id,
-            'source_transaction' => $payment->payment_gateway_transaction_id,
-        ]);
-
-
-        return $transfer;
     }
 }

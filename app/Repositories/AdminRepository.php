@@ -15,7 +15,7 @@ class AdminRepository{
     }  
 
     public function viewAdmins($data){
-        return Admin::simplePaginate(10, '*','page', $data['page'] ?? 1);
+        return Admin::paginate(10, '*','page', $data['page'] ?? 1);
     }
 
     public function getAdminDetails_byId($id) {
@@ -44,7 +44,7 @@ class AdminRepository{
 
     public function searchAdmin_byName($data){
         return Admin::where('first_name', 'LIKE', '%' . $data['name'] . '%')
-                    ->simplePaginate(10, '*', 'page', $data['page'] ?? 1);
+                    ->paginate(10, '*', 'page', $data['page'] ?? 1);
 
     }
 

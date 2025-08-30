@@ -113,6 +113,8 @@ class ServiceTransformer{
         'submitReview'=>['UpdateServiceProviderRatingAspect'],
 
         'search'=>[],
+
+        'createSubscriptionPaymentIntent' => [], 
     ];
 
     private $service_mapper = [];

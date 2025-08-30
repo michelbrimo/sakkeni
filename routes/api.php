@@ -164,6 +164,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/conversations/{conversation}/send-messages', [ConversationController::class, 'sendMessage'])->name('Conversation.sendMessage');
 
     Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
+    Route::post('/subscription/create-payment-intent', [PaymentController::class, 'createSubscriptionPaymentIntent'])->name('Payment.createSubscriptionPaymentIntent');
+
 
     Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
 
