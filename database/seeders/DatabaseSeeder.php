@@ -85,10 +85,8 @@ class DatabaseSeeder extends Seeder
             AccountType::create(['name' => $accountType]);
         }
 
-        $subscriptionPlans = ['Monthly', 'Yearly'];
-        foreach ($subscriptionPlans as $subscriptionPlan) {
-            SubscriptionPlan::create(['name' => $subscriptionPlan, 'price' => rand(10000, 50000)]);
-        }
+        SubscriptionPlan::create(['name' => 'Monthly', 'price' => 10]);
+        SubscriptionPlan::create(['name' => 'Yearly', 'price' => 99]);
 
         
         $propertyTypes = ['Residential', 'Commercial'];
