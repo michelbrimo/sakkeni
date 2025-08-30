@@ -97,7 +97,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/view-pending-properties', [AdminController::class, 'viewPendingProperties'])->name('Admin.viewPendingProperties');
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
 
-        
+        Route::get('/view-my-properties/{sell_type}', [AdminController::class, 'viewMyProperties'])->name('Admin.viewMyProperties');
+
 
         Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');
         Route::get('/view-latest-rejected-properties', [AdminController::class, 'viewLatestRejectedProperty'])->name('Admin.viewLatestRejectedProperty');

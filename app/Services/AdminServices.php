@@ -153,6 +153,15 @@ class AdminServices extends ImageServices{
             $this->admin_repository->incrementRejectedProperties($data['admin_id']);     
         }
     }
+    
+    
+    public function viewMyProperties($data){
+        return $this->admin_repository->getMyProperties($data);
+        throw new Exception('Unkown Property Type', 422);
+    }
+
+
+
 
     function viewPendingServiceProviders($data) {
         return $this->service_provider_repository->viewPendingServiceProviders($data);

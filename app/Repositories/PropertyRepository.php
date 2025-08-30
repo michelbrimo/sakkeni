@@ -222,7 +222,6 @@ class PropertyRepository{
               ->with([
                     'coverImage',
                     'availabilityStatus',
-                    'owner',
                     'propertyType',
                     'location.country',
                     'location.city',
@@ -286,7 +285,7 @@ class PropertyRepository{
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -343,7 +342,7 @@ class PropertyRepository{
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -393,7 +392,7 @@ class PropertyRepository{
             ->with([
                 'coverImage',
                 'availabilityStatus',
-                'owner',
+                'admin',
                 'propertyType',
                 'location.country',
                 'location.city',
@@ -670,7 +669,7 @@ class PropertyRepository{
         }
         
         $query->with([
-                'coverImage', 'availabilityStatus', 'owner', 'propertyType',
+                'coverImage', 'availabilityStatus', 'admin', 'propertyType',
                 'location.country', 'location.city', 'residential.residentialPropertyType',
                 'commercial.commercialPropertyType', 'rent', 'purchase', 'offPlan'
             ])

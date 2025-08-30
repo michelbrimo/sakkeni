@@ -40,6 +40,7 @@ class ServiceTransformer{
         'viewLatestPropertyAdjudication' => [],        
         'viewSoldProperties' => [],        
         'propertyAdjudication' => [],
+        'viewMyProperties' => [],
 
         'viewPendingServiceProviders' => [], 
         'viewLatestAcceptedServiceProviders' => [], 

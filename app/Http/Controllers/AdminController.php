@@ -111,6 +111,18 @@ class AdminController extends Controller
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Property adjudicated Successfully');
     }
     
+    
+    function viewMyProperties(Request $request, $sell_type_id)
+    {
+        $additionalData = [
+          'page' => $request->query('page', 1),
+          'sell_type_id' => $sell_type_id,
+          'admin_id' => auth('admin')->user()->id
+        ];
+
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Your properties fetched successfully');
+    }
+    
     function viewPendingServiceProviders(Request $request)
     {
         $additionalData = ['page' => $request->input('page', 1)];
