@@ -111,7 +111,6 @@ class PaymentService
         return ['clientSecret' => $paymentIntent->client_secret];
     }
 
-    // In app/Services/PaymentService.php
 
     public function handleWebhook($data)
     {
