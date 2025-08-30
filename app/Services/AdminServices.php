@@ -202,7 +202,6 @@ class AdminServices extends ImageServices{
         $this->service_provider_repository->serviceProviderServiceAdjudication($data);
 
         if($data['approve'] == 1){   
-            // Get the service provider associated with the service being approved
             $serviceProvider = $this->service_provider_repository->getServiceProviderByServiceId($data['service_provider_service_id']);
 
             if ($serviceProvider && $serviceProvider->status === 'pending_approval') {

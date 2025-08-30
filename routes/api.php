@@ -172,6 +172,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/service-activities/{serviceActivity}/submitReview', [UserController::class, 'submitReview'])->name('User.submitReview');
 
 
+    Route::post('/properties/{property}/pay', [PaymentController::class, 'createPropertyPaymentIntent'])->name('Payment.createPropertyPaymentIntent');
+
+
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
         Route::post('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');

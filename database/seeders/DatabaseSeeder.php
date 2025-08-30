@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             SellType::create(['name' => $sellType]);
         }
 
-        $availabilityStatus = ['Pending', 'Active', 'InActive', 'Rejected', 'Sold'];
+        $availabilityStatus = ['Pending', 'Active', 'InActive', 'Rejected', 'Sold', 'Pending Payment'];
         foreach ($availabilityStatus as $status) {
             AvailabilityStatus::create(['name' => $status]);
         }

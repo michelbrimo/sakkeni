@@ -115,6 +115,9 @@ class ServiceTransformer{
         'search'=>[],
 
         'createSubscriptionPaymentIntent' => [], 
+
+        'createPropertyPaymentIntent' => [], 
+
     ];
 
     private $service_mapper = [];

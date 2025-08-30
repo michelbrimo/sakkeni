@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Enums\AvailabilityStatus;
+use App\Enums\SellType;
 use App\Models\ServiceActivity;
 use App\Models\SubscriptionPlan;
 use App\Repositories\PaymentRepository;
+use App\Repositories\PropertyRepository;
 use App\Repositories\ServiceProviderRepository;
 use Exception;
 use Illuminate\Support\Facades\Log; 
@@ -15,10 +18,13 @@ use Stripe\Transfer;
 class PaymentService
 {
     protected $paymentRepository;
+    protected $propertyRepository;
 
     public function __construct()
     {
         $this->paymentRepository = new PaymentRepository();
+        $this->propertyRepository = new PropertyRepository(); 
+
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
@@ -112,12 +118,55 @@ class PaymentService
     }
 
 
+    public function createPropertyPaymentIntent($data)
+    {
+        $user = $data['user'];
+        $property = $data['property'];
+
+        if (!$user->seller || $user->id !== $property->owner_id) {
+            throw new Exception('Unauthorized', 403);
+        }
+
+        if ($property->availability_status_id !== AvailabilityStatus::PendingPayment) {
+            throw new Exception('This property is not awaiting payment.', 422);
+        }
+
+        $amount = 0;
+        if ($property->sell_type_id == SellType::RENT) { 
+            $amount = 50 * 100; // $50.00 in cents
+        } elseif ($property->sell_type_id == SellType::PURCHASE || $property->sell_type_id == SellType::OFF_PLAN) { 
+            $amount = 100 * 100; // $100.00 in cents
+        }
+
+        if ($amount === 0) {
+            throw new Exception('Invalid sell type for payment.', 400);
+        }
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => 'usd',
+            'metadata' => [
+                'type' => 'property_listing_payment',
+                'user_id' => $user->id,
+                'property_id' => $property->id,
+            ],
+            'automatic_payment_methods' => [
+                'enabled' => true,
+                'allow_redirects' => 'never',
+            ],
+        ]);
+
+        return ['clientSecret' => $paymentIntent->client_secret];
+    }
+
     public function handleWebhook($data)
     {
         $paymentIntent = $data['payment_intent'];
         $metadata = $paymentIntent->metadata;
 
-        if (isset($metadata->type) && $metadata->type === 'subscription_payment') {
+        if (isset($metadata->type) && $metadata->type === 'property_listing_payment') {
+            $this->handlePropertyListingPayment($paymentIntent);
+        } else if (isset($metadata->type) && $metadata->type === 'subscription_payment') {
             $this->handleSubscriptionPayment($paymentIntent);
         } else if (isset($metadata->service_activity_id)) {
             $this->handleServiceActivityPayment($paymentIntent);
@@ -125,6 +174,38 @@ class PaymentService
             Log::warning('Webhook ignored: Missing identifying metadata.', ['pi_id' => $paymentIntent->id]);
         }
     }
+
+    public function handlePropertyListingPayment(PaymentIntent $paymentIntent)
+    {
+        $metadata = $paymentIntent->metadata;
+        $propertyId = $metadata->property_id;
+
+        $property = $this->propertyRepository->getBasePropertyDetails($propertyId);
+
+        if ($property && $property->availability_status_id === AvailabilityStatus::PendingPayment) {
+            $this->propertyRepository->updateProperty($propertyId, [
+                'availability_status_id' => AvailabilityStatus::Active
+            ]);
+
+            $this->propertyRepository->createPropertyPayment([
+                'property_id' => $propertyId,
+                'amount' => $paymentIntent->amount / 100,
+                'status' => 'succeeded',
+                'payment_gateway_transaction_id' => $paymentIntent->id,
+            ]);
+            
+            Log::info('Property listing fee paid and activated for Property ID: ' . $propertyId);
+
+
+        } else {
+            Log::warning('Webhook skipped for property listing payment.', [
+                'pi_id' => $paymentIntent->id,
+                'reason' => 'Property not found or not in PendingPayment status.'
+            ]);
+        }
+    }
+
+
 
     public function handleSubscriptionPayment(PaymentIntent $paymentIntent)
     {

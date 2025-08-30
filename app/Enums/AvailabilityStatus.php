@@ -9,4 +9,5 @@ class AvailabilityStatus
     const InActive = 3;
     const Rejected = 4;
     const Sold = 5;
+    const PendingPayment = 6;
 }

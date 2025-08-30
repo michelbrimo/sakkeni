@@ -20,6 +20,7 @@ use App\Models\OwnershipType;
 use App\Models\Property;
 use App\Models\PropertyAdmin;
 use App\Models\PropertyFavorite;
+use App\Models\PropertyPayment;
 use App\Models\PropertyType as ModelsPropertyType;
 use App\Models\Purchase;
 use App\Models\Rent;
@@ -517,7 +518,7 @@ class PropertyRepository{
     function propertyAdjudication($data){ 
         if($data['approve'] == 1)
             $this->updateProperty($data['property_id'], [
-                'availability_status_id' => AvailabilityStatus::Active,
+                'availability_status_id' => AvailabilityStatus::PendingPayment,
             ]);
         else if($data['approve'] == 0)
             $this->updateProperty($data['property_id'], [
@@ -778,6 +779,11 @@ class PropertyRepository{
 
     return $search->paginate($perPage);
 }
+
+    public function createPropertyPayment(array $data): PropertyPayment
+    {
+        return PropertyPayment::create($data);
+    }
 }
 
 
