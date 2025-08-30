@@ -74,7 +74,7 @@ class ServiceProviderRepository{
         return User::whereHas('serviceProvider', function($query) {
             $query->whereHas('serviceProviderPendingServices');
         })->with('serviceProvider.serviceProviderPendingServices')
-          ->simplePaginate(10, [
+          ->paginate(10, [
                 'id',
                 'first_name',
                 'last_name',
@@ -86,14 +86,14 @@ class ServiceProviderRepository{
         return ServiceProviderService::whereMonth('created_at', now()->month)
                                 ->whereYear('created_at', now()->year)
                                 ->with(['adminServices.admin', 'availabilityStatus', 'serviceProvider.user'])
-                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);    }
+                                ->paginate(10, ['*'], 'page', $page ?? 1);    }
 
     function getLatestRejectedServiceProviders($page) {
         return AdminServiceProviderServices::where('approve', 0)
                                 ->whereMonth('created_at', now()->month)
                                 ->whereYear('created_at', now()->year)
                                 ->with(['services.serviceProvider.user', 'admin'])
-                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);
+                                ->paginate(10, ['*'], 'page', $page ?? 1);
     }
 
     function getLatestAcceptedServiceProviders($page) {
@@ -101,7 +101,7 @@ class ServiceProviderRepository{
                                 ->whereMonth('created_at', now()->month)
                                 ->whereYear('created_at', now()->year)
                                 ->with(['services.serviceProvider.user', 'admin'])
-                                ->simplePaginate(10, ['*'], 'page', $page ?? 1);
+                                ->paginate(10, ['*'], 'page', $page ?? 1);
     }
 
     function getServiceProviders($data) {
@@ -110,7 +110,7 @@ class ServiceProviderRepository{
                 $subQuery->where('service_id', $data['service_id']);
             });
         })->with(['serviceProvider'])
-          ->simplePaginate(10, [
+          ->paginate(10, [
                 'id',
                 'first_name',
                 'last_name',
