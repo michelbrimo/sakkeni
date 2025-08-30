@@ -15,7 +15,7 @@ use Ramsey\Uuid\Type\Integer;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = [
         'location_id',
@@ -33,59 +33,59 @@ class Property extends Model
 
 
 
-    // public function toSearchableArray(): array
-    // {
-    //     $this->load(
-    //         'location.city', 'location.country', 'propertyType', 'amenities', 
-    //         'sellType', 'ownershipType', 'directions', 'residential.residentialPropertyType',
-    //         'commercial.commercialPropertyType'
-    //     );
+    public function toSearchableArray(): array
+    {
+        $this->load(
+            'location.city', 'location.country', 'propertyType', 'amenities', 
+            'sellType', 'ownershipType', 'directions', 'residential.residentialPropertyType',
+            'commercial.commercialPropertyType'
+        );
 
-    //     $isFurnished = $this->purchase->is_furnished ?? $this->rent->is_furnished ?? false;
+        $isFurnished = $this->purchase->is_furnished ?? $this->rent->is_furnished ?? false;
 
-    //     $price = $this->purchase->price 
-    //          ?? $this->rent->price 
-    //          ?? $this->offPlan->overall_payment 
-    //          ?? 0;
+        $price = $this->purchase->price 
+             ?? $this->rent->price 
+             ?? $this->offPlan->overall_payment 
+             ?? 0;
 
         
 
-    //     return [
-    //         'id'            => (int)$this->id,
-    //         'description'   => $this->description,
-    //         'tags'          => $this->tags,
-    //         'is_furnished'  => (bool)$isFurnished,
-    //         'price'         => (float) $price,
-    //         'created_at'    => $this->created_at->timestamp,
+        return [
+            'id'            => (int)$this->id,
+            'description'   => $this->description,
+            'tags'          => $this->tags,
+            'is_furnished'  => (bool)$isFurnished,
+            'price'         => (float) $price,
+            'created_at'    => $this->created_at->timestamp,
  
 
-    //         // Location Details
-    //         'city'          => $this->location->city->name ?? null,
-    //         'country'       => $this->location->country->name ?? null,
-    //         // Property Type Details
-    //         'property_type' => $this->propertyType->name ?? null,
-    //         'sell_type'     => $this->sellType->name ?? null,
-    //         'ownership_type'=> $this->ownershipType->name ?? null,
-    //         // Property Attributes
-    //         'area'          => (float)$this->area,
-    //         'bathrooms'     => (int)$this->bathrooms,
-    //         'balconies'     => (int)$this->balconies,
-    //         // Relational Details
-    //         'amenities'     => $this->amenities->pluck('name')->all(),
-    //         'directions'    => $this->directions->pluck('name')->implode(', '),
-    //         // Residential/Commercial Specifics
-    //         'bedrooms'      => $this->residential->bedrooms ?? null,
-    //         'residential_type' => $this->residential->residentialPropertyType->name ?? null,
-    //         'commercial_type'  => $this->commercial->commercialPropertyType->name ?? null,
+            // Location Details
+            'city'          => $this->location->city->name ?? null,
+            'country'       => $this->location->country->name ?? null,
+            // Property Type Details
+            'property_type' => $this->propertyType->name ?? null,
+            'sell_type'     => $this->sellType->name ?? null,
+            'ownership_type'=> $this->ownershipType->name ?? null,
+            // Property Attributes
+            'area'          => (float)$this->area,
+            'bathrooms'     => (int)$this->bathrooms,
+            'balconies'     => (int)$this->balconies,
+            // Relational Details
+            'amenities'     => $this->amenities->pluck('name')->all(),
+            'directions'    => $this->directions->pluck('name')->implode(', '),
+            // Residential/Commercial Specifics
+            'bedrooms'      => $this->residential->bedrooms ?? null,
+            'residential_type' => $this->residential->residentialPropertyType->name ?? null,
+            'commercial_type'  => $this->commercial->commercialPropertyType->name ?? null,
 
-    //     ];
-    // }
+        ];
+    }
 
-    // public function shouldBeSearchable()
-    // {
-    //     // This line only allows properties with an "Active" status to be indexed
-    //     return $this->availability_status_id == 2;
-    // }
+    public function shouldBeSearchable()
+    {
+        // This line only allows properties with an "Active" status to be indexed
+        return $this->availability_status_id == 2;
+    }
     
     public function sellType()
     {
