@@ -160,12 +160,13 @@ class UserServices extends ImageServices
                 422);
         } 
 
-        if(!$data['user']->address  || !$data['user']->phone_number){
+        if(!$data['user']->address  || !$data['user']->phone_number || !$data['user']->stripe_account_id){
             throw new Exception(
-                'Please fill the address and phone number fields in your profile first',
+                'Please fill the address, phone number and stripe account id fields in your profile first',
                 422
             );
         }
+     
 
         $serviceProvider = $this->service_provider_repository->createServiceProvider([
             'user_id' => $data['user']->id,
