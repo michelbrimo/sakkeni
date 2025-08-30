@@ -147,6 +147,7 @@ class AdminServices extends ImageServices{
         
         if($data['approve'] == 1){
             $this->admin_repository->incrementAcceptedProperties($data['admin_id']);     
+            $this->property_repository->updateProperty($data['property_id'], ['admin_id' => auth('admin')->user()->id]);     
         }
         else{
             $this->admin_repository->incrementRejectedProperties($data['admin_id']);     
