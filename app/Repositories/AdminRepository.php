@@ -63,10 +63,19 @@ class AdminRepository{
         return Admin::where('id', $adminId)->increment('accepted_properties');
     }
 
+    
     public function incrementRejectedProperties($adminId)
     {   
         return Admin::where('id', $adminId)->increment('rejected_properties');
     }
+
+    public function searchPropertyId($data)
+    {   
+        return Property::where('admin_id', $data['admin_id'])
+                       ->where('id', $data['property_id'])
+                       ->first();
+    }
+
 
     public function getMyProperties($data)
     {   

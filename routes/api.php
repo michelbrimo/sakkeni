@@ -98,6 +98,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::post('/property-adjudication', [AdminController::class, 'propertyAdjudication'])->name('Admin.propertyAdjudication');
 
         Route::get('/view-my-properties/{sell_type}', [AdminController::class, 'viewMyProperties'])->name('Admin.viewMyProperties');
+        Route::post('/search-id', [AdminController::class, 'searchId'])->name('Admin.searchId');
 
 
         Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');

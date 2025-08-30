@@ -122,6 +122,15 @@ class AdminController extends Controller
 
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Your properties fetched successfully');
     }
+
+    function searchId(Request $request)
+    {
+        $additionalData = [
+          'admin_id' => auth('admin')->user()->id
+        ];
+
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Your properties fetched successfully');
+    }
     
     function viewPendingServiceProviders(Request $request)
     {

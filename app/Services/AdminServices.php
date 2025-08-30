@@ -157,9 +157,16 @@ class AdminServices extends ImageServices{
     
     public function viewMyProperties($data){
         return $this->admin_repository->getMyProperties($data);
-        throw new Exception('Unkown Property Type', 422);
     }
-
+    
+    public function searchId($data){
+        $property = $this->admin_repository->searchPropertyId($data);
+        if($property){
+            return $property;
+    }else{
+            throw new Exception('No Property Found', 422);
+        }
+    }
 
 
 
