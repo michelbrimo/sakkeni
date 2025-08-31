@@ -73,6 +73,7 @@ class AdminRepository{
     {   
         return Property::where('admin_id', $data['admin_id'])
                        ->where('id', $data['property_id'])
+                       ->where('availability_status_id', AvailabilityStatus::Active)
                        ->first();
     }
 
@@ -81,9 +82,8 @@ class AdminRepository{
     {   
         $query = Property::where('admin_id', $data['admin_id'])
                          ->where('sell_type_id', $data['sell_type_id'])
-                        ->where('availability_status_id', AvailabilityStatus::Active)
-                        ->where('availability_status_id', AvailabilityStatus::Active)
-                        ->with([
+                         ->where('availability_status_id', AvailabilityStatus::Active)
+                         ->with([
                                 'coverImage',
                                 'availabilityStatus',
                                 'owner',
