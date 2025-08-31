@@ -108,7 +108,8 @@ class ServiceTransformer{
         'createPaymentIntent' => [],
         'handleWebhook' => [], 
         
-        'markAsComplete' => [], 
+        'markAsComplete' => [],
+        'markAsDecline' => [], 
 
         'submitReview'=>['UpdateServiceProviderRatingAspect'],
 
@@ -117,6 +118,9 @@ class ServiceTransformer{
         'createSubscriptionPaymentIntent' => [], 
 
         'createPropertyPaymentIntent' => [], 
+
+        'getServiceActivity' => [],
+
 
     ];
 

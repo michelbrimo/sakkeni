@@ -73,6 +73,14 @@ class UserController extends Controller
         ];
         return $this->executeService($this->service_transformer, $request, $additionalData, 'Job marked as complete.');
     }
+    public function markAsDecline(Request $request, ServiceActivity $serviceActivity)
+    {
+        $additionalData = [
+            'user' => $request->user(),
+            'service_activity' => $serviceActivity
+        ];
+        return $this->executeService($this->service_transformer, $request, $additionalData, 'Job marked as decline.');
+    }
 
     public function submitReview(Request $request, ServiceActivity $serviceActivity)
     {

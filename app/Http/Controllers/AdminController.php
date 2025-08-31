@@ -204,4 +204,11 @@ class AdminController extends Controller
         return $this->executeService($this->service_transformer, new Request(), $additionalData, 'Log fetched successfully');
     }
 
+    public function getServiceActivity(Request $request)
+    {
+        $additionalData = [
+            'page' => $request->input('page', 1)
+        ];
+        return $this->executeService($this->service_transformer, new Request(), $additionalData, 'service activity fetched successfully');
+    }
 }

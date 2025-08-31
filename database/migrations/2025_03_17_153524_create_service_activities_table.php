@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('service_provider_id')->constrained('service_providers')->cascadeOnDelete();
             $table->foreignId('quote_id')->nullable()->constrained('quotes')->nullOnDelete();
             $table->decimal('cost', 8, 2)->nullable();
-            $table->string('status')->default('Awaiting Payment');// Tracks the current status of the job after payment (e.g., 'Awaiting Payment', 'In Progress', 'Completed', 'In Dispute').
+            $table->string('status')->default('Awaiting Payment');// Tracks the current status of the job after payment (e.g., 'Awaiting Payment', 'In Progress', 'Completed', 'In Dispute', 'Declined').
             $table->date('start_date');
             $table->date('estimated_end_date')->nullable();
             $table->timestamps();

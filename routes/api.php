@@ -111,6 +111,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/reports/service-providers/{status}', [AdminController::class, 'viewServiceProviderReports'])->name('Report.viewServiceProviderReports');
         Route::post('/reports/process-report/{id}', [AdminController::class, 'processReport'])->name('Report.processReport');
 
+        Route::get('/service-activities', [AdminController::class, 'getServiceActivity'])->name('Admin.getServiceActivity');
 
         Route::get('/view-log', [AdminController::class, 'viewLog'])->name('Admin.viewLog');
     });
@@ -165,11 +166,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
     Route::post('/subscription/create-payment-intent', [PaymentController::class, 'createSubscriptionPaymentIntent'])->name('Payment.createSubscriptionPaymentIntent');
-    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
     Route::post('/service-activities/{serviceActivity}/submitReview', [UserController::class, 'submitReview'])->name('User.submitReview');
-
-
     
+    Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
+    Route::post('/service-activities/{serviceActivity}/decline', [UserController::class, 'markAsDecline'])->name('User.markAsDecline');
+
     
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');

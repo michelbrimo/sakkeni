@@ -229,4 +229,7 @@ class AdminServices extends ImageServices{
         $this->admin_repository->updateAdmin($adminId, $data);
     }
 
+    function getServiceActivity($data) {
+        return $this->admin_repository->getServiceActivity($data['page']);
+    }
 }

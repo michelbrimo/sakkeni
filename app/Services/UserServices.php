@@ -210,6 +210,22 @@ class UserServices extends ImageServices
             return $serviceActivity; 
         });
     }
+    public function markAsDecline($data)
+    {
+        $user = $data['user'];
+        $serviceActivity = $data['service_activity'];
+
+        if ($user->id !== $serviceActivity->user_id) {
+            throw new Exception('Unauthorized', 403);
+        }
+
+        if ($serviceActivity->status !== 'In Progress') {
+            throw new Exception('This service is not in a state that can be completed.', 422);
+        }
+
+        $this->payment_repository->updateServiceActivityStatus($serviceActivity, 'Declined');
+        return $serviceActivity; 
+    }
 
     public function submitReview($data)
     {

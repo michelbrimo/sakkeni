@@ -7,6 +7,7 @@ use App\Enums\SellType;
 use App\Models\Admin;
 use App\Models\Log;
 use App\Models\Property;
+use App\Models\ServiceActivity;
 use App\Models\User;
 
 class AdminRepository{
@@ -126,5 +127,12 @@ class AdminRepository{
         return Log::orderBy('created_at', 'desc')
                     ->simplePaginate(10, '*', 'page', $page ?? 1);
     }
+
+    function getServiceActivity($page) {
+    return ServiceActivity::where('status', 'Declined')
+                ->orderBy('created_at', 'desc')
+                ->with('user', 'service_provider.user', 'quote')
+                ->simplePaginate(10, '*', 'page', $page ?? 1);
+}
 
 }
