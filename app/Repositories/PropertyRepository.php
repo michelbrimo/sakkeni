@@ -428,6 +428,7 @@ class PropertyRepository{
             'availabilityStatus',
             'ownershipType',
             'admin',
+            'owner',
             'location.country',
             'location.city', 
         );
