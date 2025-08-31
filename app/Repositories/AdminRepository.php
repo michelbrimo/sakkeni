@@ -123,8 +123,8 @@ class AdminRepository{
     }
 
     function getLog($page) {
-        return Log::simplePaginate(10, '*', 'page', $page ?? 1)
-                  ->orderBy('created_at', 'desc'); 
+        return Log::orderBy('created_at', 'desc')
+                    ->simplePaginate(10, '*', 'page', $page ?? 1);
     }
 
 }

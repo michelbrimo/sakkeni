@@ -444,10 +444,7 @@ class PropertyRepository{
             $query = $query->with('rent');
         else if ($data['sell_type_id'] == SellType::OFF_PLAN)
             $query = $query->with(['offPlan.paymentPhases']);
-
-
-        $query = $query->where('availability_status_id', AvailabilityStatus::Active)
-                       ->first();
+        $query = $query->first();
         
         return $query;
     }

@@ -120,7 +120,7 @@ Route::middleware('optional.sanctum')->group(function () {
     Route::get('/view-property-details/{property_id}', [PropertyController::class, 'viewPropertyDetails'])->name('Property.viewPropertyDetails');
     Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
     Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
-    Route::get('/properties/search', [PropertyController::class, 'search'])->name('Property.search');
+    Route::post('/properties/search', [PropertyController::class, 'search'])->name('Property.search');
 });
 
 

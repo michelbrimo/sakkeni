@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
         Admin::factory(1)->create();
         $this->call(PaymentPhaseSeeder::class);
 
@@ -153,8 +152,8 @@ class DatabaseSeeder extends Seeder
             }
         }
         
-        $this->call(PropertySeeder::class);
-        $this->call(UserSearchSeeder::class);
+        // $this->call(PropertySeeder::class);
+        // $this->call(UserSearchSeeder::class);
         $this->call(ReportReasonSeeder::class);
     }
 }

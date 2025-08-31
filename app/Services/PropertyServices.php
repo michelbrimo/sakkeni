@@ -366,16 +366,12 @@ class PropertyServices extends ImageServices
 
     public function search($data)
     {
-        // The NlpSearchParser returns a structured array with all parsed details
         $parsedQuery = $this->nlp_parser_service->parse($data['query']);
 
-        // Merge the parsed data with original request data (like user_id, page)
         $searchData = array_merge($data, $parsedQuery);
         
-        // Get the paginated property results from the repository
         $properties = $this->property_repository->search($searchData);
 
-        // Return a structured array containing both the results and the debug info
         return [
             'properties' => $properties,
             'debug_info' => [
