@@ -84,7 +84,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
         Route::get('/charts/properties-status', [DashboardController::class, 'viewPropertiesStatus'])->name('Dashboard.viewPropertiesStatus');
         Route::get('/charts/services-status', [DashboardController::class, 'viewServiceStatus'])->name('Dashboard.viewServiceStatus');
         Route::get('/charts/properties-locations', [DashboardController::class, 'viewPropertiesLocation'])->name('Dashboard.viewPropertiesLocation');
-        
         Route::get('/charts/properties-sold', [DashboardController::class, 'propertiesSold'])->name('Dashboard.propertiesSold');
 
         Route::get('/view-pending-service-providers', [AdminController::class, 'viewPendingServiceProviders'])->name('Admin.viewPendingServiceProviders');
@@ -99,6 +98,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 
         Route::get('/view-my-properties/{sell_type}', [AdminController::class, 'viewMyProperties'])->name('Admin.viewMyProperties');
         Route::post('/search-id', [AdminController::class, 'searchId'])->name('Admin.searchId');
+        Route::get('/property-sold/{property_id}', [PropertyController::class, 'propertySold'])->name('Property.propertySold');
+        Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
 
 
         Route::get('/view-latest-accepted-properties', [AdminController::class, 'viewLatestAcceptedProperty'])->name('Admin.viewLatestAcceptedProperty');
@@ -120,7 +121,6 @@ Route::middleware('optional.sanctum')->group(function () {
     Route::post('/view-properties/{sell_type}', [PropertyController::class, 'filterProperties'])->name('Property.filterProperties');
     Route::get('/view-properties/{sell_type}', [PropertyController::class, 'viewProperties'])->name('Property.viewProperties');
     Route::get('/properties/search', [PropertyController::class, 'search'])->name('Property.search');
-
 });
 
 
@@ -165,23 +165,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/service-activities/{serviceActivity}/pay', [PaymentController::class, 'createPaymentIntent'])->name('Payment.createPaymentIntent');
     Route::post('/subscription/create-payment-intent', [PaymentController::class, 'createSubscriptionPaymentIntent'])->name('Payment.createSubscriptionPaymentIntent');
-
-
     Route::post('/service-activities/{serviceActivity}/complete', [UserController::class, 'markAsComplete'])->name('User.markAsComplete');
-
     Route::post('/service-activities/{serviceActivity}/submitReview', [UserController::class, 'submitReview'])->name('User.submitReview');
 
 
-    Route::post('/properties/{property}/pay', [PaymentController::class, 'createPropertyPaymentIntent'])->name('Payment.createPropertyPaymentIntent');
-
-
+    
+    
     Route::middleware('seller')->group(function () {
         Route::post('/add-property', [PropertyController::class, 'addProperty'])->name('Property.addProperty');
         Route::post('/update-property/{property_id}', [PropertyController::class, 'updateProperty'])->name('Property.updateProperty');
         Route::get('/view-my-properties/{sell_type}', [PropertyController::class, 'viewMyProperties'])->name('Property.viewProperties');
-        Route::delete('/delete-property/{property_id}', [PropertyController::class, 'deleteProperty'])->name('Property.deleteProperty');
-
-        Route::get('/property-sold/{property_id}', [PropertyController::class, 'propertySold'])->name('Property.propertySold');
+        Route::post('/properties/{property}/pay', [PaymentController::class, 'createPropertyPaymentIntent'])->name('Payment.createPropertyPaymentIntent');
     });
 
     Route::middleware('serviceProvider')->group(function () {     
