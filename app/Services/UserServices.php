@@ -85,7 +85,8 @@ class UserServices extends ImageServices
             'last_name' => 'string',
             'address' => 'string',
             'phone_number' => 'string',
-            'profile_image' => 'file'
+            'profile_image' => 'file',
+            'stripe_account_id' => 'string'
         ]);
 
         if($validator->fails()){
