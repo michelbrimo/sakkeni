@@ -217,9 +217,11 @@ class PropertyRepository{
         if(isset($data['owner_id'])){
             $query->where('owner_id', $data['owner_id']);
         }
+        else{
+            $query->where('availability_status_id', AvailabilityStatus::Active);
+        }
 
         $query->where('sell_type_id', $data['sell_type_id'])
-              ->where('availability_status_id', AvailabilityStatus::Active)
               ->with([
                     'coverImage',
                     'availabilityStatus',
